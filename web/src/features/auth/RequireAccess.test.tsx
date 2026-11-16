@@ -75,7 +75,7 @@ describe('route guards', () => {
     renderAt('/platform')
 
     expect(await screen.findByRole('button', { name: 'Sign out' })).toBeInTheDocument()
-    expect(screen.getByRole('main')).toHaveTextContent('Platform')
+    expect(screen.getByRole('navigation', { name: 'Platform' })).toBeInTheDocument()
   })
 
   it('shows no access to a platform admin in the admin area', async () => {
