@@ -88,5 +88,5 @@ public sealed class AuthenticationTests(CatalogApiFactory factory) : ApiTest(fac
         return Client.SendAsync(request);
     }
 
-    private sealed record MeBody(Guid UserId, string? Email, bool IsPlatformAdmin);
+    private sealed record MeBody(Guid UserId, string? Email, bool IsPlatformAdmin, Guid? TenantId);
 }
