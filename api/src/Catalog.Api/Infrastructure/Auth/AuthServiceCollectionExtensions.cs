@@ -11,6 +11,7 @@ namespace Catalog.Api.Infrastructure.Auth;
 public static class AuthServiceCollectionExtensions
 {
     public const string PlatformAdminPolicy = "PlatformAdmin";
+    public const string AdminPolicy = "Admin";
 
     public static IServiceCollection AddCatalogAuth(this IServiceCollection services)
     {
@@ -23,10 +24,15 @@ public static class AuthServiceCollectionExtensions
             .Configure<IOptions<AuthOptions>>((jwt, authOptions) => Configure(jwt, authOptions.Value));
 
         services.AddSingleton<IAuthorizationHandler, PlatformAdminHandler>();
+        services.AddScoped<IAuthorizationHandler, AdminHandler>();
+        services.AddSingleton<IAuthorizationMiddlewareResultHandler, CatalogAuthorizationResultHandler>();
         services.AddAuthorizationBuilder()
             .AddPolicy(PlatformAdminPolicy, policy => policy
                 .RequireAuthenticatedUser()
-                .AddRequirements(new PlatformAdminRequirement()));
+                .AddRequirements(new PlatformAdminRequirement()))
+            .AddPolicy(AdminPolicy, policy => policy
+                .RequireAuthenticatedUser()
+                .AddRequirements(new AdminRequirement()));
 
         return services;
     }

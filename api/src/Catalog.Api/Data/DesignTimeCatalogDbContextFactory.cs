@@ -17,6 +17,6 @@ public sealed class DesignTimeCatalogDbContextFactory : IDesignTimeDbContextFact
             .UseNpgsql(connectionString)
             .Options;
 
-        return new CatalogDbContext(options);
+        return new CatalogDbContext(options, new CurrentTenant());
     }
 }

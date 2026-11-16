@@ -129,6 +129,18 @@ public abstract class ApiTest(CatalogApiFactory factory) : IAsyncLifetime
         return (await response.Content.ReadFromJsonAsync<TenantBody>())!;
     }
 
+    /// <summary>Creates a Tenant and invites an Admin to it; returns a client authenticated as that Admin.</summary>
+    protected async Task<AdminSession> CreateTenantWithAdmin(string slug, string? email = null)
+    {
+        var platform = PlatformAdminClient();
+        var tenant = await CreateTenant(platform, slug);
+        var adminEmail = email ?? $"admin@{slug}.test";
+        var response = await platform.PostAsJsonAsync($"/api/platform/tenants/{tenant.Id}/admins", new { email = adminEmail });
+        response.EnsureSuccessStatusCode();
+        var admin = (await response.Content.ReadFromJsonAsync<AdminBody>())!;
+        return new AdminSession(tenant, admin, ClientFor(admin.UserId, admin.Email));
+    }
+
     /// <summary>A client authenticated as someone who is not a Platform Admin.</summary>
     protected HttpClient OutsiderClient() => ClientFor(Guid.CreateVersion7(), "outsider@catalog.test");
 
