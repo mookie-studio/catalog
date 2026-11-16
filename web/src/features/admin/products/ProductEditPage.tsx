@@ -1,0 +1,132 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { type FormEvent, useState } from 'react'
+import { Link, useParams } from 'react-router'
+import { api } from '@/api/client'
+import { ApiProblem, call, isNotFound } from '@/api/problem'
+import { NotFoundPage } from '@/components/NotFoundPage'
+import { Button } from '@/components/ui/button'
+import { ProductFields, type ProductFieldValues } from '@/features/admin/products/ProductFields'
+import {
+  type Product,
+  type ProductStatus,
+  productQueryKey,
+  useProduct,
+} from '@/features/admin/products/products-api'
+import { ProductStatusBadge } from '@/features/admin/products/ProductStatusBadge'
+
+export function ProductEditPage() {
+  const id = useParams().id ?? ''
+  const product = useProduct(id)
+
+  if (isNotFound(product.error)) return <NotFoundPage />
+  if (product.isError) return <p role="alert">The product could not be loaded.</p>
+  if (product.isPending) return <p role="status" className="text-muted-foreground">Loading…</p>
+
+  return <ProductEditor key={product.data.id} product={product.data} />
+}
+
+/** Status actions offered for each Product status. */
+const statusActions: Record<ProductStatus, { label: string; status: ProductStatus }[]> = {
+  Draft: [
+    { label: 'Publish', status: 'Published' },
+    { label: 'Archive', status: 'Archived' },
+  ],
+  Published: [
+    { label: 'Move to draft', status: 'Draft' },
+    { label: 'Archive', status: 'Archived' },
+  ],
+  Archived: [{ label: 'Restore', status: 'Draft' }],
+}
+
+function toValues(product: Product): ProductFieldValues {
+  return { name: product.name, sku: product.sku, description: product.description ?? '', slug: product.slug }
+}
+
+function ProductEditor({ product }: { product: Product }) {
+  const queryClient = useQueryClient()
+  const [values, setValues] = useState(() => toValues(product))
+  const [saved, setSaved] = useState(false)
+  const path = { params: { path: { id: product.id } } }
+
+  const save = useMutation({
+    mutationFn: () =>
+      call(
+        api.PUT('/api/admin/products/{id}', {
+          ...path,
+          body: { name: values.name, sku: values.sku, slug: values.slug, description: values.description || null },
+        }),
+      ),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(productQueryKey(product.id), updated)
+      queryClient.invalidateQueries({ queryKey: ['admin', 'products'] })
+      setValues(toValues(updated))
+      setSaved(true)
+    },
+  })
+
+  const changeStatus = useMutation({
+    mutationFn: (status: ProductStatus) => call(api.POST('/api/admin/products/{id}/status', { ...path, body: { status } })),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: productQueryKey(product.id) })
+      queryClient.invalidateQueries({ queryKey: ['admin', 'products'] })
+    },
+  })
+
+  // Errors of the last action, shown next to their fields (for example the description required to publish).
+  const lastError = changeStatus.error ?? save.error
+  const problem = lastError instanceof ApiProblem ? lastError : null
+  const fieldErrors = problem?.fields ?? {}
+  const generalError = lastError && Object.keys(fieldErrors).length === 0 ? lastError.message : null
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setSaved(false)
+    changeStatus.reset()
+    save.mutate()
+  }
+
+  function handleStatus(status: ProductStatus) {
+    setSaved(false)
+    save.reset()
+    changeStatus.mutate(status)
+  }
+
+  return (
+    <main className="flex max-w-3xl flex-col gap-6">
+      <div className="flex flex-col gap-1">
+        <Link to="/admin/products" className="text-sm text-muted-foreground hover:underline">
+          ← Products
+        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-2xl font-semibold tracking-tight">{product.name}</h1>
+          <ProductStatusBadge status={product.status} />
+        </div>
+      </div>
+      <section aria-label="Status" className="flex flex-wrap gap-2">
+        {statusActions[product.status].map((action) => (
+          <Button key={action.status} variant="outline" size="sm" disabled={changeStatus.isPending} onClick={() => handleStatus(action.status)}>
+            {action.label}
+          </Button>
+        ))}
+      </section>
+      <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+        <ProductFields values={values} errors={fieldErrors} showSlug onChange={setValues} />
+        {generalError && (
+          <p role="alert" className="text-sm text-destructive">
+            {generalError}
+          </p>
+        )}
+        <div className="flex items-center gap-3">
+          <Button type="submit" disabled={save.isPending}>
+            Save
+          </Button>
+          {saved && (
+            <span role="status" className="text-sm text-muted-foreground">
+              Saved
+            </span>
+          )}
+        </div>
+      </form>
+    </main>
+  )
+}

@@ -76,5 +76,5 @@ public static class AddAttributeOption
     }
 
     private static Conflict<ProblemDetails> ValueInUse() =>
-        TypedResults.Conflict(ProblemDetailsBody.Conflict("This Option already exists in the Attribute Definition."));
+        TypedResults.Conflict(ProblemDetailsBody.Conflict("This Option already exists in the Attribute Definition.", "value"));
 }

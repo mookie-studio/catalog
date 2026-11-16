@@ -76,5 +76,5 @@ public static class AdminInvitation
     }
 
     private static Outcome.AlreadyAdmin AlreadyAdmin() =>
-        new(ProblemDetailsBody.Conflict("This email is already an Admin of a Tenant."));
+        new(ProblemDetailsBody.Conflict("This email is already an Admin of a Tenant.", "email"));
 }

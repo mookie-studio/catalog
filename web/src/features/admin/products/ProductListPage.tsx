@@ -1,0 +1,127 @@
+import { type FormEvent, useMemo } from 'react'
+import { Link, useSearchParams } from 'react-router'
+import { Pagination } from '@/components/Pagination'
+import { Button, ButtonLink } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select } from '@/components/ui/select'
+import { flattenCategories, useCategories } from '@/features/admin/admin-api'
+import {
+  type ProductListQuery,
+  type ProductStatus,
+  readProductListQuery,
+  useProducts,
+  writeProductListQuery,
+} from '@/features/admin/products/products-api'
+import { ProductStatusBadge } from '@/features/admin/products/ProductStatusBadge'
+
+const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+
+export function ProductListPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const query = useMemo(() => readProductListQuery(searchParams), [searchParams])
+  const products = useProducts(query)
+  const categories = useCategories()
+  const filtered = query.q !== '' || query.status !== null || query.categoryId !== null
+
+  // Changing the search or a filter goes back to the first page.
+  const refine = (change: Partial<ProductListQuery>) => setSearchParams(writeProductListQuery({ ...query, ...change, page: 1 }))
+
+  function handleSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    refine({ q: String(new FormData(event.currentTarget).get('q') ?? '').trim() })
+  }
+
+  return (
+    <main className="flex flex-col gap-6">
+      <div className="flex items-center justify-between gap-4">
+        <h1 className="text-2xl font-semibold tracking-tight">Products</h1>
+        <ButtonLink to="/admin/products/new">New product</ButtonLink>
+      </div>
+      <div className="flex flex-col gap-3 md:flex-row">
+        <form role="search" className="flex flex-1 gap-2" onSubmit={handleSearch}>
+          <Input key={query.q} name="q" type="search" defaultValue={query.q} placeholder="Search by name or SKU" aria-label="Search products" />
+          <Button type="submit" variant="outline">
+            Search
+          </Button>
+        </form>
+        <Select
+          aria-label="Status"
+          className="md:w-40"
+          value={query.status ?? ''}
+          onChange={(event) => refine({ status: (event.target.value || null) as ProductStatus | null })}
+        >
+          <option value="">All statuses</option>
+          <option value="Draft">Draft</option>
+          <option value="Published">Published</option>
+          <option value="Archived">Archived</option>
+        </Select>
+        <Select
+          aria-label="Category"
+          className="md:w-52"
+          value={query.categoryId ?? ''}
+          onChange={(event) => refine({ categoryId: event.target.value || null })}
+        >
+          <option value="">All categories</option>
+          {flattenCategories(categories.data ?? []).map((category) => (
+            <option key={category.id} value={category.id}>
+              {'  '.repeat(category.depth) + category.name}
+            </option>
+          ))}
+        </Select>
+      </div>
+      {products.isPending ? (
+        <p role="status" className="text-muted-foreground">Loading…</p>
+      ) : products.isError ? (
+        <p role="alert">The products could not be loaded.</p>
+      ) : products.data.items.length === 0 ? (
+        <div className="rounded-lg border border-dashed p-10 text-center">
+          {filtered ? (
+            <p className="text-muted-foreground">No products match these filters.</p>
+          ) : (
+            <>
+              <p className="font-medium">No products yet</p>
+              <p className="mt-1 text-sm text-muted-foreground">Create your first product to start your catalog.</p>
+            </>
+          )}
+        </div>
+      ) : (
+        <>
+          <div className="overflow-x-auto rounded-lg border">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50 text-left text-muted-foreground">
+                <tr>
+                  <th className="px-3 py-2 font-medium">Name</th>
+                  <th className="px-3 py-2 font-medium">SKU</th>
+                  <th className="px-3 py-2 font-medium">Status</th>
+                  <th className="px-3 py-2 font-medium">Last update</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.data.items.map((product) => (
+                  <tr key={product.id} className="border-t">
+                    <td className="px-3 py-2">
+                      <Link to={`/admin/products/${product.id}`} className="font-medium hover:underline">
+                        {product.name}
+                      </Link>
+                    </td>
+                    <td className="px-3 py-2 font-mono text-xs">{product.sku}</td>
+                    <td className="px-3 py-2">
+                      <ProductStatusBadge status={product.status} />
+                    </td>
+                    <td className="whitespace-nowrap px-3 py-2 text-muted-foreground">{dateFormat.format(new Date(product.updatedAt))}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <Pagination
+            page={products.data.page}
+            pageSize={products.data.pageSize}
+            totalCount={products.data.totalCount}
+            hrefFor={(page) => `?${writeProductListQuery({ ...query, page }).toString()}`}
+          />
+        </>
+      )}
+    </main>
+  )
+}

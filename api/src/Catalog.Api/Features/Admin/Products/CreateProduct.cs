@@ -57,5 +57,5 @@ public static class CreateProduct
     }
 
     private static Conflict<ProblemDetails> SkuInUse() =>
-        TypedResults.Conflict(ProblemDetailsBody.Conflict("The SKU is already in use in this Tenant."));
+        TypedResults.Conflict(ProblemDetailsBody.Conflict("The SKU is already in use in this Tenant.", "sku"));
 }
