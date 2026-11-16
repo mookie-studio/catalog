@@ -66,7 +66,7 @@ public static class UpdateProduct
             return Conflict("The SKU or Product slug is already in use in this Tenant.");
         }
 
-        return TypedResults.Ok(ProductResponse.From(product));
+        return TypedResults.Ok(await ProductResponse.LoadAsync(product, db, ct));
     }
 
     private static Conflict<ProblemDetails> Conflict(string detail) =>
