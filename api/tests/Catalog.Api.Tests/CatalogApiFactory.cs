@@ -1,8 +1,12 @@
 using Catalog.Api.Data;
+using Catalog.Api.Infrastructure.Identity;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Net.Http.Json;
 using Npgsql;
 using Respawn;
 using Testcontainers.PostgreSql;
@@ -21,6 +25,8 @@ public sealed class CatalogApiFactory : WebApplicationFactory<Program>, IAsyncLi
     private Respawner? _respawner;
 
     public string ConnectionString { get; private set; } = "";
+
+    public FakeIdentityProvider IdentityProvider { get; } = new();
 
     public async Task InitializeAsync()
     {
@@ -58,6 +64,7 @@ public sealed class CatalogApiFactory : WebApplicationFactory<Program>, IAsyncLi
         await using var connection = new NpgsqlConnection(ConnectionString);
         await connection.OpenAsync();
         await _respawner!.ResetAsync(connection);
+        IdentityProvider.Reset();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -68,6 +75,11 @@ public sealed class CatalogApiFactory : WebApplicationFactory<Program>, IAsyncLi
         builder.UseSetting("Auth:Audience", TestTokens.Audience);
         builder.UseSetting("Auth:JwtSecret", TestTokens.Secret);
         builder.UseSetting("Auth:PlatformAdminUserIds:0", TestTokens.PlatformAdminUserId.ToString());
+        builder.ConfigureTestServices(services =>
+        {
+            services.RemoveAll<IIdentityProvider>();
+            services.AddSingleton<IIdentityProvider>(IdentityProvider);
+        });
     }
 
     async Task IAsyncLifetime.DisposeAsync()
@@ -108,6 +120,14 @@ public abstract class ApiTest(CatalogApiFactory factory) : IAsyncLifetime
 
     /// <summary>A client authenticated as the configured Platform Admin.</summary>
     protected HttpClient PlatformAdminClient() => ClientFor(TestTokens.PlatformAdminUserId, "platform@catalog.test");
+
+    /// <summary>Creates a Tenant through the platform API.</summary>
+    protected static async Task<TenantBody> CreateTenant(HttpClient platformClient, string slug, string? name = null)
+    {
+        var response = await platformClient.PostAsJsonAsync("/api/platform/tenants", new { name = name ?? slug, slug });
+        response.EnsureSuccessStatusCode();
+        return (await response.Content.ReadFromJsonAsync<TenantBody>())!;
+    }
 
     /// <summary>A client authenticated as someone who is not a Platform Admin.</summary>
     protected HttpClient OutsiderClient() => ClientFor(Guid.CreateVersion7(), "outsider@catalog.test");
