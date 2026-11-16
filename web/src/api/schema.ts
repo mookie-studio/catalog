@@ -715,7 +715,9 @@ export interface components {
             imageIds: null | string[];
         };
         SetProductAttributesRequest: {
-            values: null | Record<string, never>;
+            values: null | {
+                [key: string]: unknown;
+            };
         };
         SetProductCategoriesRequest: {
             categoryIds: null | string[];

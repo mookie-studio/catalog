@@ -20,6 +20,7 @@ builder.Services.AddOpenApi(options =>
 {
     OpenApiSchemaNames.Configure(options);
     OpenApiRouteParameters.Configure(options);
+    OpenApiJsonValues.Configure(options);
 });
 builder.Services.AddCatalogData();
 builder.Services.AddCatalogAuth();
