@@ -1,3 +1,6 @@
+using Catalog.Api.Features.Platform.Tenants;
+using Catalog.Api.Infrastructure.Auth;
+
 namespace Catalog.Api.Infrastructure;
 
 /// <summary>
@@ -12,8 +15,13 @@ public static class RouteGroups
     public static IEndpointRouteBuilder MapRouteGroups(this IEndpointRouteBuilder app)
     {
         app.MapGroup(Public).WithTags("Public");
+
         app.MapGroup(Admin).WithTags("Admin");
-        app.MapGroup(Platform).WithTags("Platform");
+
+        app.MapGroup(Platform).WithTags("Platform")
+            .RequireAuthorization(AuthServiceCollectionExtensions.PlatformAdminPolicy)
+            .MapCreateTenant()
+            .MapListTenants();
 
         return app;
     }

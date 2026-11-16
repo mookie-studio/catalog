@@ -64,6 +64,10 @@ public sealed class CatalogApiFactory : WebApplicationFactory<Program>, IAsyncLi
     {
         builder.UseEnvironment("Testing");
         builder.UseSetting($"ConnectionStrings:{DataServiceCollectionExtensions.ConnectionStringName}", ConnectionString);
+        builder.UseSetting("Auth:Issuer", TestTokens.Issuer);
+        builder.UseSetting("Auth:Audience", TestTokens.Audience);
+        builder.UseSetting("Auth:JwtSecret", TestTokens.Secret);
+        builder.UseSetting("Auth:PlatformAdminUserIds:0", TestTokens.PlatformAdminUserId.ToString());
     }
 
     async Task IAsyncLifetime.DisposeAsync()
@@ -92,6 +96,21 @@ public abstract class ApiTest(CatalogApiFactory factory) : IAsyncLifetime
     protected HttpClient Client { get; } = factory.CreateClient();
 
     public virtual Task InitializeAsync() => Factory.ResetDatabaseAsync();
+
+    /// <summary>A client authenticated as the given user.</summary>
+    protected HttpClient ClientFor(Guid userId, string email)
+    {
+        var client = Factory.CreateClient();
+        client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", TestTokens.Create(userId, email));
+        return client;
+    }
+
+    /// <summary>A client authenticated as the configured Platform Admin.</summary>
+    protected HttpClient PlatformAdminClient() => ClientFor(TestTokens.PlatformAdminUserId, "platform@catalog.test");
+
+    /// <summary>A client authenticated as someone who is not a Platform Admin.</summary>
+    protected HttpClient OutsiderClient() => ClientFor(Guid.CreateVersion7(), "outsider@catalog.test");
 
     public virtual Task DisposeAsync() => Task.CompletedTask;
 }

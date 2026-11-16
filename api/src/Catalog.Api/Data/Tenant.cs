@@ -12,5 +12,5 @@ public sealed class Tenant
     public required string Name { get; set; }
     public required string Slug { get; set; }
     public bool IsActive { get; set; } = true;
-    public DateTimeOffset CreatedAt { get; init; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset CreatedAt { get; init; } = Timestamps.UtcNow();
 }
