@@ -14,6 +14,7 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
 
     public DbSet<Tenant> Tenants => Set<Tenant>();
     public DbSet<AdminMembership> AdminMemberships => Set<AdminMembership>();
+    public DbSet<Product> Products => Set<Product>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,6 +32,20 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
             membership.HasOne<Tenant>().WithMany().HasForeignKey(m => m.TenantId).OnDelete(DeleteBehavior.Restrict);
             membership.HasIndex(m => new { m.TenantId, m.Email }).IsUnique();
             membership.HasIndex(m => m.UserId).IsUnique();
+        });
+
+        modelBuilder.Entity<Product>(product =>
+        {
+            product.Property(p => p.Name).HasMaxLength(Product.NameMaxLength).IsRequired();
+            product.Property(p => p.Description).HasMaxLength(Product.DescriptionMaxLength);
+            product.Property(p => p.Sku).HasMaxLength(Product.SkuMaxLength).IsRequired();
+            product.Property(p => p.Slug).HasMaxLength(Product.SlugMaxLength).IsRequired();
+            product.Property(p => p.Status).HasConversion<string>().HasMaxLength(20);
+            product.Property(p => p.Attributes).HasColumnType("jsonb").HasDefaultValueSql("'{}'::jsonb").IsRequired();
+            product.HasOne<Tenant>().WithMany().HasForeignKey(p => p.TenantId).OnDelete(DeleteBehavior.Restrict);
+            product.HasIndex(p => new { p.TenantId, p.Sku }).IsUnique();
+            product.HasIndex(p => new { p.TenantId, p.Slug }).IsUnique();
+            product.HasIndex(p => p.Attributes).HasMethod("gin");
         });
 
         ApplyTenantFilters(modelBuilder);
