@@ -1,4 +1,6 @@
 using Catalog.Api.Features.Admin;
+using Catalog.Api.Features.Admin.Admins;
+using Catalog.Api.Features.Admin.Products;
 using Catalog.Api.Features.Platform.Admins;
 using Catalog.Api.Features.Platform.Tenants;
 using Catalog.Api.Infrastructure.Auth;
@@ -20,7 +22,15 @@ public static class RouteGroups
 
         app.MapGroup(Admin).WithTags("Admin")
             .RequireAuthorization(AuthServiceCollectionExtensions.AdminPolicy)
-            .MapGetCurrentTenant();
+            .MapGetCurrentTenant()
+            .MapListAdmins()
+            .MapInviteAdmin()
+            .MapRemoveAdmin()
+            .MapCreateProduct()
+            .MapGetProduct()
+            .MapListProducts()
+            .MapUpdateProduct()
+            .MapChangeProductStatus();
 
         app.MapGroup(Platform).WithTags("Platform")
             .RequireAuthorization(AuthServiceCollectionExtensions.PlatformAdminPolicy)

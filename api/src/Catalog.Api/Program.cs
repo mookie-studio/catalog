@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Catalog.Api.Data;
 using Catalog.Api.Features.Health;
 using Catalog.Api.Features.Me;
@@ -8,6 +9,8 @@ using Catalog.Api.Infrastructure.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddProblemDetails();
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddOpenApi();
 builder.Services.AddCatalogData();
 builder.Services.AddCatalogAuth();

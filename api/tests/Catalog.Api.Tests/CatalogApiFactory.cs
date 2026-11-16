@@ -141,6 +141,15 @@ public abstract class ApiTest(CatalogApiFactory factory) : IAsyncLifetime
         return new AdminSession(tenant, admin, ClientFor(admin.UserId, admin.Email));
     }
 
+    /// <summary>Creates a Product as the given Admin.</summary>
+    protected static async Task<ProductBody> CreateProduct(
+        HttpClient adminClient, string name, string sku, string? description = null)
+    {
+        var response = await adminClient.PostAsJsonAsync("/api/admin/products", new { name, sku, description });
+        response.EnsureSuccessStatusCode();
+        return (await response.Content.ReadFromJsonAsync<ProductBody>())!;
+    }
+
     /// <summary>A client authenticated as someone who is not a Platform Admin.</summary>
     protected HttpClient OutsiderClient() => ClientFor(Guid.CreateVersion7(), "outsider@catalog.test");
 
