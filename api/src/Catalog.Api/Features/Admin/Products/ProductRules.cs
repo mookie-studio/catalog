@@ -142,15 +142,19 @@ public static partial class ProductRules
 public sealed record ProductResponse(
     Guid Id, string Name, string? Description, string Sku, string Slug, ProductStatus Status,
     DateTimeOffset CreatedAt, DateTimeOffset UpdatedAt,
-    IReadOnlyList<ProductAttributes.AttributeValue> Attributes)
+    IReadOnlyList<ProductAttributes.AttributeValue> Attributes,
+    IReadOnlyList<Guid> CategoryIds)
 {
-    public static ProductResponse From(Product p, IReadOnlyList<ProductAttributes.AttributeValue> attributes) =>
-        new(p.Id, p.Name, p.Description, p.Sku, p.Slug, p.Status, p.CreatedAt, p.UpdatedAt, attributes);
+    public static ProductResponse From(
+        Product p, IReadOnlyList<ProductAttributes.AttributeValue> attributes, IReadOnlyList<Guid> categoryIds) =>
+        new(p.Id, p.Name, p.Description, p.Sku, p.Slug, p.Status, p.CreatedAt, p.UpdatedAt, attributes, categoryIds);
 
     /// <summary>Builds the full response, joining the Product's Attributes with the Tenant's definitions.</summary>
     public static async Task<ProductResponse> LoadAsync(Product p, CatalogDbContext db, CancellationToken ct)
     {
         var definitions = await db.AttributeDefinitions.AsNoTracking().ToDictionaryAsync(d => d.Id, ct);
-        return From(p, ProductAttributes.Describe(p.Attributes, definitions));
+        var categoryIds = await db.ProductCategories.Where(l => l.ProductId == p.Id)
+            .OrderBy(l => l.CategoryId).Select(l => l.CategoryId).ToListAsync(ct);
+        return From(p, ProductAttributes.Describe(p.Attributes, definitions), categoryIds);
     }
 }

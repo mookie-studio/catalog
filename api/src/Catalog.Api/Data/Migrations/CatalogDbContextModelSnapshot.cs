@@ -131,6 +131,37 @@ namespace Catalog.Api.Data.Migrations
                     b.ToTable("AttributeOptions");
                 });
 
+            modelBuilder.Entity("Catalog.Api.Data.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TenantId", "ParentId", "Position");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("Catalog.Api.Data.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -193,6 +224,26 @@ namespace Catalog.Api.Data.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("Catalog.Api.Data.ProductCategory", b =>
+                {
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ProductId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("ProductCategories");
+                });
+
             modelBuilder.Entity("Catalog.Api.Data.Tenant", b =>
                 {
                     b.Property<Guid>("Id")
@@ -252,12 +303,41 @@ namespace Catalog.Api.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Catalog.Api.Data.Category", b =>
+                {
+                    b.HasOne("Catalog.Api.Data.Category", null)
+                        .WithMany()
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Catalog.Api.Data.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Catalog.Api.Data.Product", b =>
                 {
                     b.HasOne("Catalog.Api.Data.Tenant", null)
                         .WithMany()
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Catalog.Api.Data.ProductCategory", b =>
+                {
+                    b.HasOne("Catalog.Api.Data.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Catalog.Api.Data.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

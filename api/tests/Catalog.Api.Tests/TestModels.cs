@@ -24,3 +24,7 @@ public sealed record DefinitionBody(
 public sealed record AttributeValueBody(Guid DefinitionId, string Name, string Type, System.Text.Json.JsonElement Value);
 
 public sealed record ProductDetailBody(Guid Id, string Name, string Slug, string Status, List<AttributeValueBody> Attributes);
+
+public sealed record CategoryBody(Guid Id, string Name, List<CategoryBody> Children);
+
+public sealed record ProductCategoriesBody(Guid Id, List<Guid> CategoryIds);

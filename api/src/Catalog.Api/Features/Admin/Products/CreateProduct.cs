@@ -53,7 +53,7 @@ public static class CreateProduct
             return TypedResults.Conflict(ProblemDetailsBody.Conflict("The SKU or Product slug is already in use."));
         }
 
-        return TypedResults.Created($"/api/admin/products/{product.Id}", ProductResponse.From(product, []));
+        return TypedResults.Created($"/api/admin/products/{product.Id}", ProductResponse.From(product, [], []));
     }
 
     private static Conflict<ProblemDetails> SkuInUse() =>
