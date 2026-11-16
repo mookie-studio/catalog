@@ -13,7 +13,7 @@ major_version = 17
 port = 54323
 
 # Email testing inbox: invitation emails are caught here (http://localhost:54324).
-[inbucket]
+[local_smtp]
 enabled = true
 port = 54324
 
