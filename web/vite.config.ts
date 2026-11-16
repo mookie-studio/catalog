@@ -12,8 +12,13 @@ export default defineConfig({
       '@': path.resolve(import.meta.dirname, './src'),
     },
   },
+  server: {
+    // In development the SPA calls the API on the same origin through this proxy.
+    proxy: { '/api': process.env.API_PROXY_TARGET ?? 'http://localhost:5217' },
+  },
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
+    env: { VITE_API_URL: 'https://api.test' },
   },
 })
