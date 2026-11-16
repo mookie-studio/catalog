@@ -17,8 +17,9 @@ api/
   src/Catalog.Api/            # the only API project
   tests/Catalog.Api.Tests/    # HTTP-level integration tests
 web/                          # React SPA (Vite + TypeScript)
-docker-compose.yml            # local environment
-.github/workflows/            # CI/CD
+docker-compose.yml            # local environment (docs/local-development.md)
+supabase/                     # local Supabase configuration
+.github/workflows/            # CI/CD (deployment: docs/deployment.md)
 ```
 
 ## API conventions (.NET 10, minimal APIs)

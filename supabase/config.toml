@@ -1,0 +1,29 @@
+# Local Supabase for development (`supabase start`). Only the settings Catalog relies on are listed;
+# the Supabase CLI uses its defaults for everything else.
+project_id = "catalog"
+
+[api]
+port = 54321
+
+[db]
+port = 54322
+major_version = 17
+
+[studio]
+port = 54323
+
+# Email testing inbox: invitation emails are caught here (http://localhost:54324).
+[inbucket]
+enabled = true
+port = 54324
+
+[auth]
+# The SPA, where invitation links land on /accept-invite.
+site_url = "http://localhost:5173"
+additional_redirect_urls = ["http://localhost:5173/accept-invite"]
+# Public sign-up is disabled: Admins only join by invitation (ADR 0004).
+enable_signup = false
+
+[auth.email]
+enable_signup = false
+enable_confirmations = false

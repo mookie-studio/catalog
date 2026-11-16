@@ -21,6 +21,7 @@ namespace Catalog.Api.Tests;
 public sealed class CatalogApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private const string TestDatabaseVariable = "CATALOG_TEST_DB";
+    public const string AllowedOrigin = "https://catalog.test";
 
     private PostgreSqlContainer? _container;
     private Respawner? _respawner;
@@ -81,6 +82,7 @@ public sealed class CatalogApiFactory : WebApplicationFactory<Program>, IAsyncLi
         builder.UseSetting("Auth:Audience", TestTokens.Audience);
         builder.UseSetting("Auth:JwtSecret", TestTokens.Secret);
         builder.UseSetting("Auth:PlatformAdminUserIds:0", TestTokens.PlatformAdminUserId.ToString());
+        builder.UseSetting("Cors:AllowedOrigins:0", AllowedOrigin);
         builder.ConfigureTestServices(services =>
         {
             services.RemoveAll<IIdentityProvider>();
