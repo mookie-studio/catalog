@@ -68,24 +68,25 @@ jobs:
             -d "{\"email\":\"$E2E_PLATFORM_ADMIN_EMAIL\",\"password\":\"$E2E_PLATFORM_ADMIN_PASSWORD\",\"email_confirm\":true}" | jq -r .id)
           echo "PLATFORM_ADMIN_USER_ID=$id" >> .env
 
-      - name: Start the API, the SPA and image storage
-        run: |
-          docker compose up --build --detach
-          for url in http://localhost:8080/api/health http://localhost:5173; do
-            timeout 300 bash -c "until curl -sf $url > /dev/null; do sleep 3; done" || { docker compose logs; exit 1; }
-          done
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: web/package-lock.json
 
+      # Install before compose: its node_modules volume leaves a root-owned web/node_modules behind.
       - name: Install Playwright
         working-directory: web
         run: |
           npm ci
           npx playwright install --with-deps chromium
+
+      - name: Start the API, the SPA and image storage
+        run: |
+          docker compose up --build --detach
+          for url in http://localhost:8080/api/health http://localhost:5173; do
+            timeout 300 bash -c "until curl -sf $url > /dev/null; do sleep 3; done" || { docker compose logs; exit 1; }
+          done
 
       - name: Run the end-to-end flow
         working-directory: web
