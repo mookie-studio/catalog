@@ -32,3 +32,13 @@ public sealed record ProductCategoriesBody(Guid Id, List<Guid> CategoryIds);
 public sealed record ImageBody(Guid Id, string Url, int Position);
 
 public sealed record ProductImagesBody(Guid Id, List<ImageBody> Images);
+
+public sealed record PublicProductItem(string Slug, string Name, string? MainImageUrl);
+
+public sealed record PublicAttributeBody(string Name, string Type, System.Text.Json.JsonElement Value);
+
+public sealed record PublicProductBody(string Slug, string Name, string? Description, List<string> Images, List<PublicAttributeBody> Attributes);
+
+public sealed record PublicFilterOption(Guid Id, string Value);
+
+public sealed record PublicFilterBody(Guid DefinitionId, string Name, string Type, bool AllowsMultiple, List<PublicFilterOption>? Options);

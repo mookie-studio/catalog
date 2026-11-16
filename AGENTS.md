@@ -43,6 +43,7 @@ docker-compose.yml            # local environment
 
 - TypeScript, React Router, TanStack Query, Tailwind + shadcn/ui.
 - Call the API only through the generated client in `web/src/api`; never hand-write request types.
+- After changing an endpoint, run `dotnet build` in `api/` (it rewrites `api/openapi/catalog.json`), then `npm run api:generate` in `web/` (it rewrites `src/api/schema.ts`). Commit both files; CI fails when either is out of date.
 - Admin and platform areas are lazy-loaded routes; public pages must not import admin code.
 - Component tests with Vitest + Testing Library only where there is real logic.
 

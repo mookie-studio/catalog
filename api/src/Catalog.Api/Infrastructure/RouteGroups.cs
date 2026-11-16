@@ -4,6 +4,7 @@ using Catalog.Api.Features.Admin.Attributes;
 using Catalog.Api.Features.Admin.Categories;
 using Catalog.Api.Features.Admin.Products;
 using Catalog.Api.Features.Platform.Admins;
+using Catalog.Api.Features.Public;
 using Catalog.Api.Features.Platform.Tenants;
 using Catalog.Api.Infrastructure.Auth;
 
@@ -20,7 +21,14 @@ public static class RouteGroups
 
     public static IEndpointRouteBuilder MapRouteGroups(this IEndpointRouteBuilder app)
     {
-        app.MapGroup(Public).WithTags("Public");
+        app.MapGroup(Public).WithTags("Public")
+            .AllowAnonymous()
+            .AddEndpointFilter<PublicTenantFilter>()
+            .MapGetPublicTenant()
+            .MapListPublicProducts()
+            .MapListPublicFilters()
+            .MapListPublicCategories()
+            .MapGetPublicProduct();
 
         app.MapGroup(Admin).WithTags("Admin")
             .RequireAuthorization(AuthServiceCollectionExtensions.AdminPolicy)
