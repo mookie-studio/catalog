@@ -12,6 +12,10 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
     /// </summary>
     private Guid CurrentTenantId => currentTenant.TenantId ?? Guid.Empty;
 
+    /// <summary>Maps to PostgreSQL's built-in jsonb_extract_path_text(jsonb, key); only usable in queries.</summary>
+    public static string? JsonbExtractPathText(string json, string key) =>
+        throw new InvalidOperationException("Only translatable to SQL.");
+
     public DbSet<Tenant> Tenants => Set<Tenant>();
     public DbSet<AdminMembership> AdminMemberships => Set<AdminMembership>();
     public DbSet<Product> Products => Set<Product>();
@@ -51,6 +55,12 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
             product.HasIndex(p => new { p.TenantId, p.Sku }).IsUnique();
             product.HasIndex(p => new { p.TenantId, p.Slug }).IsUnique();
             product.HasIndex(p => p.Attributes).HasMethod("gin");
+            product.Property(p => p.SearchVector)
+                .HasComputedColumnSql(
+                    "setweight(to_tsvector('spanish'::regconfig, coalesce(\"Name\", '')), 'A') || " +
+                    "setweight(to_tsvector('spanish'::regconfig, coalesce(\"Description\", '')), 'B')",
+                    stored: true);
+            product.HasIndex(p => p.SearchVector).HasMethod("gin");
         });
 
         modelBuilder.Entity<AttributeDefinition>(definition =>
@@ -94,6 +104,10 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
             image.HasOne<Product>().WithMany().HasForeignKey(i => i.ProductId).OnDelete(DeleteBehavior.Cascade);
             image.HasIndex(i => new { i.ProductId, i.Position });
         });
+
+        modelBuilder.HasDbFunction(typeof(CatalogDbContext).GetMethod(nameof(JsonbExtractPathText))!)
+            .HasName("jsonb_extract_path_text")
+            .IsBuiltIn();
 
         ApplyTenantFilters(modelBuilder);
     }

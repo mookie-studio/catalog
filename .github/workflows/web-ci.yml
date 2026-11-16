@@ -4,11 +4,13 @@ on:
   pull_request:
     paths:
       - 'web/**'
+      - 'api/openapi/**'
       - '.github/workflows/web-ci.yml'
   push:
     branches: [main]
     paths:
       - 'web/**'
+      - 'api/openapi/**'
       - '.github/workflows/web-ci.yml'
 
 permissions:
@@ -28,6 +30,8 @@ jobs:
           cache: npm
           cache-dependency-path: web/package-lock.json
       - run: npm ci
+      - name: Check API client is up to date
+        run: npm run api:generate && git diff --exit-code -- src/api/schema.ts
       - run: npm run lint
       - run: npm test
       - run: npm run build

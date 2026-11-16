@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using NpgsqlTypes;
 
 #nullable disable
 
@@ -186,6 +187,12 @@ namespace Catalog.Api.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
+                    b.Property<NpgsqlTsVector>("SearchVector")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("tsvector")
+                        .HasComputedColumnSql("setweight(to_tsvector('spanish'::regconfig, coalesce(\"Name\", '')), 'A') || setweight(to_tsvector('spanish'::regconfig, coalesce(\"Description\", '')), 'B')", true);
+
                     b.Property<string>("Sku")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -212,6 +219,10 @@ namespace Catalog.Api.Data.Migrations
                     b.HasIndex("Attributes");
 
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Attributes"), "gin");
+
+                    b.HasIndex("SearchVector");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "gin");
 
                     b.HasIndex("TenantId");
 

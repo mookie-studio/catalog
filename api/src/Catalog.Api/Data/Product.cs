@@ -1,3 +1,5 @@
+using NpgsqlTypes;
+
 namespace Catalog.Api.Data;
 
 /// <summary>Lifecycle stage of a Product. Any transition is allowed.</summary>
@@ -29,4 +31,7 @@ public sealed class Product : ITenantScoped
 
     public DateTimeOffset CreatedAt { get; init; } = Timestamps.UtcNow();
     public DateTimeOffset UpdatedAt { get; set; } = Timestamps.UtcNow();
+
+    /// <summary>Stored generated full-text vector (Spanish): name weighted A, description B (ADR 0006).</summary>
+    public NpgsqlTsVector SearchVector { get; private set; } = null!;
 }

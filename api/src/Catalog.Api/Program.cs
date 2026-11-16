@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddProblemDetails();
 builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(OpenApiSchemaNames.Configure);
 builder.Services.AddCatalogData();
 builder.Services.AddCatalogAuth();
 builder.Services.AddCatalogIdentityProvider();

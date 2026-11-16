@@ -186,6 +186,16 @@ public abstract class ApiTest(CatalogApiFactory factory) : IAsyncLifetime
         return (await response.Content.ReadFromJsonAsync<CategoryBody>())!;
     }
 
+    /// <summary>Creates a Product and moves it to Published.</summary>
+    protected static async Task<ProductBody> CreatePublishedProduct(
+        HttpClient adminClient, string name, string sku, string description = "Description")
+    {
+        var product = await CreateProduct(adminClient, name, sku, description);
+        (await adminClient.PostAsJsonAsync($"/api/admin/products/{product.Id}/status", new { status = "Published" }))
+            .EnsureSuccessStatusCode();
+        return product;
+    }
+
     /// <summary>A client authenticated as someone who is not a Platform Admin.</summary>
     protected HttpClient OutsiderClient() => ClientFor(Guid.CreateVersion7(), "outsider@catalog.test");
 
