@@ -1,80 +1,80 @@
 # Catalog
 
-Plataforma generalista de catálogos de productos: cada negocio gestiona sus productos desde una parte de administración y sus clientes los consultan desde una parte pública. No vende: no hay precios, carrito, pedidos ni stock.
+A general-purpose, multi-tenant product catalog platform: each business manages its products from an admin area, and its visitors browse them in a public catalog. It does not sell: there are no prices, cart, orders or stock.
 
 ## Language
 
-### Plataforma
+### Platform
 
 **Tenant**:
-Un negocio aislado dentro de la plataforma, con su propio catálogo, productos y administradores. Ningún dato de un tenant es visible desde otro.
-_Avoid_: Cliente (choca con el visitante de la parte pública), empresa, cuenta
+An isolated business inside the platform, with its own catalog, products and admins. No data of a tenant is visible from another tenant.
+_Avoid_: Customer, client, company, account
 
-**Tenant desactivado**:
-Tenant suspendido por el Superadministrador: sus administradores no pueden entrar y su catálogo público no se ve. Es reversible; los tenants no se borran.
+**Tenant slug**:
+Short, unique name of a tenant that is part of its public catalog address (e.g. `acme-hardware`). Only a Platform Admin can change it.
+_Avoid_: Code, alias, handle
 
-**Identificador del tenant**:
-Nombre corto y único de un tenant que forma parte de la dirección de su catálogo público (por ejemplo `ferreteria-pepe`).
-_Avoid_: Código, alias
+**Deactivated tenant**:
+A tenant suspended by a Platform Admin: its admins cannot sign in and its public catalog is not visible. Deactivation is reversible; tenants are never deleted.
 
-**Superadministrador**:
-Persona que gestiona la plataforma: da de alta los tenants y su primer administrador, y es el único que puede cambiar el Identificador del tenant. No pertenece a ningún tenant.
-_Avoid_: Root, admin global
+**Platform Admin**:
+A person who manages the platform: creates tenants and their first admin. Belongs to no tenant.
+_Avoid_: Superadmin, root, global admin
 
-**Administrador**:
-Persona autenticada que gestiona el catálogo y a los demás administradores de un único tenant. En la fase 1 hay un único rol.
-_Avoid_: Usuario, admin user
+**Admin**:
+An authenticated person who manages the catalog and the other admins of exactly one tenant. Phase 1 has a single admin role.
+_Avoid_: User, tenant user, manager
 
-**Visitante**:
-Persona anónima que consulta el catálogo público de un tenant.
-_Avoid_: Cliente, usuario final
+**Visitor**:
+An anonymous person browsing a tenant's public catalog.
+_Avoid_: Customer, client, end user
 
-### Catálogo
+### Catalog
 
-**Producto**:
-Elemento del catálogo con nombre, descripción, SKU, imágenes, estado y atributos dinámicos. No tiene precio. Puede pertenecer a varias categorías o a ninguna.
-_Avoid_: Artículo, ítem, referencia
+**Product**:
+An item of the catalog with a name, description, SKU, images, status and attributes. It has no price. It may belong to several categories or none.
+_Avoid_: Article, item, listing
 
-**Identificador del producto**:
-Nombre legible y único dentro del tenant que forma parte de la dirección pública del producto (por ejemplo `taladro-percutor-500w`). Se genera a partir del nombre (desambiguado si se repite) y solo cambia si el administrador lo edita; es independiente del SKU. El nombre del producto no es único.
-_Avoid_: Slug, URL, permalink
-
-**Definición de atributo**:
-Atributo que el administrador declara en su tenant antes de usarlo: nombre, tipo (texto, número, sí/no, fecha o lista de opciones) y si es filtrable. Vale para todo el tenant; cada producto rellena solo las que le aplican. El tipo no cambia una vez creada.
-_Avoid_: Campo, plantilla
-
-**Atributo**:
-Valor que un producto da a una Definición de atributo (por ejemplo "Color: Rojo"). Es la vía para describir cualquier particularidad del negocio, incluidas tallas y colores.
-_Avoid_: Metadato, metadata, propiedad, campo personalizado
-
-**Opción**:
-Cada valor permitido de una Definición de atributo de tipo lista. Una lista puede ser de selección única o múltiple ("Tallas: S, M, L").
-_Avoid_: Valor posible, enumerado
-
-**Atributo filtrable**:
-Definición de atributo por la que el Visitante puede filtrar el catálogo público.
-
-**Variante**:
-No existe como concepto. Las diferencias como talla o color se expresan con Atributos del mismo Producto.
+**Product slug**:
+Readable name, unique within the tenant, that is part of the product's public address (e.g. `hammer-drill-500w`). Generated from the name (disambiguated if repeated) and only changes when an admin edits it; independent from the SKU. Product names are not unique.
+_Avoid_: URL, permalink, handle
 
 **SKU**:
-Código que identifica un producto de forma única dentro de su tenant, obligatorio desde la creación y editable. Dos tenants pueden repetir el mismo SKU.
-_Avoid_: Referencia, código de producto
+Code that uniquely identifies a product within its tenant; required from creation and editable. Two tenants may use the same SKU.
+_Avoid_: Reference, product code
 
-**Imagen**:
-Fotografía o ilustración asociada a un producto. Las imágenes de un producto están ordenadas; un producto puede no tener ninguna.
+**Attribute Definition**:
+An attribute declared by an admin for the whole tenant before it is used: name, type (text, number, boolean, date or option list) and whether it is filterable. Each product fills in only the ones that apply. Its type cannot change once created.
+_Avoid_: Field, custom field, template
 
-**Imagen principal**:
-La primera imagen de un producto, la que se muestra en los listados.
-_Avoid_: Portada, thumbnail
+**Attribute**:
+The value a product gives to an Attribute Definition (e.g. "Color: Red"). Attributes are how any business-specific detail is described, including sizes and colors. All attributes are optional.
+_Avoid_: Metadata, property
 
-**Categoría**:
-Agrupación opcional de productos para navegar, organizada en árbol (Herramientas > Eléctricas > Taladros). El administrador decide el orden entre categorías hermanas. Una categoría sin productos publicados en ella ni en sus subcategorías no se muestra al Visitante. El catálogo funciona igual sin ninguna categoría.
-_Avoid_: Familia, sección
+**Option**:
+Each allowed value of an option-list Attribute Definition. An option list is either single-select or multi-select ("Sizes: S, M, L").
+_Avoid_: Enum value, choice
 
-**Estado del producto**:
-Fase del ciclo de vida de un producto: Borrador, Publicado o Archivado. Solo los productos Publicados son visibles para el Visitante. Se puede pasar de cualquier estado a cualquier otro; un producto se archiva en lugar de borrarse.
+**Filterable attribute**:
+An Attribute Definition visitors can filter the public catalog by.
 
-**Publicar**:
-Pasar un producto a Publicado. Exige nombre, SKU y descripción; un borrador solo exige nombre y SKU. Un producto se puede editar en cualquier estado.
-_Avoid_: Activar, dar de alta
+**Variant**:
+Not a concept in Catalog. Differences such as size or color are Attributes of the same product.
+
+**Image**:
+A picture attached to a product. A product's images are ordered; a product may have none.
+
+**Main image**:
+The first image of a product, shown in listings.
+_Avoid_: Cover, thumbnail
+
+**Category**:
+Optional grouping of products for navigation, organized as a tree (Tools > Power tools > Drills). Admins choose the order of sibling categories. A category with no published products in it or its subcategories is hidden from visitors. The catalog works the same with no categories at all.
+_Avoid_: Family, section
+
+**Product status**:
+Lifecycle stage of a product: Draft, Published or Archived. Only Published products are visible to visitors. Any transition is allowed; products are archived instead of deleted. A product can be edited in any status.
+
+**Publish**:
+To move a product to Published. Requires name, SKU and description; a draft only requires name and SKU.
+_Avoid_: Activate, go live
