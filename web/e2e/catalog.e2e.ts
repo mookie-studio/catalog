@@ -61,7 +61,7 @@ test('an Admin publishes a Product that a Visitor finds, and archiving hides it'
   await newDefinition.getByRole('button', { name: 'Add attribute' }).click()
   const color = admin.getByRole('region', { name: 'Color' })
   for (const option of ['Red', 'Blue']) {
-    await color.getByLabel('New Option').fill(option)
+    await color.getByLabel('New Option', { exact: true }).fill(option)
     await color.getByRole('button', { name: 'Add option' }).click()
     await expect(color.getByText(option, { exact: true })).toBeVisible()
   }
@@ -69,9 +69,9 @@ test('an Admin publishes a Product that a Visitor finds, and archiving hides it'
   // Admin: create the Product, give it a description and the Attribute, and publish it.
   await admin.getByRole('navigation', { name: 'Admin' }).getByRole('link', { name: 'Products' }).click()
   await admin.getByRole('link', { name: 'New product' }).click()
-  await admin.getByLabel('Name').fill(productName)
-  await admin.getByLabel('SKU').fill(`HD-${run}`)
-  await admin.getByLabel('Description').fill('A powerful hammer drill for concrete.')
+  await admin.getByLabel('Name', { exact: true }).fill(productName)
+  await admin.getByLabel('SKU', { exact: true }).fill(`HD-${run}`)
+  await admin.getByLabel('Description', { exact: true }).fill('A powerful hammer drill for concrete.')
   await admin.getByRole('button', { name: 'Create product' }).click()
   await expect(admin.getByRole('heading', { name: productName })).toBeVisible()
   const productSlug = await admin.getByLabel('Product slug').inputValue()
