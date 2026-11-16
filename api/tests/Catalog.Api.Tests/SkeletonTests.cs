@@ -4,15 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog.Api.Tests;
 
-[Collection(CatalogApiCollection.Name)]
-public sealed class SkeletonTests(CatalogApiFactory factory)
+public sealed class SkeletonTests(CatalogApiFactory factory) : ApiTest(factory)
 {
-    private readonly HttpClient _client = factory.CreateClient();
-
     [Fact]
     public async Task Health_returns_ok()
     {
-        var response = await _client.GetAsync("/api/health");
+        var response = await Client.GetAsync("/api/health");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var body = await response.Content.ReadFromJsonAsync<HealthBody>();
@@ -26,7 +23,7 @@ public sealed class SkeletonTests(CatalogApiFactory factory)
     [InlineData("/api/public/some-tenant/does-not-exist")]
     public async Task Unknown_route_returns_problem_details_404(string path)
     {
-        var response = await _client.GetAsync(path);
+        var response = await Client.GetAsync(path);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         Assert.Equal("application/problem+json", response.Content.Headers.ContentType?.MediaType);
@@ -37,7 +34,7 @@ public sealed class SkeletonTests(CatalogApiFactory factory)
     [Fact]
     public async Task OpenApi_document_is_served()
     {
-        var response = await _client.GetAsync("/openapi/v1.json");
+        var response = await Client.GetAsync("/openapi/v1.json");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var document = await response.Content.ReadAsStringAsync();
