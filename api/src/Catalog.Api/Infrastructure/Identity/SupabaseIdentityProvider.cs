@@ -42,7 +42,14 @@ public sealed class SupabaseIdentityProvider(HttpClient http, IOptions<SupabaseO
 
         var request = new HttpRequestMessage(method, new Uri(new Uri(settings.Url.TrimEnd('/') + "/"), path));
         request.Headers.Add("apikey", settings.ServiceRoleKey);
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", settings.ServiceRoleKey);
+
+        // Secret keys (sb_secret_...) are not JWTs: Supabase rejects them on the Authorization header and
+        // accepts them on apikey only. The legacy service_role key is a JWT and is sent on both.
+        if (!settings.ServiceRoleKey.StartsWith("sb_", StringComparison.Ordinal))
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", settings.ServiceRoleKey);
+        }
+
         return request;
     }
 
