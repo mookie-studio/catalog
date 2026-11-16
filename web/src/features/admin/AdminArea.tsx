@@ -1,6 +1,7 @@
 import { Navigate, NavLink, Route, Routes } from 'react-router'
 import { NotFoundPage } from '@/components/NotFoundPage'
 import { useCurrentTenant } from '@/features/admin/admin-api'
+import { AttributesPage } from '@/features/admin/attributes/AttributesPage'
 import { NewProductPage } from '@/features/admin/products/NewProductPage'
 import { ProductEditPage } from '@/features/admin/products/ProductEditPage'
 import { ProductListPage } from '@/features/admin/products/ProductListPage'
@@ -56,6 +57,7 @@ function AdminLayout() {
           <Route path="products" element={<ProductListPage />} />
           <Route path="products/new" element={<NewProductPage />} />
           <Route path="products/:id" element={<ProductEditPage />} />
+          <Route path="attributes" element={<AttributesPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>

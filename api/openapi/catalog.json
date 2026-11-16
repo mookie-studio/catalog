@@ -2576,7 +2576,8 @@
             "type": [
               "null",
               "object"
-            ]
+            ],
+            "additionalProperties": { }
           }
         }
       },
