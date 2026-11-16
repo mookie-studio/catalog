@@ -26,12 +26,14 @@ public sealed class SupabaseIdentityProviderTests
         Assert.Equal(userId, result);
         var request = Assert.Single(handler.Requests);
         Assert.Equal(HttpMethod.Post, request.Method);
-        Assert.Equal("https://project.supabase.test/auth/v1/invite", request.Uri);
+        // Supabase Auth only honours redirect_to as a query parameter.
+        Assert.Equal(
+            "https://project.supabase.test/auth/v1/invite?redirect_to=https%3A%2F%2Fapp.catalog.test%2Faccept", request.Uri);
         Assert.Equal(ServiceRoleKey, request.ApiKey);
         Assert.Equal($"Bearer {ServiceRoleKey}", request.Authorization);
         using var body = JsonDocument.Parse(request.Body!);
         Assert.Equal("new@catalog.test", body.RootElement.GetProperty("email").GetString());
-        Assert.Equal("https://app.catalog.test/accept", body.RootElement.GetProperty("redirect_to").GetString());
+        Assert.False(body.RootElement.TryGetProperty("redirect_to", out _));
     }
 
     [Fact]
@@ -42,8 +44,7 @@ public sealed class SupabaseIdentityProviderTests
 
         await provider.InviteUserAsync("new@catalog.test", CancellationToken.None);
 
-        using var body = JsonDocument.Parse(Assert.Single(handler.Requests).Body!);
-        Assert.False(body.RootElement.TryGetProperty("redirect_to", out _));
+        Assert.Equal("https://project.supabase.test/auth/v1/invite", Assert.Single(handler.Requests).Uri);
     }
 
     [Fact]

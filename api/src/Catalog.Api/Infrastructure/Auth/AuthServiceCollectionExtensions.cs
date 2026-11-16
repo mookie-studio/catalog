@@ -51,16 +51,27 @@ public static class AuthServiceCollectionExtensions
             NameClaimType = ClaimNames.Email,
         };
 
-        if (!string.IsNullOrWhiteSpace(auth.JwtSecret))
+        // Both can be set: local Supabase signs with the shared secret or, in newer CLI versions,
+        // with asymmetric keys published as JWKS. The handler merges JWKS keys with the secret.
+        var hasSecret = !string.IsNullOrWhiteSpace(auth.JwtSecret);
+        var hasJwks = !string.IsNullOrWhiteSpace(auth.JwksUrl);
+
+        if (hasSecret)
         {
             jwt.TokenValidationParameters.IssuerSigningKey =
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(auth.JwtSecret));
-            jwt.TokenValidationParameters.ValidAlgorithms = [SecurityAlgorithms.HmacSha256];
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(auth.JwtSecret!));
+            if (!hasJwks)
+            {
+                jwt.TokenValidationParameters.ValidAlgorithms = [SecurityAlgorithms.HmacSha256];
+            }
         }
-        else if (!string.IsNullOrWhiteSpace(auth.JwksUrl))
+
+        if (hasJwks)
         {
             jwt.ConfigurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
-                auth.JwksUrl, new JwksRetriever(), new HttpDocumentRetriever { RequireHttps = true });
+                auth.JwksUrl!,
+                new JwksRetriever(),
+                new HttpDocumentRetriever { RequireHttps = auth.JwksUrl!.StartsWith("https://", StringComparison.OrdinalIgnoreCase) });
         }
     }
 

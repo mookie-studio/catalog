@@ -12,6 +12,8 @@ services:
       ConnectionStrings__Catalog: Host=host.docker.internal;Port=54322;Database=postgres;Username=postgres;Password=postgres
       Auth__Issuer: http://127.0.0.1:54321/auth/v1
       Auth__JwtSecret: ${SUPABASE_JWT_SECRET}
+      Auth__JwksUrl: http://host.docker.internal:54321/auth/v1/.well-known/jwks.json
+      Logging__LogLevel__Microsoft.AspNetCore.Authentication: Information
       Auth__PlatformAdminUserIds__0: ${PLATFORM_ADMIN_USER_ID:-00000000-0000-0000-0000-000000000000}
       Supabase__Url: http://host.docker.internal:54321
       Supabase__ServiceRoleKey: ${SUPABASE_SERVICE_ROLE_KEY}

@@ -13,7 +13,7 @@ major_version = 17
 port = 54323
 
 # Email testing inbox: invitation emails are caught here (http://localhost:54324).
-[inbucket]
+[local_smtp]
 enabled = true
 port = 54324
 
@@ -25,5 +25,7 @@ additional_redirect_urls = ["http://localhost:5173/accept-invite"]
 enable_signup = false
 
 [auth.email]
-enable_signup = false
+# Keeps the email provider (password sign-in, invitations) on; [auth] enable_signup = false
+# still blocks public sign-ups.
+enable_signup = true
 enable_confirmations = false

@@ -58,3 +58,18 @@ The SPA calls the API through the Vite dev server proxy (`/api`), so no CORS set
   `docker-compose.yml` (as environment variables or user secrets).
 - SPA: `cd web && cp .env.example .env.local && npm run dev`. Vite proxies `/api` to
   `http://localhost:5217` unless `API_PROXY_TARGET` says otherwise.
+
+## End-to-end test
+
+With everything above running, and a Platform Admin whose email and password you know:
+
+```sh
+cd web
+npx playwright install chromium
+E2E_PLATFORM_ADMIN_EMAIL=... E2E_PLATFORM_ADMIN_PASSWORD=... npm run e2e
+```
+
+The flow (`web/e2e/catalog.e2e.ts`) creates a Tenant and invites its Admin (reading the invitation from
+the email testing inbox), publishes a Product with a filterable Attribute, finds it as a Visitor, then
+archives it and checks the Visitor no longer sees it. CI runs it in `.github/workflows/e2e.yml` (by hand,
+on pushes to `main`, and on pull requests that change the end-to-end setup).
