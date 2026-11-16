@@ -74,6 +74,8 @@ public sealed class CatalogApiFactory : WebApplicationFactory<Program>, IAsyncLi
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
+        builder.UseSetting("Logging:LogLevel:Default", "Warning");
+        builder.UseSetting("Logging:LogLevel:Microsoft.EntityFrameworkCore", "Warning");
         builder.UseSetting($"ConnectionStrings:{DataServiceCollectionExtensions.ConnectionStringName}", ConnectionString);
         builder.UseSetting("Auth:Issuer", TestTokens.Issuer);
         builder.UseSetting("Auth:Audience", TestTokens.Audience);
