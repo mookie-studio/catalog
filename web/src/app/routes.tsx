@@ -1,0 +1,28 @@
+import type { RouteObject } from 'react-router'
+import { NotFoundPage } from '@/components/NotFoundPage'
+import { PublicLayout } from '@/features/public/PublicLayout'
+
+// Admin and platform areas are lazy-loaded so they end up in their own chunks
+// and public pages never download admin code.
+export const routes: RouteObject[] = [
+  {
+    path: '/admin/*',
+    lazy: async () => ({
+      Component: (await import('@/features/admin/AdminArea')).AdminArea,
+    }),
+  },
+  {
+    path: '/platform/*',
+    lazy: async () => ({
+      Component: (await import('@/features/platform/PlatformArea')).PlatformArea,
+    }),
+  },
+  {
+    path: '/:tenantSlug/*',
+    Component: PublicLayout,
+  },
+  {
+    path: '*',
+    Component: NotFoundPage,
+  },
+]
