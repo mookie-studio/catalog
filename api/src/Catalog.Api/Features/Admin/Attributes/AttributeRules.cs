@@ -20,5 +20,5 @@ public static class AttributeRules
     }
 
     public static Conflict<ProblemDetails> NameInUse() =>
-        TypedResults.Conflict(ProblemDetailsBody.Conflict("An Attribute Definition with this name already exists in this Tenant."));
+        TypedResults.Conflict(ProblemDetailsBody.Conflict("An Attribute Definition with this name already exists in this Tenant.", "name"));
 }

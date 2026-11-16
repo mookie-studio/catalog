@@ -1,7 +1,7 @@
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
-import { mockApi, requestsTo } from '@/test/api'
+import { mockApi, urlsTo } from '@/test/api'
 import { renderApp } from '@/test/render'
 
 const tenant = { name: 'Acme Hardware', slug: 'acme' }
@@ -31,7 +31,7 @@ function catalog(options: { totalCount?: number; categories?: unknown[] } = {}) 
   })
 }
 
-const lastProductsRequest = () => requestsTo('/api/public/acme/products').at(-1)!
+const lastProductsRequest = () => urlsTo('/api/public/acme/products').at(-1)!
 
 describe('public product list', () => {
   it('shows the tenant name and a card per product linking to its page', async () => {

@@ -51,6 +51,9 @@ public sealed class AdminProductEditTests(CatalogApiFactory factory) : ApiTest(f
 
         Assert.Equal(HttpStatusCode.Conflict, slugTaken.StatusCode);
         Assert.Equal(HttpStatusCode.Conflict, skuTaken.StatusCode);
+        // Conflicts name the field, in the same shape as validation errors.
+        Assert.Equal(["slug"], (await slugTaken.Content.ReadFromJsonAsync<ValidationProblemDetails>())!.Errors.Keys);
+        Assert.Equal(["sku"], (await skuTaken.Content.ReadFromJsonAsync<ValidationProblemDetails>())!.Errors.Keys);
         Assert.Equal(HttpStatusCode.BadRequest, invalid.StatusCode);
         Assert.Contains("slug", (await invalid.Content.ReadFromJsonAsync<ValidationProblemDetails>())!.Errors.Keys);
     }

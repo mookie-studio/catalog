@@ -56,5 +56,5 @@ public static class ChangeTenantSlug
     }
 
     private static Conflict<ProblemDetails> SlugInUse() =>
-        TypedResults.Conflict(ProblemDetailsBody.Conflict("The Tenant slug is already in use."));
+        TypedResults.Conflict(ProblemDetailsBody.Conflict("The Tenant slug is already in use.", "slug"));
 }

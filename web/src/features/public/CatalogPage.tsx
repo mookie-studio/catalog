@@ -1,5 +1,6 @@
 import { type FormEvent, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
+import { Pagination } from '@/components/Pagination'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CategoryNav } from '@/features/public/CategoryNav'
@@ -68,25 +69,13 @@ export function CatalogPage({ tenantSlug }: { tenantSlug: string }) {
             </ul>
             <Pagination
               page={products.data.page}
-              pageCount={Math.ceil(products.data.totalCount / products.data.pageSize)}
+              pageSize={products.data.pageSize}
+              totalCount={products.data.totalCount}
               hrefFor={(page) => `?${writeCatalogQuery({ ...query, page }).toString()}`}
             />
           </>
         )}
       </main>
     </div>
-  )
-}
-
-function Pagination({ page, pageCount, hrefFor }: { page: number; pageCount: number; hrefFor: (page: number) => string }) {
-  if (pageCount <= 1) return null
-  return (
-    <nav aria-label="Pagination" className="flex items-center justify-between gap-4 text-sm">
-      {page > 1 ? <Link to={hrefFor(page - 1)}>Previous</Link> : <span />}
-      <span className="text-muted-foreground">
-        Page {page} of {pageCount}
-      </span>
-      {page < pageCount ? <Link to={hrefFor(page + 1)}>Next</Link> : <span />}
-    </nav>
   )
 }

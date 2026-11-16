@@ -31,9 +31,8 @@ const platformAdmin: Me = { userId: 'u2', email: 'platform@test', isPlatformAdmi
 function signedInAs(me: Me) {
   session.token = 'token'
   fetchMock.mockImplementation(async (request: Request) => {
-    expect(request.url).toBe('https://api.test/api/me')
     expect(request.headers.get('Authorization')).toBe('Bearer token')
-    return json(me)
+    return request.url === 'https://api.test/api/me' ? json(me) : new Response(null, { status: 404 })
   })
 }
 
@@ -59,7 +58,7 @@ describe('route guards', () => {
     renderAt('/admin')
 
     expect(await screen.findByRole('button', { name: 'Sign out' })).toBeInTheDocument()
-    expect(screen.getByRole('main')).toHaveTextContent('Admin')
+    expect(screen.getByRole('navigation', { name: 'Admin' })).toBeInTheDocument()
   })
 
   it('shows no access to an admin in the platform area', async () => {
@@ -107,7 +106,7 @@ describe('route guards', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Sign in' }))
 
     expect(await screen.findByRole('button', { name: 'Sign out' })).toBeInTheDocument()
-    expect(router.state.location.pathname).toBe('/admin')
+    expect(router.state.location.pathname).toBe('/admin/products')
   })
 
   it('signs out and returns to the sign-in page', async () => {

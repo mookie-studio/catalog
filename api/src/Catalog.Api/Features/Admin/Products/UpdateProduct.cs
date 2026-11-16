@@ -45,12 +45,12 @@ public static class UpdateProduct
         var sku = request.Sku!.Trim();
         if (sku != product.Sku && await db.Products.AnyAsync(p => p.Sku == sku && p.Id != id, ct))
         {
-            return Conflict("The SKU is already in use in this Tenant.");
+            return Conflict("The SKU is already in use in this Tenant.", "sku");
         }
 
         if (request.Slug != product.Slug && await db.Products.AnyAsync(p => p.Slug == request.Slug && p.Id != id, ct))
         {
-            return Conflict("The Product slug is already in use in this Tenant.");
+            return Conflict("The Product slug is already in use in this Tenant.", "slug");
         }
 
         product.Name = request.Name!.Trim();
@@ -70,6 +70,6 @@ public static class UpdateProduct
         return TypedResults.Ok(await ProductResponse.LoadAsync(product, db, storage, ct));
     }
 
-    private static Conflict<ProblemDetails> Conflict(string detail) =>
-        TypedResults.Conflict(ProblemDetailsBody.Conflict(detail));
+    private static Conflict<ProblemDetails> Conflict(string detail, string? field = null) =>
+        TypedResults.Conflict(ProblemDetailsBody.Conflict(detail, field));
 }

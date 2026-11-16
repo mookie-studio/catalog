@@ -34,6 +34,7 @@ public sealed class PlatformTenantTests(CatalogApiFactory factory) : ApiTest(fac
         var response = await client.PostAsJsonAsync("/api/platform/tenants", new { name = "Second", slug = "taken" });
 
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        Assert.Equal(["slug"], (await response.Content.ReadFromJsonAsync<ValidationProblemDetails>())!.Errors.Keys);
     }
 
     [Theory]
