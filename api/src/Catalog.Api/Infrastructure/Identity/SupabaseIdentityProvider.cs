@@ -10,11 +10,13 @@ public sealed class SupabaseIdentityProvider(HttpClient http, IOptions<SupabaseO
 {
     public async Task<Guid> InviteUserAsync(string email, CancellationToken ct)
     {
-        using var request = CreateRequest(HttpMethod.Post, "auth/v1/invite");
+        // Supabase Auth reads redirect_to from the query string, not from the body.
         var redirectTo = options.Value.InviteRedirectUrl;
-        request.Content = JsonContent.Create(string.IsNullOrWhiteSpace(redirectTo)
-            ? new InviteBody(email, null)
-            : new InviteBody(email, redirectTo));
+        var path = string.IsNullOrWhiteSpace(redirectTo)
+            ? "auth/v1/invite"
+            : $"auth/v1/invite?redirect_to={Uri.EscapeDataString(redirectTo)}";
+        using var request = CreateRequest(HttpMethod.Post, path);
+        request.Content = JsonContent.Create(new InviteBody(email));
 
         using var response = await http.SendAsync(request, ct);
         response.EnsureSuccessStatusCode();
@@ -44,9 +46,7 @@ public sealed class SupabaseIdentityProvider(HttpClient http, IOptions<SupabaseO
         return request;
     }
 
-    private sealed record InviteBody(
-        [property: JsonPropertyName("email")] string Email,
-        [property: JsonPropertyName("redirect_to"), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? RedirectTo);
+    private sealed record InviteBody([property: JsonPropertyName("email")] string Email);
 
     private sealed record UserBody([property: JsonPropertyName("id")] Guid Id);
 }
