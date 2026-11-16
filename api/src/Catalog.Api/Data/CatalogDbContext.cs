@@ -19,6 +19,7 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
     public DbSet<AttributeOption> AttributeOptions => Set<AttributeOption>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
+    public DbSet<ProductImage> ProductImages => Set<ProductImage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -84,6 +85,14 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
             link.HasOne<Product>().WithMany().HasForeignKey(l => l.ProductId).OnDelete(DeleteBehavior.Cascade);
             link.HasOne<Category>().WithMany().HasForeignKey(l => l.CategoryId).OnDelete(DeleteBehavior.Cascade);
             link.HasIndex(l => l.CategoryId);
+        });
+
+        modelBuilder.Entity<ProductImage>(image =>
+        {
+            image.Property(i => i.StorageKey).HasMaxLength(200).IsRequired();
+            image.Property(i => i.ContentType).HasMaxLength(50).IsRequired();
+            image.HasOne<Product>().WithMany().HasForeignKey(i => i.ProductId).OnDelete(DeleteBehavior.Cascade);
+            image.HasIndex(i => new { i.ProductId, i.Position });
         });
 
         ApplyTenantFilters(modelBuilder);

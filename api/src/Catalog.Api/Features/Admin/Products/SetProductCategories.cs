@@ -1,5 +1,6 @@
 using Catalog.Api.Data;
 using Catalog.Api.Infrastructure;
+using Catalog.Api.Infrastructure.Storage;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,7 @@ public static class SetProductCategories
     }
 
     private static async Task<Results<Ok<ProductResponse>, ValidationProblem, NotFound>> Handle(
-        Guid id, Request request, CatalogDbContext db, CancellationToken ct)
+        Guid id, Request request, CatalogDbContext db, IImageStorage storage, CancellationToken ct)
     {
         var product = await db.Products.SingleOrDefaultAsync(p => p.Id == id, ct);
         if (product is null)
@@ -43,6 +44,6 @@ public static class SetProductCategories
 
         product.UpdatedAt = Timestamps.UtcNow();
         await db.SaveChangesAsync(ct);
-        return TypedResults.Ok(await ProductResponse.LoadAsync(product, db, ct));
+        return TypedResults.Ok(await ProductResponse.LoadAsync(product, db, storage, ct));
     }
 }

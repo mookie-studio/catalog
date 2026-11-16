@@ -1,5 +1,6 @@
 using Catalog.Api.Data;
 using Catalog.Api.Infrastructure.Identity;
+using Catalog.Api.Infrastructure.Storage;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -27,6 +28,8 @@ public sealed class CatalogApiFactory : WebApplicationFactory<Program>, IAsyncLi
     public string ConnectionString { get; private set; } = "";
 
     public FakeIdentityProvider IdentityProvider { get; } = new();
+
+    public InMemoryImageStorage ImageStorage { get; } = new();
 
     public async Task InitializeAsync()
     {
@@ -65,6 +68,7 @@ public sealed class CatalogApiFactory : WebApplicationFactory<Program>, IAsyncLi
         await connection.OpenAsync();
         await _respawner!.ResetAsync(connection);
         IdentityProvider.Reset();
+        ImageStorage.Reset();
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -79,6 +83,8 @@ public sealed class CatalogApiFactory : WebApplicationFactory<Program>, IAsyncLi
         {
             services.RemoveAll<IIdentityProvider>();
             services.AddSingleton<IIdentityProvider>(IdentityProvider);
+            services.RemoveAll<IImageStorage>();
+            services.AddSingleton<IImageStorage>(ImageStorage);
         });
     }
 

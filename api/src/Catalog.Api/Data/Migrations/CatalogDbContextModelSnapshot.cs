@@ -244,6 +244,40 @@ namespace Catalog.Api.Data.Migrations
                     b.ToTable("ProductCategories");
                 });
 
+            modelBuilder.Entity("Catalog.Api.Data.ProductImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("StorageKey")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("ProductId", "Position");
+
+                    b.ToTable("ProductImages");
+                });
+
             modelBuilder.Entity("Catalog.Api.Data.Tenant", b =>
                 {
                     b.Property<Guid>("Id")
@@ -334,6 +368,15 @@ namespace Catalog.Api.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Catalog.Api.Data.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Catalog.Api.Data.ProductImage", b =>
+                {
                     b.HasOne("Catalog.Api.Data.Product", null)
                         .WithMany()
                         .HasForeignKey("ProductId")

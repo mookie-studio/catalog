@@ -5,6 +5,7 @@ using Catalog.Api.Features.Me;
 using Catalog.Api.Infrastructure;
 using Catalog.Api.Infrastructure.Auth;
 using Catalog.Api.Infrastructure.Identity;
+using Catalog.Api.Infrastructure.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddCatalogData();
 builder.Services.AddCatalogAuth();
 builder.Services.AddCatalogIdentityProvider();
+builder.Services.AddCatalogImageStorage(builder.Configuration);
 
 var app = builder.Build();
 

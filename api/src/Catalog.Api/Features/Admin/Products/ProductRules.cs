@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Catalog.Api.Data;
 using Catalog.Api.Features;
 using Catalog.Api.Infrastructure;
+using Catalog.Api.Infrastructure.Storage;
 using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.Api.Features.Admin.Products;
@@ -143,18 +144,21 @@ public sealed record ProductResponse(
     Guid Id, string Name, string? Description, string Sku, string Slug, ProductStatus Status,
     DateTimeOffset CreatedAt, DateTimeOffset UpdatedAt,
     IReadOnlyList<ProductAttributes.AttributeValue> Attributes,
-    IReadOnlyList<Guid> CategoryIds)
+    IReadOnlyList<Guid> CategoryIds,
+    IReadOnlyList<ProductImageResponse> Images)
 {
     public static ProductResponse From(
-        Product p, IReadOnlyList<ProductAttributes.AttributeValue> attributes, IReadOnlyList<Guid> categoryIds) =>
-        new(p.Id, p.Name, p.Description, p.Sku, p.Slug, p.Status, p.CreatedAt, p.UpdatedAt, attributes, categoryIds);
+        Product p, IReadOnlyList<ProductAttributes.AttributeValue> attributes, IReadOnlyList<Guid> categoryIds,
+        IReadOnlyList<ProductImageResponse> images) =>
+        new(p.Id, p.Name, p.Description, p.Sku, p.Slug, p.Status, p.CreatedAt, p.UpdatedAt, attributes, categoryIds, images);
 
     /// <summary>Builds the full response, joining the Product's Attributes with the Tenant's definitions.</summary>
-    public static async Task<ProductResponse> LoadAsync(Product p, CatalogDbContext db, CancellationToken ct)
+    public static async Task<ProductResponse> LoadAsync(Product p, CatalogDbContext db, IImageStorage storage, CancellationToken ct)
     {
         var definitions = await db.AttributeDefinitions.AsNoTracking().ToDictionaryAsync(d => d.Id, ct);
         var categoryIds = await db.ProductCategories.Where(l => l.ProductId == p.Id)
             .OrderBy(l => l.CategoryId).Select(l => l.CategoryId).ToListAsync(ct);
-        return From(p, ProductAttributes.Describe(p.Attributes, definitions), categoryIds);
+        var images = await ProductImages.ListAsync(p.Id, db, storage, ct);
+        return From(p, ProductAttributes.Describe(p.Attributes, definitions), categoryIds, images);
     }
 }

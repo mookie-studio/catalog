@@ -1,5 +1,6 @@
 using Catalog.Api.Data;
 using Catalog.Api.Infrastructure;
+using Catalog.Api.Infrastructure.Storage;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +19,7 @@ public static class UpdateProduct
     }
 
     private static async Task<Results<Ok<ProductResponse>, ValidationProblem, NotFound, Conflict<ProblemDetails>>> Handle(
-        Guid id, Request request, CatalogDbContext db, CancellationToken ct)
+        Guid id, Request request, CatalogDbContext db, IImageStorage storage, CancellationToken ct)
     {
         var product = await db.Products.SingleOrDefaultAsync(p => p.Id == id, ct);
         if (product is null)
@@ -66,7 +67,7 @@ public static class UpdateProduct
             return Conflict("The SKU or Product slug is already in use in this Tenant.");
         }
 
-        return TypedResults.Ok(await ProductResponse.LoadAsync(product, db, ct));
+        return TypedResults.Ok(await ProductResponse.LoadAsync(product, db, storage, ct));
     }
 
     private static Conflict<ProblemDetails> Conflict(string detail) =>
