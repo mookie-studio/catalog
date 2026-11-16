@@ -11,8 +11,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddProblemDetails();
 builder.Services.ConfigureHttpJsonOptions(options =>
-    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
-builder.Services.AddOpenApi(OpenApiSchemaNames.Configure);
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    // Numbers are JSON numbers only, so the OpenAPI document (and the web client) types them as numbers.
+    options.SerializerOptions.NumberHandling = JsonNumberHandling.Strict;
+});
+builder.Services.AddOpenApi(options =>
+{
+    OpenApiSchemaNames.Configure(options);
+    OpenApiRouteParameters.Configure(options);
+});
 builder.Services.AddCatalogData();
 builder.Services.AddCatalogAuth();
 builder.Services.AddCatalogIdentityProvider();

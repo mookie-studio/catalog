@@ -514,7 +514,7 @@ export interface components {
             id: string;
             value: string;
             /** Format: int32 */
-            position: number | string;
+            position: number;
         };
         /** @enum {unknown} */
         AttributeType: "Text" | "Number" | "Boolean" | "Date" | "OptionList";
@@ -587,7 +587,7 @@ export interface components {
             type?: null | string;
             title?: null | string;
             /** Format: int32 */
-            status?: null | number | string;
+            status?: null | number;
             detail?: null | string;
             instance?: null | string;
             errors?: {
@@ -635,7 +635,7 @@ export interface components {
             /** Format: uuid */
             parentId: null | string;
             /** Format: int32 */
-            position: number | string;
+            position: number;
         };
         /** @enum {unknown} */
         NullableOfAttributeType: "Text" | "Number" | "Boolean" | "Date" | "OptionList" | null;
@@ -644,35 +644,35 @@ export interface components {
         PagedResponseOfListProductsItem: {
             items: components["schemas"]["ListProductsItem"][];
             /** Format: int32 */
-            page: number | string;
+            page: number;
             /** Format: int32 */
-            pageSize: number | string;
+            pageSize: number;
             /** Format: int32 */
-            totalCount: number | string;
+            totalCount: number;
         };
         PagedResponseOfListPublicProductsItem: {
             items: components["schemas"]["ListPublicProductsItem"][];
             /** Format: int32 */
-            page: number | string;
+            page: number;
             /** Format: int32 */
-            pageSize: number | string;
+            pageSize: number;
             /** Format: int32 */
-            totalCount: number | string;
+            totalCount: number;
         };
         PagedResponseOfTenantResponse: {
             items: components["schemas"]["TenantResponse"][];
             /** Format: int32 */
-            page: number | string;
+            page: number;
             /** Format: int32 */
-            pageSize: number | string;
+            pageSize: number;
             /** Format: int32 */
-            totalCount: number | string;
+            totalCount: number;
         };
         ProblemDetails: {
             type?: null | string;
             title?: null | string;
             /** Format: int32 */
-            status?: null | number | string;
+            status?: null | number;
             detail?: null | string;
             instance?: null | string;
         };
@@ -688,7 +688,7 @@ export interface components {
             id: string;
             url: string;
             /** Format: int32 */
-            position: number | string;
+            position: number;
         };
         ProductResponse: {
             /** Format: uuid */
@@ -792,7 +792,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                tenantSlug: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -811,13 +813,15 @@ export interface operations {
     ListPublicProducts: {
         parameters: {
             query?: {
-                page?: number | string;
-                pageSize?: number | string;
+                page?: number;
+                pageSize?: number;
                 q?: string;
                 categoryId?: string;
             };
             header?: never;
-            path?: never;
+            path: {
+                tenantSlug: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -846,7 +850,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                tenantSlug: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -866,7 +872,9 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                tenantSlug: string;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -888,6 +896,7 @@ export interface operations {
             header?: never;
             path: {
                 productSlug: string;
+                tenantSlug: string;
             };
             cookie?: never;
         };
@@ -1039,8 +1048,8 @@ export interface operations {
     ListProducts: {
         parameters: {
             query?: {
-                page?: number | string;
-                pageSize?: number | string;
+                page?: number;
+                pageSize?: number;
                 q?: string;
                 status?: components["schemas"]["NullableOfProductStatus"];
                 categoryId?: string;
@@ -1833,8 +1842,8 @@ export interface operations {
     ListTenants: {
         parameters: {
             query?: {
-                page?: number | string;
-                pageSize?: number | string;
+                page?: number;
+                pageSize?: number;
             };
             header?: never;
             path?: never;

@@ -1,16 +1,11 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render, screen } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { createMemoryRouter, RouterProvider } from 'react-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { routes } from '@/app/routes'
+import { fetchMock, json, mockApi } from '@/test/api'
+import { renderApp } from '@/test/render'
 
-// Supabase is replaced by this in-memory session; the API by a mocked fetch.
-const { fetchMock, session } = vi.hoisted(() => {
-  const fetchMock = vi.fn()
-  globalThis.fetch = fetchMock
-  return { fetchMock, session: { token: null as string | null } }
-})
+// Supabase is replaced by this in-memory session; the API by the fetch mock.
+const session = vi.hoisted(() => ({ token: null as string | null }))
 
 vi.mock('@/features/auth/session', async () => {
   const { setAccessTokenProvider } = await import('@/api/access-token')
@@ -38,24 +33,14 @@ function signedInAs(me: Me) {
   fetchMock.mockImplementation(async (request: Request) => {
     expect(request.url).toBe('https://api.test/api/me')
     expect(request.headers.get('Authorization')).toBe('Bearer token')
-    return new Response(JSON.stringify(me), { status: 200, headers: { 'Content-Type': 'application/json' } })
+    return json(me)
   })
 }
 
-function renderAt(path: string) {
-  const router = createMemoryRouter(routes, { initialEntries: [path] })
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-  render(
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>,
-  )
-  return router
-}
+const renderAt = renderApp
 
 beforeEach(() => {
   session.token = null
-  fetchMock.mockReset()
 })
 
 describe('route guards', () => {
@@ -115,9 +100,7 @@ describe('route guards', () => {
   it('returns to the requested page after signing in', async () => {
     const router = renderAt('/admin')
     await screen.findByRole('heading', { name: 'Sign in' })
-    fetchMock.mockImplementation(
-      async () => new Response(JSON.stringify(admin), { status: 200, headers: { 'Content-Type': 'application/json' } }),
-    )
+    mockApi({ '/api/me': admin })
 
     await userEvent.type(screen.getByLabelText('Email'), 'admin@test')
     await userEvent.type(screen.getByLabelText('Password'), 'secret-password')
@@ -138,11 +121,11 @@ describe('route guards', () => {
   })
 
   it('shows the public catalog without signing in', async () => {
-    fetchMock.mockResolvedValue(new Response('{}', { status: 200, headers: { 'Content-Type': 'application/json' } }))
+    mockApi({ '/api/public/acme': { name: 'Acme Hardware', slug: 'acme' }, '/api/public/acme/products': { items: [], page: 1, pageSize: 20, totalCount: 0 } })
 
     renderAt('/acme')
 
-    expect(await screen.findByText('acme')).toBeInTheDocument()
+    expect(await screen.findByText('Acme Hardware')).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: 'Sign in' })).not.toBeInTheDocument()
   })
 })
