@@ -38,6 +38,6 @@ public static class SetProductAttributes
         product.UpdatedAt = Timestamps.UtcNow();
         await db.SaveChangesAsync(ct);
 
-        return TypedResults.Ok(ProductResponse.From(product, ProductAttributes.Describe(product.Attributes, definitions)));
+        return TypedResults.Ok(await ProductResponse.LoadAsync(product, db, ct));
     }
 }

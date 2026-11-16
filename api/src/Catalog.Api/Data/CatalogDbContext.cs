@@ -17,6 +17,8 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
     public DbSet<Product> Products => Set<Product>();
     public DbSet<AttributeDefinition> AttributeDefinitions => Set<AttributeDefinition>();
     public DbSet<AttributeOption> AttributeOptions => Set<AttributeOption>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -66,6 +68,22 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
             option.Property(o => o.Value).HasMaxLength(AttributeOption.ValueMaxLength).IsRequired();
             option.Property(o => o.NormalizedValue).HasMaxLength(AttributeOption.ValueMaxLength).IsRequired();
             option.HasIndex(o => new { o.AttributeDefinitionId, o.NormalizedValue }).IsUnique();
+        });
+
+        modelBuilder.Entity<Category>(category =>
+        {
+            category.Property(c => c.Name).HasMaxLength(Category.NameMaxLength).IsRequired();
+            category.HasOne<Tenant>().WithMany().HasForeignKey(c => c.TenantId).OnDelete(DeleteBehavior.Restrict);
+            category.HasOne<Category>().WithMany().HasForeignKey(c => c.ParentId).OnDelete(DeleteBehavior.Restrict);
+            category.HasIndex(c => new { c.TenantId, c.ParentId, c.Position });
+        });
+
+        modelBuilder.Entity<ProductCategory>(link =>
+        {
+            link.HasKey(l => new { l.ProductId, l.CategoryId });
+            link.HasOne<Product>().WithMany().HasForeignKey(l => l.ProductId).OnDelete(DeleteBehavior.Cascade);
+            link.HasOne<Category>().WithMany().HasForeignKey(l => l.CategoryId).OnDelete(DeleteBehavior.Cascade);
+            link.HasIndex(l => l.CategoryId);
         });
 
         ApplyTenantFilters(modelBuilder);

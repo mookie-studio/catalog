@@ -16,7 +16,7 @@ public static class ListProducts
     }
 
     private static async Task<Ok<PagedResponse<Item>>> Handle(
-        int? page, int? pageSize, string? q, ProductStatus? status, CatalogDbContext db, CancellationToken ct)
+        int? page, int? pageSize, string? q, ProductStatus? status, Guid? categoryId, CatalogDbContext db, CancellationToken ct)
     {
         var paging = Paging.From(page, pageSize);
         var query = db.Products.AsQueryable();
@@ -25,6 +25,11 @@ public static class ListProducts
         {
             var pattern = $"%{EscapeLike(q.Trim())}%";
             query = query.Where(p => EF.Functions.ILike(p.Name, pattern, "\\") || EF.Functions.ILike(p.Sku, pattern, "\\"));
+        }
+
+        if (categoryId is { } category)
+        {
+            query = query.Where(p => db.ProductCategories.Any(l => l.ProductId == p.Id && l.CategoryId == category));
         }
 
         if (status is { } s)

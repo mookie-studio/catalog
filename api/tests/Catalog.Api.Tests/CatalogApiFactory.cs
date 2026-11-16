@@ -170,6 +170,14 @@ public abstract class ApiTest(CatalogApiFactory factory) : IAsyncLifetime
         return definition with { Options = created };
     }
 
+    /// <summary>Creates a Category as the given Admin.</summary>
+    protected static async Task<CategoryBody> CreateCategory(HttpClient adminClient, string name, Guid? parentId = null)
+    {
+        var response = await adminClient.PostAsJsonAsync("/api/admin/categories", new { name, parentId });
+        response.EnsureSuccessStatusCode();
+        return (await response.Content.ReadFromJsonAsync<CategoryBody>())!;
+    }
+
     /// <summary>A client authenticated as someone who is not a Platform Admin.</summary>
     protected HttpClient OutsiderClient() => ClientFor(Guid.CreateVersion7(), "outsider@catalog.test");
 
