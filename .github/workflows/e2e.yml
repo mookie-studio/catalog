@@ -94,7 +94,9 @@ jobs:
 
       - name: Service logs
         if: failure()
-        run: docker compose logs
+        run: |
+          docker compose logs
+          find web/test-results -name error-context.md -exec cat {} \; || true
 
       - uses: actions/upload-artifact@v4
         if: failure()
