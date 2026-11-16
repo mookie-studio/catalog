@@ -150,6 +150,26 @@ public abstract class ApiTest(CatalogApiFactory factory) : IAsyncLifetime
         return (await response.Content.ReadFromJsonAsync<ProductBody>())!;
     }
 
+    /// <summary>Creates an Attribute Definition (and its Options, for option lists) as the given Admin.</summary>
+    protected static async Task<DefinitionBody> CreateDefinition(
+        HttpClient adminClient, string name, string type, bool isFilterable = false, bool allowsMultiple = false,
+        params string[] options)
+    {
+        var response = await adminClient.PostAsJsonAsync("/api/admin/attribute-definitions",
+            new { name, type, isFilterable, allowsMultiple });
+        response.EnsureSuccessStatusCode();
+        var definition = (await response.Content.ReadFromJsonAsync<DefinitionBody>())!;
+        var created = new List<OptionBody>();
+        foreach (var value in options)
+        {
+            var optionResponse = await adminClient.PostAsJsonAsync($"/api/admin/attribute-definitions/{definition.Id}/options", new { value });
+            optionResponse.EnsureSuccessStatusCode();
+            created.Add((await optionResponse.Content.ReadFromJsonAsync<OptionBody>())!);
+        }
+
+        return definition with { Options = created };
+    }
+
     /// <summary>A client authenticated as someone who is not a Platform Admin.</summary>
     protected HttpClient OutsiderClient() => ClientFor(Guid.CreateVersion7(), "outsider@catalog.test");
 

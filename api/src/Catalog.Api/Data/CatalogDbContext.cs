@@ -15,6 +15,8 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
     public DbSet<Tenant> Tenants => Set<Tenant>();
     public DbSet<AdminMembership> AdminMemberships => Set<AdminMembership>();
     public DbSet<Product> Products => Set<Product>();
+    public DbSet<AttributeDefinition> AttributeDefinitions => Set<AttributeDefinition>();
+    public DbSet<AttributeOption> AttributeOptions => Set<AttributeOption>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -46,6 +48,24 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
             product.HasIndex(p => new { p.TenantId, p.Sku }).IsUnique();
             product.HasIndex(p => new { p.TenantId, p.Slug }).IsUnique();
             product.HasIndex(p => p.Attributes).HasMethod("gin");
+        });
+
+        modelBuilder.Entity<AttributeDefinition>(definition =>
+        {
+            definition.Property(d => d.Name).HasMaxLength(AttributeDefinition.NameMaxLength).IsRequired();
+            definition.Property(d => d.NormalizedName).HasMaxLength(AttributeDefinition.NameMaxLength).IsRequired();
+            definition.Property(d => d.Type).HasConversion<string>().HasMaxLength(20);
+            definition.HasOne<Tenant>().WithMany().HasForeignKey(d => d.TenantId).OnDelete(DeleteBehavior.Restrict);
+            definition.HasIndex(d => new { d.TenantId, d.NormalizedName }).IsUnique();
+            definition.HasMany(d => d.Options).WithOne()
+                .HasForeignKey(o => o.AttributeDefinitionId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<AttributeOption>(option =>
+        {
+            option.Property(o => o.Value).HasMaxLength(AttributeOption.ValueMaxLength).IsRequired();
+            option.Property(o => o.NormalizedValue).HasMaxLength(AttributeOption.ValueMaxLength).IsRequired();
+            option.HasIndex(o => new { o.AttributeDefinitionId, o.NormalizedValue }).IsUnique();
         });
 
         ApplyTenantFilters(modelBuilder);

@@ -53,6 +53,84 @@ namespace Catalog.Api.Data.Migrations
                     b.ToTable("AdminMemberships");
                 });
 
+            modelBuilder.Entity("Catalog.Api.Data.AttributeDefinition", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("AllowsMultiple")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsFilterable")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TenantId", "NormalizedName")
+                        .IsUnique();
+
+                    b.ToTable("AttributeDefinitions");
+                });
+
+            modelBuilder.Entity("Catalog.Api.Data.AttributeOption", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AttributeDefinitionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("NormalizedValue")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("AttributeDefinitionId", "NormalizedValue")
+                        .IsUnique();
+
+                    b.ToTable("AttributeOptions");
+                });
+
             modelBuilder.Entity("Catalog.Api.Data.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -156,6 +234,24 @@ namespace Catalog.Api.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Catalog.Api.Data.AttributeDefinition", b =>
+                {
+                    b.HasOne("Catalog.Api.Data.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Catalog.Api.Data.AttributeOption", b =>
+                {
+                    b.HasOne("Catalog.Api.Data.AttributeDefinition", null)
+                        .WithMany("Options")
+                        .HasForeignKey("AttributeDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Catalog.Api.Data.Product", b =>
                 {
                     b.HasOne("Catalog.Api.Data.Tenant", null)
@@ -163,6 +259,11 @@ namespace Catalog.Api.Data.Migrations
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Catalog.Api.Data.AttributeDefinition", b =>
+                {
+                    b.Navigation("Options");
                 });
 #pragma warning restore 612, 618
         }

@@ -15,6 +15,6 @@ public static class GetProduct
     private static async Task<Results<Ok<ProductResponse>, NotFound>> Handle(Guid id, CatalogDbContext db, CancellationToken ct)
     {
         var product = await db.Products.SingleOrDefaultAsync(p => p.Id == id, ct);
-        return product is null ? TypedResults.NotFound() : TypedResults.Ok(ProductResponse.From(product));
+        return product is null ? TypedResults.NotFound() : TypedResults.Ok(await ProductResponse.LoadAsync(product, db, ct));
     }
 }
