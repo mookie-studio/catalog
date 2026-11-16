@@ -89,10 +89,16 @@ test('an Admin publishes a Product that a Visitor finds, and archiving hides it'
   await visitor.getByRole('button', { name: 'Search' }).click()
   await expect(visitor.getByRole('link', { name: productName })).toBeVisible()
   await visitor.goto(`/${tenant.slug}`)
-  await visitor.getByRole('checkbox', { name: 'Blue' }).check()
+  // Filters live in the URL, so a checkbox re-renders after navigation: click, then assert its state.
+  const toggle = async (name: string, checked: boolean) => {
+    const box = visitor.getByRole('checkbox', { name })
+    await box.click()
+    await expect(box).toBeChecked({ checked })
+  }
+  await toggle('Blue', true)
   await expect(visitor.getByText('No products found.')).toBeVisible()
-  await visitor.getByRole('checkbox', { name: 'Blue' }).uncheck()
-  await visitor.getByRole('checkbox', { name: 'Red' }).check()
+  await toggle('Blue', false)
+  await toggle('Red', true)
   await visitor.getByRole('link', { name: productName }).click()
   await expect(visitor.getByRole('heading', { name: productName })).toBeVisible()
   await expect(visitor.getByText('A powerful hammer drill for concrete.')).toBeVisible()
