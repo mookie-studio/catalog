@@ -1,11 +1,11 @@
 # Catalog
 
-Plataforma generalista y multi-tenant de catálogos de productos: cada negocio (tenant) gestiona sus productos desde una parte de administración y sus visitantes los consultan desde un catálogo público. No vende: no hay precios, carrito, pedidos ni stock.
+A general-purpose, multi-tenant product catalog platform: each business (tenant) manages its products from an admin area, and its visitors browse them in a public catalog. It does not sell: no prices, cart, orders or stock.
 
-- **API**: .NET 10 con minimal APIs, organizada en vertical slices, EF Core sobre PostgreSQL.
-- **Web**: SPA en React + Vite + TypeScript.
+- **API**: .NET 10 with minimal APIs, organized in vertical slices, EF Core on PostgreSQL.
+- **Web**: React + Vite + TypeScript SPA.
 
-## Documentación
+## Documentation
 
-- [GLOSSARY.md](./GLOSSARY.md): el lenguaje del dominio. Úsalo en código y conversación.
-- [docs/adr](./docs/adr): decisiones de arquitectura.
+- [GLOSSARY.md](./GLOSSARY.md): the domain language. Use it in code and conversation.
+- [docs/adr](./docs/adr): architecture decisions.
