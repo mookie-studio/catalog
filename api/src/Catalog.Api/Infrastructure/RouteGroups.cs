@@ -21,7 +21,9 @@ public static class RouteGroups
         app.MapGroup(Platform).WithTags("Platform")
             .RequireAuthorization(AuthServiceCollectionExtensions.PlatformAdminPolicy)
             .MapCreateTenant()
-            .MapListTenants();
+            .MapListTenants()
+            .MapChangeTenantStatus()
+            .MapChangeTenantSlug();
 
         return app;
     }
