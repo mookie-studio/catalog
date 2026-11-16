@@ -1,5 +1,8 @@
 # Deployment
 
+To create the infrastructure for the first time, follow the portal walkthrough in
+[infra-setup.md](infra-setup.md). This page is the reference of what each workflow needs.
+
 Merging to `main` deploys (ADR 0005):
 
 - `api/**` changes run `.github/workflows/deploy-api.yml`: build the API image and push it to GitHub
@@ -24,7 +27,7 @@ environment variables are only visible to jobs that already run in that environm
 | `AZURE_CLIENT_ID` | Client id of the Entra ID app (or managed identity) with a federated credential for this repository's `production` environment (OIDC, no password). It needs the Contributor role on the Container App's resource group. |
 | `AZURE_TENANT_ID` | Entra ID tenant id. |
 | `AZURE_SUBSCRIPTION_ID` | Azure subscription id. |
-| `DATABASE_CONNECTION_STRING` | Npgsql connection string of the Supabase database, used to apply migrations (for example `Host=db.<project>.supabase.co;Port=5432;Database=postgres;Username=postgres;Password=...;SSL Mode=Require`). |
+| `DATABASE_CONNECTION_STRING` | Npgsql connection string of the Supabase database, used to apply migrations through the session pooler, because GitHub runners have no IPv6 (for example `Host=aws-0-<region>.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.<project>;Password=...;SSL Mode=Require`). |
 
 ### GitHub variables
 
@@ -40,12 +43,12 @@ workflow only changes the image.
 
 | Environment variable | Value |
 | --- | --- |
-| `ConnectionStrings__Catalog` | Supabase database connection string (pooler recommended). |
+| `ConnectionStrings__Catalog` | Supabase database connection string (session pooler; the direct host is IPv6 only). |
 | `Auth__Issuer` | `https://<project>.supabase.co/auth/v1` |
 | `Auth__JwksUrl` | `https://<project>.supabase.co/auth/v1/.well-known/jwks.json` (or `Auth__JwtSecret` for a legacy HS256 secret) |
 | `Auth__PlatformAdminUserIds__0` | Supabase user id of a Platform Admin (add `__1`, `__2`… for more). |
 | `Supabase__Url` | `https://<project>.supabase.co` |
-| `Supabase__ServiceRoleKey` | Supabase service role key. Never exposed to the browser. |
+| `Supabase__ServiceRoleKey` | Supabase secret key (`sb_secret_...`) or legacy `service_role` key. Never exposed to the browser. |
 | `Supabase__InviteRedirectUrl` | `https://<spa-domain>/accept-invite` |
 | `Storage__ServiceUrl` | `https://<account-id>.r2.cloudflarestorage.com` |
 | `Storage__Bucket` | R2 bucket name. |
@@ -74,7 +77,7 @@ registry credentials for GHCR.
 | `CLOUDFLARE_PAGES_PROJECT` | Name of the Pages project (create it once with "Direct Upload"). |
 | `VITE_API_URL` | Public URL of the API, for example `https://catalog-api.<region>.azurecontainerapps.io`. |
 | `VITE_SUPABASE_URL` | `https://<project>.supabase.co` |
-| `VITE_SUPABASE_ANON_KEY` | Supabase anon (publishable) key. It is public by design. |
+| `VITE_SUPABASE_ANON_KEY` | Supabase publishable key (`sb_publishable_...`) or legacy anon key. It is public by design. |
 
 ### Deep links
 
