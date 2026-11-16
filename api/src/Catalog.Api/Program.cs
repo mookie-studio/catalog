@@ -1,21 +1,28 @@
 using Catalog.Api.Data;
 using Catalog.Api.Features.Health;
+using Catalog.Api.Features.Me;
 using Catalog.Api.Infrastructure;
+using Catalog.Api.Infrastructure.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddCatalogData();
+builder.Services.AddCatalogAuth();
 
 var app = builder.Build();
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapOpenApi();
 
 app.MapGetHealth();
+app.MapGetMe();
 app.MapRouteGroups();
 
 app.Run();
