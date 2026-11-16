@@ -2,9 +2,11 @@ import { Navigate, NavLink, Route, Routes } from 'react-router'
 import { NotFoundPage } from '@/components/NotFoundPage'
 import { useCurrentTenant } from '@/features/admin/admin-api'
 import { AttributesPage } from '@/features/admin/attributes/AttributesPage'
+import { CategoriesPage } from '@/features/admin/categories/CategoriesPage'
 import { NewProductPage } from '@/features/admin/products/NewProductPage'
 import { ProductEditPage } from '@/features/admin/products/ProductEditPage'
 import { ProductListPage } from '@/features/admin/products/ProductListPage'
+import { TeamPage } from '@/features/admin/team/TeamPage'
 import { RequireAccess } from '@/features/auth/RequireAccess'
 import { SignOutButton } from '@/features/auth/SignOutButton'
 import { cn } from '@/lib/utils'
@@ -58,6 +60,8 @@ function AdminLayout() {
           <Route path="products/new" element={<NewProductPage />} />
           <Route path="products/:id" element={<ProductEditPage />} />
           <Route path="attributes" element={<AttributesPage />} />
+          <Route path="categories" element={<CategoriesPage />} />
+          <Route path="team" element={<TeamPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
