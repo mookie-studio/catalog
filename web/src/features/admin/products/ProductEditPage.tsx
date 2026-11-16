@@ -6,6 +6,8 @@ import { ApiProblem, call, isNotFound } from '@/api/problem'
 import { NotFoundPage } from '@/components/NotFoundPage'
 import { Button } from '@/components/ui/button'
 import { ProductAttributesEditor } from '@/features/admin/products/ProductAttributesEditor'
+import { ProductCategoriesEditor } from '@/features/admin/products/ProductCategoriesEditor'
+import { ProductImagesEditor } from '@/features/admin/products/ProductImagesEditor'
 import { ProductFields, type ProductFieldValues } from '@/features/admin/products/ProductFields'
 import {
   type Product,
@@ -128,7 +130,9 @@ function ProductEditor({ product }: { product: Product }) {
           )}
         </div>
       </form>
+      <ProductImagesEditor product={product} />
       <ProductAttributesEditor product={product} />
+      <ProductCategoriesEditor product={product} />
     </main>
   )
 }
