@@ -28,3 +28,7 @@ public sealed record ProductDetailBody(Guid Id, string Name, string Slug, string
 public sealed record CategoryBody(Guid Id, string Name, List<CategoryBody> Children);
 
 public sealed record ProductCategoriesBody(Guid Id, List<Guid> CategoryIds);
+
+public sealed record ImageBody(Guid Id, string Url, int Position);
+
+public sealed record ProductImagesBody(Guid Id, List<ImageBody> Images);

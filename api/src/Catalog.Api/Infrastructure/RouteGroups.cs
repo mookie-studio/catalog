@@ -44,7 +44,10 @@ public static class RouteGroups
             .MapRenameCategory()
             .MapListCategories()
             .MapMoveCategory()
-            .MapDeleteCategory();
+            .MapDeleteCategory()
+            .MapUploadProductImage()
+            .MapReorderProductImages()
+            .MapDeleteProductImage();
 
         app.MapGroup(Platform).WithTags("Platform")
             .RequireAuthorization(AuthServiceCollectionExtensions.PlatformAdminPolicy)
