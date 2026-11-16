@@ -1,0 +1,62 @@
+# Local environment. Supabase (PostgreSQL and authentication) runs separately with `supabase start`;
+# see docs/local-development.md.
+name: catalog
+
+services:
+  api:
+    build: ./api
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Catalog: Host=host.docker.internal;Port=54322;Database=postgres;Username=postgres;Password=postgres
+      Auth__Issuer: http://127.0.0.1:54321/auth/v1
+      Auth__JwtSecret: ${SUPABASE_JWT_SECRET}
+      Auth__PlatformAdminUserIds__0: ${PLATFORM_ADMIN_USER_ID:-00000000-0000-0000-0000-000000000000}
+      Supabase__Url: http://host.docker.internal:54321
+      Supabase__ServiceRoleKey: ${SUPABASE_SERVICE_ROLE_KEY}
+      Supabase__InviteRedirectUrl: http://localhost:5173/accept-invite
+      Storage__ServiceUrl: http://storage:9090
+      Storage__Bucket: catalog-images
+      Storage__AccessKey: local
+      Storage__SecretKey: local
+      Storage__PublicBaseUrl: http://localhost:9090/catalog-images
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - storage
+
+  web:
+    image: node:22-alpine
+    working_dir: /app
+    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "5173:5173"
+    environment:
+      # The Vite dev server proxies /api to the API container, so the browser stays on one origin.
+      API_PROXY_TARGET: http://api:8080
+      VITE_SUPABASE_URL: http://localhost:54321
+      VITE_SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+    volumes:
+      - ./web:/app
+      - web-node-modules:/app/node_modules
+    depends_on:
+      - api
+
+  # S3-compatible image storage standing in for Cloudflare R2. MinIO no longer publishes
+  # community images, so S3Mock (also used by the API tests) is used instead. It accepts any
+  # credentials and serves objects publicly at http://localhost:9090/<bucket>/<key>.
+  storage:
+    image: adobe/s3mock:3.12.0
+    ports:
+      - "9090:9090"
+    environment:
+      COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS: catalog-images
+      COM_ADOBE_TESTING_S3MOCK_STORE_RETAIN_FILES_ON_EXIT: "true"
+      COM_ADOBE_TESTING_S3MOCK_STORE_ROOT: /data
+    volumes:
+      - storage-data:/data
+
+volumes:
+  web-node-modules:
+  storage-data:
