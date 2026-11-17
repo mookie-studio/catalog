@@ -3,6 +3,7 @@ import { type FormEvent, useState } from 'react'
 import { api } from '@/api/client'
 import { ApiProblem, call } from '@/api/problem'
 import { ConfirmPanel } from '@/components/ConfirmPanel'
+import { Pagination } from '@/components/Pagination'
 import { Field } from '@/components/Field'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -23,7 +24,11 @@ function TenantAdmins({ tenantId }: { tenantId: string }) {
   const queryClient = useQueryClient()
   const path = { params: { path: { id: tenantId } } }
   const queryKey = ['platform', 'tenant-admins', tenantId]
-  const admins = useQuery({ queryKey, queryFn: () => call(api.GET('/api/platform/tenants/{id}/admins', path)) })
+  const [page, setPage] = useState(1)
+  const admins = useQuery({
+    queryKey: [...queryKey, page],
+    queryFn: () => call(api.GET('/api/platform/tenants/{id}/admins', { params: { path: { id: tenantId }, query: { page } } })),
+  })
   const [email, setEmail] = useState('')
   const invite = useMutation({
     mutationFn: () => call(api.POST('/api/platform/tenants/{id}/admins', { ...path, body: { email } })),
@@ -46,14 +51,17 @@ function TenantAdmins({ tenantId }: { tenantId: string }) {
         <p role="status" className="text-sm text-muted-foreground">Loading…</p>
       ) : admins.isError ? (
         <p role="alert" className="text-sm">The Admins could not be loaded.</p>
-      ) : admins.data.length === 0 ? (
+      ) : admins.data.totalCount === 0 ? (
         <p className="text-sm text-muted-foreground">No Admins yet. Invite the first one.</p>
       ) : (
-        <ul className="flex flex-col gap-1 text-sm">
-          {admins.data.map((admin) => (
-            <li key={admin.id}>{admin.email}</li>
-          ))}
-        </ul>
+        <>
+          <ul className="flex flex-col gap-1 text-sm">
+            {admins.data.items.map((admin) => (
+              <li key={admin.id}>{admin.email}</li>
+            ))}
+          </ul>
+          <Pagination page={admins.data.page} pageSize={admins.data.pageSize} totalCount={admins.data.totalCount} onPageChange={setPage} />
+        </>
       )}
       <form aria-label="Invite an Admin" className="flex items-start gap-2" onSubmit={handleSubmit}>
         <div className="flex-1">

@@ -45,3 +45,8 @@ export async function lastBody(pathname: string, method: string): Promise<unknow
   if (!request) throw new Error(`No ${method} request to ${pathname}`)
   return request.clone().json()
 }
+
+/** A one-page paged response ({ items, page, pageSize, totalCount }) holding every item. */
+export function paged<T>(items: T[], page = 1, pageSize = 20, totalCount = items.length) {
+  return { items, page, pageSize, totalCount }
+}

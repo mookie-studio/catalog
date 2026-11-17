@@ -868,6 +868,24 @@ export interface components {
         NullableOfInquiryStatus: "Open" | "Handled" | null;
         /** @enum {unknown} */
         NullableOfProductStatus: "Draft" | "Published" | "Archived" | null;
+        PagedResponseOfAdminInvitationAdminResponse: {
+            items: components["schemas"]["AdminInvitationAdminResponse"][];
+            /** Format: int32 */
+            page: number;
+            /** Format: int32 */
+            pageSize: number;
+            /** Format: int32 */
+            totalCount: number;
+        };
+        PagedResponseOfAttributeDefinitionResponse: {
+            items: components["schemas"]["AttributeDefinitionResponse"][];
+            /** Format: int32 */
+            page: number;
+            /** Format: int32 */
+            pageSize: number;
+            /** Format: int32 */
+            totalCount: number;
+        };
         PagedResponseOfInquiryResponse: {
             items: components["schemas"]["InquiryResponse"][];
             /** Format: int32 */
@@ -1488,7 +1506,10 @@ export interface operations {
     };
     ListAdmins: {
         parameters: {
-            query?: never;
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -1501,7 +1522,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AdminInvitationAdminResponse"][];
+                    "application/json": components["schemas"]["PagedResponseOfAdminInvitationAdminResponse"];
                 };
             };
         };
@@ -1945,7 +1966,10 @@ export interface operations {
     };
     ListAttributeDefinitions: {
         parameters: {
-            query?: never;
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -1958,7 +1982,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AttributeDefinitionResponse"][];
+                    "application/json": components["schemas"]["PagedResponseOfAttributeDefinitionResponse"];
                 };
             };
         };
@@ -2679,7 +2703,10 @@ export interface operations {
     };
     PlatformListAdmins: {
         parameters: {
-            query?: never;
+            query?: {
+                page?: number;
+                pageSize?: number;
+            };
             header?: never;
             path: {
                 id: string;
@@ -2694,7 +2721,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AdminInvitationAdminResponse"][];
+                    "application/json": components["schemas"]["PagedResponseOfAdminInvitationAdminResponse"];
                 };
             };
             /** @description Not Found */

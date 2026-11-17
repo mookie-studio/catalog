@@ -1,17 +1,25 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { type FormEvent, useState } from 'react'
+import { useSearchParams } from 'react-router'
 import { api } from '@/api/client'
 import { ApiProblem, call } from '@/api/problem'
 import { ConfirmPanel } from '@/components/ConfirmPanel'
+import { Pagination } from '@/components/Pagination'
 import { Field } from '@/components/Field'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useCurrentUser } from '@/features/auth/current-user'
+import { pageParam, pageSearch } from '@/lib/page-param'
 
 const adminsQueryKey = ['admin', 'admins'] as const
 
 export function TeamPage() {
-  const admins = useQuery({ queryKey: adminsQueryKey, queryFn: () => call(api.GET('/api/admin/admins')) })
+  const [searchParams] = useSearchParams()
+  const page = pageParam(searchParams)
+  const admins = useQuery({
+    queryKey: [...adminsQueryKey, page],
+    queryFn: () => call(api.GET('/api/admin/admins', { params: { query: { page } } })),
+  })
   const me = useCurrentUser()
 
   return (
@@ -24,11 +32,14 @@ export function TeamPage() {
       ) : admins.isError ? (
         <p role="alert">The Admins could not be loaded.</p>
       ) : (
-        <ul aria-label="Admins" className="flex flex-col gap-2">
-          {admins.data.map((admin) => (
-            <AdminRow key={admin.id} admin={admin} isMe={admin.userId === me.data?.userId} />
-          ))}
-        </ul>
+        <>
+          <ul aria-label="Admins" className="flex flex-col gap-2">
+            {admins.data.items.map((admin) => (
+              <AdminRow key={admin.id} admin={admin} isMe={admin.userId === me.data?.userId} />
+            ))}
+          </ul>
+          <Pagination page={admins.data.page} pageSize={admins.data.pageSize} totalCount={admins.data.totalCount} hrefFor={pageSearch} />
+        </>
       )}
     </main>
   )

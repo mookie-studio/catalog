@@ -1,4 +1,5 @@
 using Catalog.Api.Data;
+using Catalog.Api.Infrastructure;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,20 +13,23 @@ public static class ListTenantAdmins
         return platform;
     }
 
-    private static async Task<Results<Ok<List<AdminInvitation.AdminResponse>>, NotFound>> Handle(
-        Guid id, CatalogDbContext db, CancellationToken ct)
+    private static async Task<Results<Ok<PagedResponse<AdminInvitation.AdminResponse>>, NotFound>> Handle(
+        Guid id, int? page, int? pageSize, CatalogDbContext db, CancellationToken ct)
     {
         if (!await db.Tenants.AnyAsync(t => t.Id == id, ct))
         {
             return TypedResults.NotFound();
         }
 
-        var admins = await db.AdminMemberships
-            .Where(m => m.TenantId == id)
-            .OrderBy(m => m.Email)
+        var paging = Paging.From(page, pageSize);
+        var memberships = db.AdminMemberships.Where(m => m.TenantId == id);
+        var totalCount = await memberships.CountAsync(ct);
+        var admins = await memberships
+            .OrderBy(m => m.Email).ThenBy(m => m.Id)
+            .Skip(paging.Skip).Take(paging.PageSize)
             .Select(m => new AdminInvitation.AdminResponse(m.Id, m.UserId, m.Email))
             .ToListAsync(ct);
 
-        return TypedResults.Ok(admins);
+        return TypedResults.Ok(new PagedResponse<AdminInvitation.AdminResponse>(admins, paging.Page, paging.PageSize, totalCount));
     }
 }

@@ -20,8 +20,8 @@ public sealed class PlatformAdminInvitationTests(CatalogApiFactory factory) : Ap
         Assert.Equal(Factory.IdentityProvider.UserIdFor("owner@acme.test"), admin.UserId);
         Assert.Contains("owner@acme.test", Factory.IdentityProvider.Invitations);
 
-        var admins = await client.GetFromJsonAsync<List<AdminBody>>($"/api/platform/tenants/{tenant.Id}/admins");
-        Assert.Equal(admin, Assert.Single(admins!));
+        var admins = await client.GetFromJsonAsync<PagedBody<AdminBody>>($"/api/platform/tenants/{tenant.Id}/admins");
+        Assert.Equal(admin, Assert.Single(admins!.Items));
     }
 
     [Fact]
@@ -47,7 +47,7 @@ public sealed class PlatformAdminInvitationTests(CatalogApiFactory factory) : Ap
         var response = await client.PostAsJsonAsync($"/api/platform/tenants/{second.Id}/admins", new { email = "owner@acme.test" });
 
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
-        Assert.Empty((await client.GetFromJsonAsync<List<AdminBody>>($"/api/platform/tenants/{second.Id}/admins"))!);
+        Assert.Empty((await client.GetFromJsonAsync<PagedBody<AdminBody>>($"/api/platform/tenants/{second.Id}/admins"))!.Items);
     }
 
     [Theory]

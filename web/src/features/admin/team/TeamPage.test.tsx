@@ -2,7 +2,7 @@ import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { adminSession, created, noContent } from '@/test/admin'
-import { json, lastBody, mockApi, problem, requestsTo } from '@/test/api'
+import { json, lastBody, mockApi, paged, problem, requestsTo } from '@/test/api'
 import { renderApp } from '@/test/render'
 
 vi.mock('@/features/auth/session', () => import('@/test/session'))
@@ -14,7 +14,7 @@ function teamApi(routes: Record<string, unknown> = {}) {
   let admins = [me, colleague]
   mockApi({
     ...adminSession,
-    'GET /api/admin/admins': () => json(admins),
+    'GET /api/admin/admins': () => json(paged(admins)),
     'POST /api/admin/admins': async (_url: URL, request: Request) => {
       const { email } = (await request.json()) as { email: string }
       const admin = { id: 'm3', userId: 'u3', email }
@@ -70,5 +70,20 @@ describe('admin team', () => {
 
     await vi.waitFor(() => expect(screen.queryByRole('listitem', { name: 'colleague@test' })).not.toBeInTheDocument())
     expect(requestsTo('/api/admin/admins/m2', 'DELETE')).toHaveLength(1)
+  })
+})
+
+describe('paging the team', () => {
+  it('requests the page in the URL and shows the pagination', async () => {
+    mockApi({
+      ...adminSession,
+      'GET /api/admin/admins': (url: URL) => json(paged([colleague], Number(url.searchParams.get('page')), 20, 25)),
+    })
+
+    renderApp('/admin/team?page=2')
+
+    expect(await screen.findByText('Page 2 of 2')).toBeInTheDocument()
+    expect(requestsTo('/api/admin/admins').at(-1)!.url).toContain('page=2')
+    expect(screen.getByRole('link', { name: 'Previous' })).toHaveAttribute('href', '/admin/team')
   })
 })

@@ -29,7 +29,7 @@ supabase/                     # local Supabase configuration
 - **Data:** a single `CatalogDbContext` with entities in `Data/`. Tenant-scoped entities implement `ITenantScoped` (a `TenantId` property) and get a global query filter driven by `ICurrentTenant` (ADR 0003). Never call `IgnoreQueryFilters` outside `/api/platform`.
 - **Ids** are `Guid` created with `Guid.CreateVersion7()`. **Dates** are `DateTimeOffset` in UTC.
 - **Errors** are ProblemDetails: `TypedResults.ValidationProblem` for invalid input (400), `TypedResults.NotFound` for missing or other-tenant resources (404, never 403, so nothing leaks), `TypedResults.Conflict` for uniqueness violations (409).
-- **Pagination:** `page` (1-based) and `pageSize` (default 20, max 50) query parameters; responses are `{ items, page, pageSize, totalCount }`.
+- **Pagination:** `page` (1-based) and `pageSize` (default 20, max 50) query parameters; responses are `{ items, page, pageSize, totalCount }`. Every list endpoint is paginated. The only exceptions are the Category trees and the public filters, which are returned whole (a tree cannot be split into pages). Web screens that need every item use `fetchAllPages` in `web/src/api/paging.ts`.
 - **Code names:** `Tenant`, `AdminMembership`, `Product`, `ProductStatus` (`Draft`, `Published`, `Archived`), `AttributeDefinition`, `AttributeType`, `AttributeOption`, `Category`, `ProductImage`, `TenantProfile` (fields on `Tenant`), `Inquiry`, `InquiryStatus` (`Open`, `Handled`), `OldTenantSlug`, `OldProductSlug`.
 - **Migrations:** add an EF Core migration in the same PR as the schema change. Never apply migrations at start-up.
 

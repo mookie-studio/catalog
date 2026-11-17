@@ -11,7 +11,7 @@ public sealed class AdminAttributeOptionTests(CatalogApiFactory factory) : ApiTe
         var a = await CreateTenantWithAdmin("tenant-a");
         await CreateDefinition(a.Client, "Size", "OptionList", allowsMultiple: true, options: ["S", "M", "L", "XL"]);
 
-        var definition = Assert.Single((await a.Client.GetFromJsonAsync<List<DefinitionBody>>("/api/admin/attribute-definitions"))!);
+        var definition = Assert.Single((await a.Client.GetFromJsonAsync<PagedBody<DefinitionBody>>("/api/admin/attribute-definitions"))!.Items);
 
         Assert.Equal(["S", "M", "L", "XL"], definition.Options.Select(o => o.Value));
         Assert.Equal([0, 1, 2, 3], definition.Options.Select(o => o.Position));

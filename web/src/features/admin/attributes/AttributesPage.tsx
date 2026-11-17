@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { type FormEvent, useState } from 'react'
+import { type FormEvent, useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router'
 import { api } from '@/api/client'
 import { ApiProblem, call, hasFieldErrors } from '@/api/problem'
 import { ConfirmPanel } from '@/components/ConfirmPanel'
 import { Field } from '@/components/Field'
+import { Pagination } from '@/components/Pagination'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,15 +15,24 @@ import {
   type AttributeType,
   attributeDefinitionsQueryKey,
   attributeTypes,
-  useAttributeDefinitions,
+  useAttributeDefinitionsPage,
 } from '@/features/admin/attributes/attributes-api'
 import { useConfirmedDelete } from '@/features/admin/attributes/useConfirmedDelete'
+import { pageParam, pageSearch } from '@/lib/page-param'
 
 const typeLabel = (type: AttributeType) => attributeTypes.find((t) => t.value === type)?.label ?? type
 const usedBy = (count: number) => `${count} ${count === 1 ? 'product uses' : 'products use'} it. Deleting it removes those values from them.`
 
 export function AttributesPage() {
-  const definitions = useAttributeDefinitions()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const page = pageParam(searchParams)
+  const definitions = useAttributeDefinitionsPage(page)
+
+  // After deleting the last definition of a page, go back one page.
+  const emptyPage = definitions.data?.items.length === 0 && page > 1
+  useEffect(() => {
+    if (emptyPage) setSearchParams(pageSearch(page - 1), { replace: true })
+  }, [emptyPage, page, setSearchParams])
 
   return (
     <main className="flex max-w-3xl flex-col gap-6">
@@ -34,16 +45,24 @@ export function AttributesPage() {
         <p role="status" className="text-muted-foreground">Loading…</p>
       ) : definitions.isError ? (
         <p role="alert">The Attribute Definitions could not be loaded.</p>
-      ) : definitions.data.length === 0 ? (
+      ) : definitions.data.totalCount === 0 ? (
         <p className="text-muted-foreground">No Attribute Definitions yet.</p>
       ) : (
-        <ul className="flex flex-col gap-4">
-          {definitions.data.map((definition) => (
-            <li key={definition.id}>
-              <DefinitionCard definition={definition} />
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="flex flex-col gap-4">
+            {definitions.data.items.map((definition) => (
+              <li key={definition.id}>
+                <DefinitionCard definition={definition} />
+              </li>
+            ))}
+          </ul>
+          <Pagination
+            page={definitions.data.page}
+            pageSize={definitions.data.pageSize}
+            totalCount={definitions.data.totalCount}
+            hrefFor={pageSearch}
+          />
+        </>
       )}
     </main>
   )
@@ -53,6 +72,7 @@ function CreateDefinitionForm() {
   const queryClient = useQueryClient()
   const empty = { name: '', type: 'Text' as AttributeType, isFilterable: false, allowsMultiple: false }
   const [values, setValues] = useState(empty)
+  const [created, setCreated] = useState<string | null>(null)
   const create = useMutation({
     mutationFn: () =>
       call(
@@ -60,8 +80,10 @@ function CreateDefinitionForm() {
           body: { ...values, allowsMultiple: values.type === 'OptionList' && values.allowsMultiple },
         }),
       ),
-    onSuccess: () => {
+    onSuccess: (definition) => {
       setValues(empty)
+      // The list is ordered by name, so the new definition may land on another page.
+      setCreated(definition.name)
       queryClient.invalidateQueries({ queryKey: attributeDefinitionsQueryKey })
     },
   })
@@ -69,6 +91,7 @@ function CreateDefinitionForm() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setCreated(null)
     create.mutate()
   }
 
@@ -107,10 +130,15 @@ function CreateDefinitionForm() {
           {create.error.message}
         </p>
       )}
-      <div className="sm:col-span-2">
+      <div className="flex items-center gap-3 sm:col-span-2">
         <Button type="submit" disabled={create.isPending}>
           Add attribute
         </Button>
+        {created && (
+          <span role="status" className="text-sm text-muted-foreground">
+            {created} added.
+          </span>
+        )}
       </div>
     </form>
   )
