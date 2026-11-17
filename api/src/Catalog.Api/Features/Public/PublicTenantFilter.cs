@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Catalog.Api.Features.Public;
 
 /// <summary>
-/// Resolves the current Tenant of /api/public/{tenantSlug} routes from the Tenant slug.
+/// Resolves the current Tenant of /api/public/{tenantSlug} routes from the Tenant slug or an Old Tenant slug.
 /// Unknown and Deactivated tenants are 404, so nothing about them leaks.
 /// </summary>
 public sealed class PublicTenantFilter : IEndpointFilter
@@ -17,6 +17,12 @@ public sealed class PublicTenantFilter : IEndpointFilter
         var tenantId = await db.Tenants
             .Where(t => t.Slug == slug && t.IsActive)
             .Select(t => (Guid?)t.Id)
+            .SingleOrDefaultAsync(http.RequestAborted);
+
+        // An Old Tenant slug resolves to its tenant (ADR 0009); responses carry the current slug.
+        tenantId ??= await db.OldTenantSlugs
+            .Where(o => o.Slug == slug)
+            .Join(db.Tenants.Where(t => t.IsActive), o => o.TenantId, t => t.Id, (o, t) => (Guid?)t.Id)
             .SingleOrDefaultAsync(http.RequestAborted);
 
         if (tenantId is null)

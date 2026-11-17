@@ -24,6 +24,8 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
     public DbSet<ProductImage> ProductImages => Set<ProductImage>();
+    public DbSet<OldProductSlug> OldProductSlugs => Set<OldProductSlug>();
+    public DbSet<OldTenantSlug> OldTenantSlugs => Set<OldTenantSlug>();
     public DbSet<Inquiry> Inquiries => Set<Inquiry>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -125,6 +127,22 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
             inquiry.HasOne<Tenant>().WithMany().HasForeignKey(i => i.TenantId).OnDelete(DeleteBehavior.Restrict);
             inquiry.HasOne<Product>().WithMany().HasForeignKey(i => i.ProductId).OnDelete(DeleteBehavior.Restrict);
             inquiry.HasIndex(i => new { i.TenantId, i.Status, i.CreatedAt });
+        });
+
+        modelBuilder.Entity<OldProductSlug>(old =>
+        {
+            old.Property(o => o.Slug).HasMaxLength(Product.SlugMaxLength).IsRequired();
+            old.HasOne<Product>().WithMany().HasForeignKey(o => o.ProductId).OnDelete(DeleteBehavior.Cascade);
+            old.HasIndex(o => new { o.TenantId, o.Slug }).IsUnique();
+            old.HasIndex(o => o.ProductId);
+        });
+
+        modelBuilder.Entity<OldTenantSlug>(old =>
+        {
+            old.Property(o => o.Slug).HasMaxLength(Tenant.SlugMaxLength).IsRequired();
+            old.HasOne<Tenant>().WithMany().HasForeignKey(o => o.TenantId).OnDelete(DeleteBehavior.Cascade);
+            old.HasIndex(o => o.Slug).IsUnique();
+            old.HasIndex(o => o.TenantId);
         });
 
         modelBuilder.HasDbFunction(typeof(CatalogDbContext).GetMethod(nameof(JsonbExtractPathText))!)

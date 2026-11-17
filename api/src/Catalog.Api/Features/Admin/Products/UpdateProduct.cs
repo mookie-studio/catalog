@@ -48,9 +48,15 @@ public static class UpdateProduct
             return Conflict("The SKU is already in use in this Tenant.", "sku");
         }
 
-        if (request.Slug != product.Slug && await db.Products.AnyAsync(p => p.Slug == request.Slug && p.Id != id, ct))
+        if (request.Slug != product.Slug)
         {
-            return Conflict("The Product slug is already in use in this Tenant.", "slug");
+            if (await db.Products.AnyAsync(p => p.Slug == request.Slug && p.Id != id, ct)
+                || await db.OldProductSlugs.AnyAsync(o => o.Slug == request.Slug && o.ProductId != id, ct))
+            {
+                return Conflict("The Product slug is already in use in this Tenant.", "slug");
+            }
+
+            await KeepOldSlugAsync(product, request.Slug!, db, ct);
         }
 
         product.Name = request.Name!.Trim();
@@ -68,6 +74,21 @@ public static class UpdateProduct
         }
 
         return TypedResults.Ok(await ProductResponse.LoadAsync(product, db, storage, ct));
+    }
+
+    /// <summary>
+    /// Reserves the previous slug for this product (ADR 0009); going back to one of its own Old slugs
+    /// makes it current again, so it stops being an Old slug.
+    /// </summary>
+    private static async Task KeepOldSlugAsync(Product product, string newSlug, CatalogDbContext db, CancellationToken ct)
+    {
+        var reused = await db.OldProductSlugs.SingleOrDefaultAsync(o => o.ProductId == product.Id && o.Slug == newSlug, ct);
+        if (reused is not null)
+        {
+            db.OldProductSlugs.Remove(reused);
+        }
+
+        db.OldProductSlugs.Add(new OldProductSlug { ProductId = product.Id, Slug = product.Slug });
     }
 
     private static Conflict<ProblemDetails> Conflict(string detail, string? field = null) =>

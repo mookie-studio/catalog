@@ -7,6 +7,7 @@ export type PublicProductItem = components['schemas']['ListPublicProductsItem']
 export type PublicFilter = components['schemas']['ListPublicFiltersFilter']
 export type CategoryNode = components['schemas']['CategoryNode']
 export type PublicProduct = components['schemas']['GetPublicProductResponse']
+export type PublicTenant = components['schemas']['GetPublicTenantResponse']
 export type PublicProductAttribute = components['schemas']['GetPublicProductAttribute']
 
 /** Thrown for a 404 so pages can show the not-found page. */
@@ -24,9 +25,11 @@ function unwrap<T>(data: T | undefined, response: Response): T {
 
 const retryUnlessNotFound = (failureCount: number, error: Error) => !(error instanceof NotFoundError) && failureCount < 1
 
+export const publicTenantKey = (tenantSlug: string) => ['public', tenantSlug, 'tenant'] as const
+
 export function usePublicTenant(tenantSlug: string) {
   return useQuery({
-    queryKey: ['public', tenantSlug, 'tenant'],
+    queryKey: publicTenantKey(tenantSlug),
     queryFn: async () => {
       const { data, response } = await api.GET('/api/public/{tenantSlug}', { params: { path: { tenantSlug } } })
       return unwrap(data, response)
@@ -84,9 +87,12 @@ export function usePublicCategories(tenantSlug: string) {
   })
 }
 
+export const publicProductKey = (tenantSlug: string, productSlug: string) =>
+  ['public', tenantSlug, 'product', productSlug] as const
+
 export function usePublicProduct(tenantSlug: string, productSlug: string) {
   return useQuery({
-    queryKey: ['public', tenantSlug, 'product', productSlug],
+    queryKey: publicProductKey(tenantSlug, productSlug),
     queryFn: async () => {
       const { data, response } = await api.GET('/api/public/{tenantSlug}/products/{productSlug}', {
         params: { path: { tenantSlug, productSlug } },
