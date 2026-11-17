@@ -33,6 +33,12 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
             tenant.Property(t => t.Slug).HasMaxLength(Tenant.SlugMaxLength).IsRequired();
             tenant.Property(t => t.IsActive).HasDefaultValue(true);
             tenant.HasIndex(t => t.Slug).IsUnique();
+            tenant.Property(t => t.Description).HasMaxLength(Tenant.DescriptionMaxLength);
+            tenant.Property(t => t.ContactEmail).HasMaxLength(Tenant.ContactEmailMaxLength);
+            tenant.Property(t => t.Phone).HasMaxLength(Tenant.PhoneMaxLength);
+            tenant.Property(t => t.Address).HasMaxLength(Tenant.AddressMaxLength);
+            tenant.Property(t => t.WebsiteUrl).HasMaxLength(Tenant.WebsiteUrlMaxLength);
+            tenant.Property(t => t.BrandColor).HasMaxLength(Tenant.BrandColorLength);
         });
 
         modelBuilder.Entity<AdminMembership>(membership =>

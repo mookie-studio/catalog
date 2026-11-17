@@ -132,6 +132,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/tenant/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetTenantProfile"];
+        put: operations["UpdateTenantProfile"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/admins": {
         parameters: {
             query?: never;
@@ -582,6 +598,12 @@ export interface components {
         GetPublicTenantResponse: {
             name: string;
             slug: string;
+            description: null | string;
+            contactEmail: null | string;
+            phone: null | string;
+            address: null | string;
+            websiteUrl: null | string;
+            brandColor: null | string;
         };
         HttpValidationProblemDetails: {
             type?: null | string;
@@ -721,6 +743,24 @@ export interface components {
         };
         SetProductCategoriesRequest: {
             categoryIds: null | string[];
+        };
+        TenantProfileRequest: {
+            description: null | string;
+            contactEmail: null | string;
+            phone: null | string;
+            address: null | string;
+            websiteUrl: null | string;
+            brandColor: null | string;
+        };
+        TenantProfileResponse: {
+            name: string;
+            slug: string;
+            description: null | string;
+            contactEmail: null | string;
+            phone: null | string;
+            address: null | string;
+            websiteUrl: null | string;
+            brandColor: null | string;
         };
         TenantResponse: {
             /** Format: uuid */
@@ -938,6 +978,73 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GetCurrentTenantResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetTenantProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TenantProfileResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UpdateTenantProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TenantProfileRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TenantProfileResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["HttpValidationProblemDetails"];
                 };
             };
             /** @description Not Found */

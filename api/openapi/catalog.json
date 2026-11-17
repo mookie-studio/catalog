@@ -276,6 +276,70 @@
         }
       }
     },
+    "/api/admin/tenant/profile": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "GetTenantProfile",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TenantProfileResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "UpdateTenantProfile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TenantProfileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TenantProfileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/admin/admins": {
       "get": {
         "tags": [
@@ -2059,7 +2123,13 @@
       "GetPublicTenantResponse": {
         "required": [
           "name",
-          "slug"
+          "slug",
+          "description",
+          "contactEmail",
+          "phone",
+          "address",
+          "websiteUrl",
+          "brandColor"
         ],
         "type": "object",
         "properties": {
@@ -2068,6 +2138,42 @@
           },
           "slug": {
             "type": "string"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "contactEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "phone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "address": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "websiteUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "brandColor": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -2596,6 +2702,112 @@
               "type": "string",
               "format": "uuid"
             }
+          }
+        }
+      },
+      "TenantProfileRequest": {
+        "required": [
+          "description",
+          "contactEmail",
+          "phone",
+          "address",
+          "websiteUrl",
+          "brandColor"
+        ],
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "contactEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "phone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "address": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "websiteUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "brandColor": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "TenantProfileResponse": {
+        "required": [
+          "name",
+          "slug",
+          "description",
+          "contactEmail",
+          "phone",
+          "address",
+          "websiteUrl",
+          "brandColor"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "contactEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "phone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "address": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "websiteUrl": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "brandColor": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
