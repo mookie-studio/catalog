@@ -31,6 +31,12 @@ public sealed class InMemoryImageStorage : IImageStorage
         return Task.CompletedTask;
     }
 
+    public Task CopyAsync(string sourceKey, string targetKey, CancellationToken ct)
+    {
+        _files[targetKey] = _files[sourceKey];
+        return Task.CompletedTask;
+    }
+
     public string GetPublicUrl(string key) => $"https://images.test/{key}";
 
     public static string KeyOf(string url) => url["https://images.test/".Length..];

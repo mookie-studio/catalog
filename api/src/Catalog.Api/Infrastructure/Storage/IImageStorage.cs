@@ -7,5 +7,8 @@ public interface IImageStorage
 
     Task DeleteAsync(string key, CancellationToken ct);
 
+    /// <summary>Copies a stored object to a new key (used when a Product is duplicated).</summary>
+    Task CopyAsync(string sourceKey, string targetKey, CancellationToken ct);
+
     string GetPublicUrl(string key);
 }

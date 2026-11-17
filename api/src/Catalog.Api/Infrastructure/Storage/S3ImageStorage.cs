@@ -44,6 +44,15 @@ public sealed class S3ImageStorage : IImageStorage, IDisposable
     public async Task DeleteAsync(string key, CancellationToken ct) =>
         await _client.DeleteObjectAsync(new DeleteObjectRequest { BucketName = _options.Bucket, Key = key }, ct);
 
+    public async Task CopyAsync(string sourceKey, string targetKey, CancellationToken ct) =>
+        await _client.CopyObjectAsync(new CopyObjectRequest
+        {
+            SourceBucket = _options.Bucket,
+            SourceKey = sourceKey,
+            DestinationBucket = _options.Bucket,
+            DestinationKey = targetKey,
+        }, ct);
+
     public string GetPublicUrl(string key) => $"{_options.PublicBaseUrl?.TrimEnd('/')}/{key}";
 
     public void Dispose() => _client.Dispose();
@@ -58,6 +67,8 @@ public sealed class UnconfiguredImageStorage : IImageStorage
         throw new InvalidOperationException(Message);
 
     public Task DeleteAsync(string key, CancellationToken ct) => throw new InvalidOperationException(Message);
+
+    public Task CopyAsync(string sourceKey, string targetKey, CancellationToken ct) => throw new InvalidOperationException(Message);
 
     public string GetPublicUrl(string key) => throw new InvalidOperationException(Message);
 }

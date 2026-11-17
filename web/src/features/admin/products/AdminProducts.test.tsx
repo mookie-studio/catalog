@@ -209,3 +209,24 @@ describe('editing a product', () => {
     await vi.waitFor(() => expect(lastListRequest().searchParams.get('featured')).toBe('true'))
   })
 })
+
+describe('duplicating a product', () => {
+  it('creates a copy and opens its edit page', async () => {
+    const copy = product({ id: 'p2', name: 'Hammer drill (copy)', sku: 'HD-1-COPY', slug: 'hammer-drill-copy', status: 'Draft' })
+    mockApi({
+      ...adminSession,
+      'GET /api/admin/products/p1': product({ status: 'Published' }),
+      'POST /api/admin/products/p1/duplicate': () => created(copy),
+      'GET /api/admin/products/p2': copy,
+    })
+    const router = renderApp('/admin/products/p1')
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Duplicate' }))
+
+    expect(await screen.findByRole('heading', { name: 'Hammer drill (copy)' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/admin/products/p2')
+    expect(screen.getByText('Copy created as Draft')).toBeInTheDocument()
+    expect(screen.getByLabelText('SKU')).toHaveValue('HD-1-COPY')
+    expect(requestsTo('/api/admin/products/p1/duplicate', 'POST')).toHaveLength(1)
+  })
+})

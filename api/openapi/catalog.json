@@ -1016,6 +1016,40 @@
         }
       }
     },
+    "/api/admin/products/{id}/duplicate": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "DuplicateProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/admin/products/export": {
       "get": {
         "tags": [

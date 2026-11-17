@@ -17,7 +17,7 @@ public sealed class S3ImageStorageTests
     private const int S3Port = 9090;
 
     [SkippableFact]
-    public async Task Saves_serves_from_the_public_URL_and_deletes()
+    public async Task Saves_serves_from_the_public_URL_copies_and_deletes()
     {
         Skip.If(
             !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("CATALOG_TEST_DB")) && !DockerIsAvailable(),
@@ -52,6 +52,12 @@ public sealed class S3ImageStorageTests
         Assert.Equal(HttpStatusCode.OK, served.StatusCode);
         Assert.Equal("image/png", served.Content.Headers.ContentType?.MediaType);
         Assert.Equal(content, await served.Content.ReadAsByteArrayAsync());
+
+        var copyKey = $"{Guid.CreateVersion7()}/{Guid.CreateVersion7()}/copy.png";
+        await storage.CopyAsync(key, copyKey, CancellationToken.None);
+        var copy = await http.GetAsync(storage.GetPublicUrl(copyKey));
+        Assert.Equal(HttpStatusCode.OK, copy.StatusCode);
+        Assert.Equal(content, await copy.Content.ReadAsByteArrayAsync());
 
         await storage.DeleteAsync(key, CancellationToken.None);
 
