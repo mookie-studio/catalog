@@ -5,15 +5,15 @@ portal. No CLI is needed. It ends with a first deploy and a checklist to verify 
 `docs/deployment.md` is the reference of every secret, variable and setting; this guide is the order
 in which to create them.
 
-Everything stays on free tiers (ADR 0005), except Azure, which needs a subscription with a payment
-method but stays inside the monthly free grant of Azure Container Apps for a demo.
+Everything stays on free tiers (ADR 0005, ADR 0011). Azure needs a subscription, but the API runs on
+App Service's Free (F1) plan.
 
 | Piece | Provider | What it hosts |
 | --- | --- | --- |
 | Database and identity | Supabase | PostgreSQL, Supabase Auth (sign-in, invitations) |
 | Images | Cloudflare R2 | Product images, served from a public URL |
 | SPA | Cloudflare Pages | The React web app |
-| API | Azure Container Apps | The .NET API container |
+| API | Azure App Service (Free F1) | The .NET API, deployed as code |
 | CI/CD | GitHub Actions | Builds, migrations and deploys on merge to `main` |
 
 ## 0. Before you start
@@ -37,8 +37,8 @@ Pick the names now so they match everywhere. This guide uses:
 | R2 bucket | `catalog-images` |
 | Pages project | `catalog-web` (gives `https://catalog-web.pages.dev`) |
 | Azure resource group | `catalog-rg` |
-| Container App | `catalog-api` |
-| Container Apps environment | `catalog-env` |
+| App Service web app | `catalog-api` (gives `https://catalog-api.azurewebsites.net`) |
+| App Service plan | `catalog-plan` (Linux, Free F1) |
 
 The SPA domain (`https://<pages-project>.pages.dev`) and the API URL are needed by other steps, so the
 order below matters: Supabase, R2, Pages, Azure, GitHub, then the first deploy.
@@ -60,7 +60,7 @@ browser's address bar (`/project/<project-ref>`). **Save as `SUPABASE_URL`** and
 
 ### 1.2 Database connection string
 
-GitHub Actions runners and Azure Container Apps reach the internet over IPv4, and Supabase's direct
+GitHub Actions runners and Azure App Service reach the internet over IPv4, and Supabase's direct
 database host is IPv6 only. Use the **Session pooler**, which works over IPv4.
 
 1. Click **Connect** at the top of the project page.
@@ -199,102 +199,73 @@ Do not connect the project to Git: GitHub Actions deploys it.
    - **Account Resources**: `Include` · your account.
    - Click **Continue to summary** → **Create Token** and copy it. **Save as `CLOUDFLARE_API_TOKEN`**.
 
-## 4. Azure Container Apps (API)
+## 4. Azure App Service (API)
+
+The API runs on App Service's free plan as code, not as a container (ADR 0011).
 
 ### 4.1 Resource group
 
 1. Open https://portal.azure.com, search for **Resource groups** → **Create**.
 2. **Subscription**: yours. **Resource group**: `catalog-rg`. **Region**: for example West Europe.
-3. **Review + create** → **Create**. **Save as `AZURE_RESOURCE_GROUP`**.
+3. **Review + create** → **Create**.
 
-### 4.2 Container App
+### 4.2 Web app
 
-The image does not exist yet (GitHub Actions builds it on the first deploy), so the app starts with
-Microsoft's quickstart image.
-
-1. Search for **Container Apps** → **Create** → **Container App**.
+1. Search for **App Services** → **Create** → **Web App**.
 2. **Basics**:
-   - **Resource group**: `catalog-rg`. **Container app name**: `catalog-api`. **Save as
-     `AZURE_CONTAINER_APP_NAME`**.
-   - **Deployment source**: Container image. **Region**: the same as the resource group.
-   - **Container Apps environment**: **Create new** → **Environment name** `catalog-env`.
-     - **Basics**: **Environment type**: Consumption only (if offered; otherwise Workload profiles
-       with the Consumption profile; both include the free monthly grant). Zone redundancy: Disabled.
-     - **Monitoring**: **Logs destination**: **Azure Monitor** or **Don't save logs**. Avoid "Azure Log
-       Analytics", which bills per GB ingested.
-     - **Networking**: public network access, no virtual network.
-     - Click **Create**.
-3. **Container**: check **Use quickstart image**.
-4. **Ingress**: **Ingress** enabled, **Ingress traffic**: Accepting traffic from anywhere, **Ingress
-   type**: HTTP, **Target port**: `80` (the quickstart image's port; it changes to 8080 in step 4.6).
+   - **Resource group**: `catalog-rg`.
+   - **Name**: `catalog-api` (it must be unique in Azure; if it is taken, pick another and use it
+     everywhere below). **Save as `AZURE_WEBAPP_NAME`**.
+   - **Publish**: **Code**. **Runtime stack**: **.NET 10 (LTS)**. **Operating System**: **Linux**.
+   - **Region**: the same as the resource group.
+   - **Linux Plan**: **Create new** → `catalog-plan`. **Pricing plan**: **Free F1** (open **Explore
+     pricing plans** if it is not listed and pick **Free F1** under Dev/Test).
+3. **Deployment**: leave **Continuous deployment** disabled (GitHub Actions deploys) and **Basic
+   authentication** disabled.
+4. **Monitoring**: **Enable Application Insights**: No (it is not needed and can cost money).
 5. **Review + create** → **Create**. Wait for the deployment, then **Go to resource**.
-6. On **Overview**, copy the **Application Url**, for example
-   `https://catalog-api.<random>.westeurope.azurecontainerapps.io`. **Save as `VITE_API_URL`**. Open
-   it: the quickstart page proves the app is reachable.
+6. On **Overview**, copy **Default domain**, for example `catalog-api.azurewebsites.net`, and add
+   `https://` in front. **Save as `VITE_API_URL`**. Opening it now shows App Service's placeholder page.
 
-If the portal reports that `Microsoft.App` is not registered, go to **Subscriptions** → your
-subscription → **Settings** → **Resource providers**, select `Microsoft.App` and click **Register**,
+If the portal reports that `Microsoft.Web` is not registered, go to **Subscriptions** → your
+subscription → **Settings** → **Resource providers**, select `Microsoft.Web` and click **Register**,
 then retry.
 
-### 4.3 Scale (stay inside the free grant)
+### 4.3 General settings
 
-1. In the Container App, go to **Application** → **Scale** (or **Scale and replicas**) → **Edit and
-   deploy** → **Scale** tab.
-2. **Min replicas**: `0`. **Max replicas**: `1` (or 2). Click **Create**.
+1. Go to **Settings** → **Configuration** → **General settings**.
+2. **HTTPS Only**: On. **Minimum inbound TLS version**: 1.2. **FTP state**: FTPS only or Disabled.
+3. **Always on** is not available on the Free plan: the app unloads after about 20 idle minutes and
+   the first request afterwards takes several seconds.
+4. Click **Save**.
 
-With 0 minimum replicas the API scales to zero when idle, so the first request after a pause takes a
-few seconds.
+### 4.4 App settings
 
-### 4.4 Secrets
+1. Go to **Settings** → **Environment variables** → **App settings** tab.
+2. Add each row below with **+ Add** (note the double underscore `__` in the names), then click
+   **Apply** at the bottom and confirm. The app restarts with the new settings.
 
-1. Go to **Settings** → **Secrets** → **Add**. Add each secret below with **Type**: Container Apps
-   Secret. Names allow lowercase letters, digits and `-`.
-
-| Secret name | Value |
+| Name | Value |
 | --- | --- |
-| `db-connection` | `DATABASE_CONNECTION_STRING` |
-| `supabase-secret-key` | `SUPABASE_SECRET_KEY` |
-| `r2-access-key` | `R2_ACCESS_KEY` |
-| `r2-secret-key` | `R2_SECRET_KEY` |
+| `ConnectionStrings__Catalog` | `DATABASE_CONNECTION_STRING` |
+| `Auth__Issuer` | `https://<project-ref>.supabase.co/auth/v1` |
+| `Auth__JwksUrl` | `https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json` |
+| `Auth__PlatformAdminUserIds__0` | `PLATFORM_ADMIN_USER_ID` |
+| `Supabase__Url` | `SUPABASE_URL` |
+| `Supabase__ServiceRoleKey` | `SUPABASE_SECRET_KEY` |
+| `Supabase__InviteRedirectUrl` | `SPA_URL/accept-invite` |
+| `Storage__ServiceUrl` | `R2_ENDPOINT` |
+| `Storage__Bucket` | `R2_BUCKET` |
+| `Storage__AccessKey` | `R2_ACCESS_KEY` |
+| `Storage__SecretKey` | `R2_SECRET_KEY` |
+| `Storage__PublicBaseUrl` | `R2_PUBLIC_URL` |
+| `Storage__Region` | `auto` |
+| `Cors__AllowedOrigins__0` | `SPA_URL` (no trailing slash) |
 
-### 4.5 Environment variables
+App settings are encrypted at rest and never shown to the browser. The deploy workflow only replaces
+the code, so these settings survive every deploy.
 
-1. Go to **Application** → **Containers** → **Edit and deploy**.
-2. Select the container (`catalog-api`) in the list and click **Edit**. Open **Environment variables**.
-3. Add each row below with **+ Add**. For secrets choose **Source**: Reference a secret; otherwise
-   **Source**: Manual entry. Note the double underscore `__` in the names.
-
-| Name | Source | Value |
-| --- | --- | --- |
-| `ConnectionStrings__Catalog` | secret | `db-connection` |
-| `Auth__Issuer` | manual | `https://<project-ref>.supabase.co/auth/v1` |
-| `Auth__JwksUrl` | manual | `https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json` |
-| `Auth__PlatformAdminUserIds__0` | manual | `PLATFORM_ADMIN_USER_ID` |
-| `Supabase__Url` | manual | `SUPABASE_URL` |
-| `Supabase__ServiceRoleKey` | secret | `supabase-secret-key` |
-| `Supabase__InviteRedirectUrl` | manual | `SPA_URL/accept-invite` |
-| `Storage__ServiceUrl` | manual | `R2_ENDPOINT` |
-| `Storage__Bucket` | manual | `R2_BUCKET` |
-| `Storage__AccessKey` | secret | `r2-access-key` |
-| `Storage__SecretKey` | secret | `r2-secret-key` |
-| `Storage__PublicBaseUrl` | manual | `R2_PUBLIC_URL` |
-| `Storage__Region` | manual | `auto` |
-| `Cors__AllowedOrigins__0` | manual | `SPA_URL` (no trailing slash) |
-
-4. Set **CPU and memory** to **0.25 CPU cores, 0.5 Gi memory**.
-5. Click **Save**, then **Create** to deploy the new revision. (It still runs the quickstart image,
-   which ignores these variables.)
-
-The deploy workflow only changes the image, so these settings survive every deploy.
-
-### 4.6 Target port
-
-1. Go to **Settings** → **Ingress**, set **Target port** to `8080` and **Save**.
-
-The quickstart page stops answering now. That is expected: the real image, which listens on 8080,
-arrives with the first deploy.
-
-### 4.7 Identity for GitHub Actions (OIDC, no password)
+### 4.5 Identity for GitHub Actions (OIDC, no password)
 
 GitHub signs in to Azure with a federated credential, so no Azure password is stored anywhere.
 
@@ -309,13 +280,19 @@ GitHub signs in to Azure with a federated credential, so no Azure password is st
    - **Organization**: `mookie-studio`. **Repository**: `catalog`.
    - **Entity type**: Environment. **GitHub environment name**: `production`.
    - **Name**: `catalog-production`. Click **Add**.
-4. Give it access to the resource group: go to **Resource groups** → `catalog-rg` → **Access control
+4. Give it access to the web app only: go to **App Services** → `catalog-api` → **Access control
    (IAM)** → **Add** → **Add role assignment**.
-   - **Role**: open the **Privileged administrator roles** tab, select **Contributor**, **Next**.
+   - **Role**: search for **Website Contributor**, select it, **Next**.
    - **Members**: **Assign access to**: User, group, or service principal → **Select members** →
      search `catalog-github-deploy` → **Select** → **Review + assign** (twice).
 5. **Subscription id**: search for **Subscriptions** and copy your subscription's **Subscription ID**.
    **Save as `AZURE_SUBSCRIPTION_ID`**.
+
+### 4.6 Logs
+
+- **Monitoring** → **Log stream** shows the API's console output live (start-up errors appear here).
+- To keep logs for a while, go to **Monitoring** → **App Service logs**, set **Application logging**
+  to **File System**, retention a few days, and **Save**.
 
 ## 5. GitHub (secrets and variables)
 
@@ -338,7 +315,7 @@ GitHub signs in to Azure with a federated credential, so no Azure password is st
 
 ### 5.2 Repository variables
 
-The deploy workflows check `AZURE_CONTAINER_APP_NAME` and `CLOUDFLARE_PAGES_PROJECT` in `if:`
+The deploy workflows check `AZURE_WEBAPP_NAME` and `CLOUDFLARE_PAGES_PROJECT` in `if:`
 conditions, which only see repository variables, so create these as repository variables (not
 environment variables).
 
@@ -347,28 +324,14 @@ environment variables).
 
 | Variable | Value |
 | --- | --- |
-| `AZURE_RESOURCE_GROUP` | `catalog-rg` |
 | `VITE_API_URL` | `VITE_API_URL` (no trailing slash) |
 | `VITE_SUPABASE_URL` | `SUPABASE_URL` |
 | `VITE_SUPABASE_ANON_KEY` | the publishable key |
 | `CLOUDFLARE_PAGES_PROJECT` | `catalog-web` |
-| `AZURE_CONTAINER_APP_NAME` | `catalog-api` |
+| `AZURE_WEBAPP_NAME` | `AZURE_WEBAPP_NAME` |
 
-Setting `CLOUDFLARE_PAGES_PROJECT` and `AZURE_CONTAINER_APP_NAME` turns the deploy workflows on: from
+Setting `CLOUDFLARE_PAGES_PROJECT` and `AZURE_WEBAPP_NAME` turns the deploy workflows on: from
 now on every merge to `main` that touches `web/**` or `api/**` deploys.
-
-### 5.3 Let Azure pull the image
-
-The API image is published to GitHub Container Registry as `ghcr.io/mookie-studio/catalog/api`. New
-packages are private, and the Container App has no GitHub credentials. The image holds no secrets, so
-the simplest option is to make the package public after it is first pushed (step 6.1).
-
-If the organization does not allow public packages, either allow them (organization **Settings** →
-**Packages** → **Package creation** → check **Public**), or keep the package private and give the
-Container App credentials: create a classic personal access token with only `read:packages`, then in
-the Container App go to **Settings** → **Registries** → **Add**: **Registry type** Other, **Login
-server** `ghcr.io`, **Username** your GitHub login, **Password** the token. A classic token expires,
-so note its expiry date.
 
 ## 6. First deploy
 
@@ -378,13 +341,10 @@ The workflows run on merges to `main`, and can be started by hand.
 
 1. Open the repository → **Actions** → **Deploy API** → **Run workflow** → branch `main` → **Run
    workflow**.
-2. The run has three jobs: `image` (build and push), `migrate` (apply EF Core migrations to Supabase),
-   `deploy` (switch the Container App to the new image).
-3. As soon as `image` is green (first run only), make the package public: open
-   https://github.com/orgs/mookie-studio/packages → `catalog/api` → **Package settings** → **Danger
-   Zone** → **Change visibility** → **Public** → type the name to confirm.
-4. Wait for the run to finish. If `deploy` failed because the image could not be pulled (the package
-   was still private), click **Re-run failed jobs**.
+2. The run has three jobs: `build` (publish the API), `migrate` (apply EF Core migrations to Supabase)
+   and `deploy` (upload the code to the web app, then wait until `/api/health` answers).
+3. If `deploy` fails at sign-in, check the federated credential (environment `production`) and the
+   Website Contributor role. If it fails waiting for health, open the web app's **Log stream**.
 
 ### 6.2 SPA
 
@@ -398,9 +358,9 @@ Work through this list in order; each step depends on the previous one.
 
 1. **API is up and reaches the database.** Open `VITE_API_URL/api/health`. Expect `{"status":"ok"}`.
    A 503 means the database is unreachable: check `ConnectionStrings__Catalog` (session pooler,
-   password) and that the Supabase project is not paused. No answer at all: check the target port is
-   8080 and the revision is running (Container App → **Application** → **Revisions and replicas**; its
-   **Log stream** under **Monitoring** shows start-up errors).
+   password) and that the Supabase project is not paused. An application error page or no answer: open the web app's
+   **Monitoring** → **Log stream** for start-up errors, and check the app settings of step 4.4. The
+   first request after an idle period can take several seconds (Free plan).
 2. **Migrations ran.** In Supabase, **Table Editor** lists the Catalog tables and
    `__EFMigrationsHistory`.
 3. **SPA loads.** Open `SPA_URL`. Then open a deep link such as `SPA_URL/login` directly: it must load
@@ -426,7 +386,7 @@ When all seven pass, the infrastructure is done. Later deploys need no clicks: m
   members.
 - **Cloudflare R2**: 10 GB storage and generous request quotas free each month; r2.dev is rate limited.
 - **Cloudflare Pages**: free, 500 builds a month (deploys via Direct Upload count too).
-- **Azure Container Apps (Consumption)**: the first 180,000 vCPU-seconds, 360,000 GiB-seconds and
-  2 million requests each month are free; with 0.25 CPU, 0.5 Gi and min replicas 0, a demo stays within
-  them. Set a budget alert in **Cost Management** → **Budgets** to be sure.
-- **GitHub Container Registry**: free for public packages.
+- **Azure App Service Free (F1)**: 60 CPU minutes a day, 1 GB memory, 1 GB storage, no Always On
+  (the app unloads when idle). If the daily CPU quota runs out, the API stops answering until the
+  next day. Set a budget alert in **Cost Management** → **Budgets** anyway, in case the plan is ever
+  changed to a paid tier.
