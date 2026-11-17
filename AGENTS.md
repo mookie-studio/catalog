@@ -30,7 +30,7 @@ supabase/                     # local Supabase configuration
 - **Ids** are `Guid` created with `Guid.CreateVersion7()`. **Dates** are `DateTimeOffset` in UTC.
 - **Errors** are ProblemDetails: `TypedResults.ValidationProblem` for invalid input (400), `TypedResults.NotFound` for missing or other-tenant resources (404, never 403, so nothing leaks), `TypedResults.Conflict` for uniqueness violations (409).
 - **Pagination:** `page` (1-based) and `pageSize` (default 20, max 50) query parameters; responses are `{ items, page, pageSize, totalCount }`.
-- **Code names:** `Tenant`, `AdminMembership`, `Product`, `ProductStatus` (`Draft`, `Published`, `Archived`), `AttributeDefinition`, `AttributeType`, `AttributeOption`, `Category`, `ProductImage`.
+- **Code names:** `Tenant`, `AdminMembership`, `Product`, `ProductStatus` (`Draft`, `Published`, `Archived`), `AttributeDefinition`, `AttributeType`, `AttributeOption`, `Category`, `ProductImage`, `TenantProfile` (fields on `Tenant`), `Inquiry`, `InquiryStatus` (`Open`, `Handled`), `OldTenantSlug`, `OldProductSlug`.
 - **Migrations:** add an EF Core migration in the same PR as the schema change. Never apply migrations at start-up.
 
 ## Testing conventions
