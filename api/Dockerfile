@@ -3,6 +3,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY src/Catalog.Api/Catalog.Api.csproj src/Catalog.Api/
+COPY src/Catalog.ServiceDefaults/Catalog.ServiceDefaults.csproj src/Catalog.ServiceDefaults/
 RUN dotnet restore src/Catalog.Api/Catalog.Api.csproj
 COPY src/ src/
 # The OpenAPI document is generated and committed by developers; the image does not need it.
