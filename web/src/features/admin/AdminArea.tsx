@@ -6,6 +6,7 @@ import { CategoriesPage } from '@/features/admin/categories/CategoriesPage'
 import { NewProductPage } from '@/features/admin/products/NewProductPage'
 import { ProductEditPage } from '@/features/admin/products/ProductEditPage'
 import { ProductListPage } from '@/features/admin/products/ProductListPage'
+import { ProfilePage } from '@/features/admin/profile/ProfilePage'
 import { TeamPage } from '@/features/admin/team/TeamPage'
 import { RequireAccess } from '@/features/auth/RequireAccess'
 import { SignOutButton } from '@/features/auth/SignOutButton'
@@ -16,6 +17,7 @@ const sections = [
   { to: 'attributes', label: 'Attributes' },
   { to: 'categories', label: 'Categories' },
   { to: 'team', label: 'Team' },
+  { to: 'profile', label: 'Profile' },
 ]
 
 // Area where an admin manages the catalog of their tenant. Lazy-loaded.
@@ -62,6 +64,7 @@ function AdminLayout() {
           <Route path="attributes" element={<AttributesPage />} />
           <Route path="categories" element={<CategoriesPage />} />
           <Route path="team" element={<TeamPage />} />
+          <Route path="profile" element={<ProfilePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
