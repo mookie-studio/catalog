@@ -4,11 +4,13 @@ import { NotFoundPage } from '@/components/NotFoundPage'
 import { cn } from '@/lib/utils'
 import { ProductImage } from '@/features/public/ProductImage'
 import { formatAttribute } from '@/features/public/format-attribute'
-import { NotFoundError, usePublicProduct } from '@/features/public/public-api'
+import { InquiryForm } from '@/features/public/InquiryForm'
+import { NotFoundError, usePublicProduct, usePublicTenant } from '@/features/public/public-api'
 
 export function ProductPage({ tenantSlug }: { tenantSlug: string }) {
   const productSlug = useParams().productSlug ?? ''
   const product = usePublicProduct(tenantSlug, productSlug)
+  const tenant = usePublicTenant(tenantSlug)
 
   if (product.error instanceof NotFoundError) return <NotFoundPage />
   if (product.isError) return <p role="alert" className="p-6">The product could not be loaded.</p>
@@ -31,6 +33,7 @@ export function ProductPage({ tenantSlug }: { tenantSlug: string }) {
             ))}
           </dl>
         )}
+        {tenant.data?.inquiriesEnabled && <InquiryForm key={productSlug} tenantSlug={tenantSlug} productSlug={productSlug} productName={name} />}
       </div>
     </main>
   )
