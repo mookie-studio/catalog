@@ -44,8 +44,12 @@ public static partial class ProductRules
         return slug.Length == 0 ? "product" : slug;
     }
 
-    /// <summary>A Product slug unique in the current Tenant: the base slug, or base-2, base-3, ...</summary>
-    public static async Task<string> GenerateUniqueSlugAsync(string name, CatalogDbContext db, CancellationToken ct)
+    /// <summary>
+    /// A Product slug unique in the current Tenant: the base slug, or base-2, base-3, ...
+    /// <paramref name="alsoTaken"/> holds slugs reserved but not saved yet (for example earlier rows of an import).
+    /// </summary>
+    public static async Task<string> GenerateUniqueSlugAsync(
+        string name, CatalogDbContext db, CancellationToken ct, IReadOnlySet<string>? alsoTaken = null)
     {
         var baseSlug = Slugify(name);
         var taken = await db.Products
@@ -53,6 +57,10 @@ public static partial class ProductRules
             .Select(p => p.Slug)
             .ToListAsync(ct);
         var takenSet = taken.ToHashSet(StringComparer.Ordinal);
+        if (alsoTaken is not null)
+        {
+            takenSet.UnionWith(alsoTaken);
+        }
 
         if (!takenSet.Contains(baseSlug))
         {

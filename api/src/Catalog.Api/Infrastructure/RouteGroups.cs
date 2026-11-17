@@ -50,6 +50,8 @@ public static class RouteGroups
             .MapUpdateProduct()
             .MapChangeProductStatus()
             .MapSetProductFeatured()
+            .MapExportProducts()
+            .MapImportProducts()
             .MapSetProductAttributes()
             .MapCreateAttributeDefinition()
             .MapListAttributeDefinitions()
