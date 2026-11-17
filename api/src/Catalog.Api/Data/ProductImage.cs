@@ -8,5 +8,8 @@ public sealed class ProductImage : ITenantScoped
     public Guid ProductId { get; init; }
     public required string StorageKey { get; init; }
     public required string ContentType { get; init; }
+
+    /// <summary>Storage key of the Thumbnail (ADR 0008); null for images stored before Thumbnails existed.</summary>
+    public string? ThumbnailKey { get; set; }
     public int Position { get; set; }
 }

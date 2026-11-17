@@ -4,7 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.Api.Features.Admin.Products;
 
-public sealed record ProductImageResponse(Guid Id, string Url, int Position);
+public sealed record ProductImageResponse(Guid Id, string Url, string ThumbnailUrl, int Position)
+{
+    public static ProductImageResponse From(ProductImage image, IImageStorage storage) =>
+        new(image.Id, storage.GetPublicUrl(image.StorageKey), ProductImages.ThumbnailUrl(image, storage), image.Position);
+}
 
 /// <summary>Image rules (ADR 0005): JPG, PNG or WebP by magic bytes, at most 2 MB and 5 per Product.</summary>
 public static class ProductImages
@@ -35,6 +39,10 @@ public static class ProductImages
         return null;
     }
 
+    /// <summary>The Thumbnail's URL, or the original's when the image has no Thumbnail.</summary>
+    public static string ThumbnailUrl(ProductImage image, IImageStorage storage) =>
+        storage.GetPublicUrl(image.ThumbnailKey ?? image.StorageKey);
+
     public static async Task<List<ProductImageResponse>> ListAsync(
         Guid productId, CatalogDbContext db, IImageStorage storage, CancellationToken ct)
     {
@@ -42,6 +50,6 @@ public static class ProductImages
             .Where(i => i.ProductId == productId)
             .OrderBy(i => i.Position)
             .ToListAsync(ct);
-        return images.Select(i => new ProductImageResponse(i.Id, storage.GetPublicUrl(i.StorageKey), i.Position)).ToList();
+        return images.Select(i => ProductImageResponse.From(i, storage)).ToList();
     }
 }

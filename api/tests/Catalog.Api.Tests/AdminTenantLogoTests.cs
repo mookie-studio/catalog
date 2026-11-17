@@ -61,7 +61,7 @@ public sealed class AdminTenantLogoTests(CatalogApiFactory factory) : ApiTest(fa
     {
         { "gif", TestImages.Gif() },
         { "empty", [] },
-        { "too big", TestImages.Png(1024 * 1024 + 1) },
+        { "too big", TestImages.OversizedPng(1024 * 1024 + 1) },
         { "svg", "<svg xmlns=\"http://www.w3.org/2000/svg\"/>"u8.ToArray() },
     };
 

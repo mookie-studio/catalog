@@ -18,7 +18,7 @@ public static class UploadProductImage
     }
 
     private static async Task<Results<Created<ProductImageResponse>, ValidationProblem, NotFound>> Handle(
-        Guid id, IFormFile? file, CatalogDbContext db, IImageStorage storage, CancellationToken ct)
+        Guid id, IFormFile? file, CatalogDbContext db, IImageStorage storage, ILoggerFactory loggers, CancellationToken ct)
     {
         var product = await db.Products.SingleOrDefaultAsync(p => p.Id == id, ct);
         if (product is null)
@@ -50,6 +50,12 @@ public static class UploadProductImage
             return Invalid("Only JPG, PNG or WebP images are allowed.");
         }
 
+        var thumbnail = ThumbnailGenerator.Generate(buffer.GetBuffer().AsSpan(0, (int)buffer.Length));
+        if (thumbnail is null)
+        {
+            return Invalid("The image could not be read. Upload a valid JPG, PNG or WebP file.");
+        }
+
         var imageId = Guid.CreateVersion7();
         var image = new ProductImage
         {
@@ -62,12 +68,34 @@ public static class UploadProductImage
 
         buffer.Position = 0;
         await storage.SaveAsync(image.StorageKey, buffer, format.ContentType, ct);
+        image.ThumbnailKey = await SaveThumbnailAsync(
+            ThumbnailGenerator.KeyFor(product.TenantId, id, imageId), thumbnail, storage, loggers, ct);
         db.ProductImages.Add(image);
         product.UpdatedAt = Timestamps.UtcNow();
         await db.SaveChangesAsync(ct);
 
-        var response = new ProductImageResponse(image.Id, storage.GetPublicUrl(image.StorageKey), image.Position);
+        var response = ProductImageResponse.From(image, storage);
         return TypedResults.Created($"/api/admin/products/{id}/images/{image.Id}", response);
+    }
+
+    /// <summary>
+    /// The Thumbnail only makes listings lighter, so failing to store it does not fail the upload:
+    /// the Image keeps no ThumbnailKey and responses fall back to the original.
+    /// </summary>
+    private static async Task<string?> SaveThumbnailAsync(
+        string key, byte[] thumbnail, IImageStorage storage, ILoggerFactory loggers, CancellationToken ct)
+    {
+        try
+        {
+            using var stream = new MemoryStream(thumbnail);
+            await storage.SaveAsync(key, stream, ThumbnailGenerator.ContentType, ct);
+            return key;
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            loggers.CreateLogger(typeof(UploadProductImage)).LogWarning(exception, "Could not store the Thumbnail {Key}", key);
+            return null;
+        }
     }
 
     private static ValidationProblem Invalid(string message) =>

@@ -2524,6 +2524,21 @@
           }
         }
       },
+      "GetPublicProductImage": {
+        "required": [
+          "url",
+          "thumbnailUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          }
+        }
+      },
       "GetPublicProductResponse": {
         "required": [
           "slug",
@@ -2549,7 +2564,7 @@
           "images": {
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/GetPublicProductImage"
             }
           },
           "attributes": {
@@ -3195,6 +3210,7 @@
         "required": [
           "id",
           "url",
+          "thumbnailUrl",
           "position"
         ],
         "type": "object",
@@ -3204,6 +3220,9 @@
             "format": "uuid"
           },
           "url": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
             "type": "string"
           },
           "position": {

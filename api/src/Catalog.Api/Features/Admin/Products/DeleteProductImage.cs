@@ -35,6 +35,10 @@ public static class DeleteProductImage
         product.UpdatedAt = Timestamps.UtcNow();
         await db.SaveChangesAsync(ct);
         await storage.DeleteAsync(image.StorageKey, ct);
+        if (image.ThumbnailKey is not null)
+        {
+            await storage.DeleteAsync(image.ThumbnailKey, ct);
+        }
         return TypedResults.NoContent();
     }
 }

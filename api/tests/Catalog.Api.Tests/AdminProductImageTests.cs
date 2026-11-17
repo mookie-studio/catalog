@@ -50,7 +50,7 @@ public sealed class AdminProductImageTests(CatalogApiFactory factory) : ApiTest(
 
         var gif = await Upload(a.Client, product.Id, TestImages.Gif(), "anim.gif");
         var fakeJpeg = await Upload(a.Client, product.Id, "just some text pretending"u8.ToArray(), "photo.jpg");
-        var tooBig = await Upload(a.Client, product.Id, TestImages.Png((int)(2.1 * 1024 * 1024)), "big.png");
+        var tooBig = await Upload(a.Client, product.Id, TestImages.OversizedPng((int)(2.1 * 1024 * 1024)), "big.png");
 
         Assert.Equal(HttpStatusCode.BadRequest, gif.StatusCode);
         Assert.Equal(HttpStatusCode.BadRequest, fakeJpeg.StatusCode);
@@ -71,7 +71,7 @@ public sealed class AdminProductImageTests(CatalogApiFactory factory) : ApiTest(
         var sixth = await Upload(a.Client, product.Id, TestImages.Png(), "6.png");
 
         Assert.Equal(HttpStatusCode.BadRequest, sixth.StatusCode);
-        Assert.Equal(5, Factory.ImageStorage.Files.Count);
+        Assert.Equal(10, Factory.ImageStorage.Files.Count); // Five originals and their Thumbnails.
     }
 
     [Fact]
@@ -121,9 +121,11 @@ public sealed class AdminProductImageTests(CatalogApiFactory factory) : ApiTest(
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         Assert.False(Factory.ImageStorage.Files.ContainsKey(InMemoryImageStorage.KeyOf(first.Url)));
+        Assert.False(Factory.ImageStorage.Files.ContainsKey(InMemoryImageStorage.KeyOf(first.ThumbnailUrl)));
+        Assert.True(Factory.ImageStorage.Files.ContainsKey(InMemoryImageStorage.KeyOf(second!.ThumbnailUrl)));
         var detail = await a.Client.GetFromJsonAsync<ProductImagesBody>($"/api/admin/products/{product.Id}");
         var remaining = Assert.Single(detail!.Images);
-        Assert.Equal(second!.Id, remaining.Id);
+        Assert.Equal(second.Id, remaining.Id);
         Assert.Equal(0, remaining.Position);
     }
 
@@ -139,7 +141,7 @@ public sealed class AdminProductImageTests(CatalogApiFactory factory) : ApiTest(
         Assert.Equal(HttpStatusCode.NotFound, (await b.Client.PutAsJsonAsync($"/api/admin/products/{product.Id}/images/order",
             new { imageIds = new[] { image!.Id } })).StatusCode);
         Assert.Equal(HttpStatusCode.NotFound, (await b.Client.DeleteAsync($"/api/admin/products/{product.Id}/images/{image.Id}")).StatusCode);
-        Assert.Single(Factory.ImageStorage.Files);
+        Assert.Equal(2, Factory.ImageStorage.Files.Count); // The original and its Thumbnail.
     }
 
     private static Task<HttpResponseMessage> Upload(HttpClient client, Guid productId, byte[] content, string fileName) =>

@@ -111,6 +111,7 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
         {
             image.Property(i => i.StorageKey).HasMaxLength(200).IsRequired();
             image.Property(i => i.ContentType).HasMaxLength(50).IsRequired();
+            image.Property(i => i.ThumbnailKey).HasMaxLength(200);
             image.HasOne<Product>().WithMany().HasForeignKey(i => i.ProductId).OnDelete(DeleteBehavior.Cascade);
             image.HasIndex(i => new { i.ProductId, i.Position });
         });

@@ -725,11 +725,15 @@ export interface components {
             type: components["schemas"]["AttributeType"];
             value: components["schemas"]["JsonElement"];
         };
+        GetPublicProductImage: {
+            url: string;
+            thumbnailUrl: string;
+        };
         GetPublicProductResponse: {
             slug: string;
             name: string;
             description: null | string;
-            images: string[];
+            images: components["schemas"]["GetPublicProductImage"][];
             attributes: components["schemas"]["GetPublicProductAttribute"][];
         };
         GetPublicTenantResponse: {
@@ -903,6 +907,7 @@ export interface components {
             /** Format: uuid */
             id: string;
             url: string;
+            thumbnailUrl: string;
             /** Format: int32 */
             position: number;
         };

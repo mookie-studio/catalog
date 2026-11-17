@@ -84,8 +84,9 @@ public static class ListPublicProducts
                 p.Slug,
                 p.Name,
                 p.IsFeatured,
+                // The Thumbnail when there is one (ADR 0008): listings never need the full-size original.
                 MainImageKey = db.ProductImages.Where(i => i.ProductId == p.Id).OrderBy(i => i.Position)
-                    .Select(i => i.StorageKey).FirstOrDefault(),
+                    .Select(i => i.ThumbnailKey ?? i.StorageKey).FirstOrDefault(),
             })
             .ToListAsync(ct);
 

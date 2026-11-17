@@ -14,7 +14,7 @@ const drill = {
   slug: 'hammer-drill',
   name: 'Hammer drill',
   description: 'A powerful drill.',
-  images: ['https://images.test/1.jpg', 'https://images.test/2.jpg', 'https://images.test/3.jpg'],
+  images: [1, 2, 3].map((n) => ({ url: `https://images.test/${n}.jpg`, thumbnailUrl: `https://images.test/${n}-thumb.webp` })),
   attributes: [
     { name: 'Color', type: 'OptionList', value: 'Red' },
     { name: 'Sizes', type: 'OptionList', value: ['S', 'M'] },
@@ -35,14 +35,14 @@ describe('public product page', () => {
     expect(values).toEqual(['Red', 'S, M', 'Yes', '500'])
   })
 
-  it('shows the images in order with the main image first', async () => {
+  it('shows the images in order with the main image first, and Thumbnails in the strip', async () => {
     productApi(drill)
 
     renderApp('/acme/p/hammer-drill')
 
     expect(await screen.findByRole('img', { name: 'Hammer drill' })).toHaveAttribute('src', 'https://images.test/1.jpg')
     const thumbnails = within(screen.getByRole('list', { name: 'Images' })).getAllByRole('button')
-    expect(thumbnails.map((button) => button.querySelector('img')!.getAttribute('src'))).toEqual(drill.images)
+    expect(thumbnails.map((button) => button.querySelector('img')!.getAttribute('src'))).toEqual(drill.images.map((image) => image.thumbnailUrl))
 
     await userEvent.click(screen.getByRole('button', { name: 'Show image 3' }))
 
