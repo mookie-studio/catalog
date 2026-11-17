@@ -39,18 +39,20 @@ export function ProductPage({ tenantSlug }: { tenantSlug: string }) {
   )
 }
 
-/** Images in their order; the first one is the Main image. */
-function Gallery({ name, images }: { name: string; images: string[] }) {
+type Image = { url: string; thumbnailUrl: string }
+
+/** Images in their order; the first one is the Main image. The strip shows Thumbnails, the large view the original. */
+function Gallery({ name, images }: { name: string; images: Image[] }) {
   const [selected, setSelected] = useState(0)
   if (images.length === 0) return <ProductImage src={null} alt={name} />
 
   return (
     <div className="flex flex-col gap-3">
-      <ProductImage src={images[selected]} alt={name} />
+      <ProductImage src={images[selected].url} alt={name} />
       {images.length > 1 && (
         <ul aria-label="Images" className="grid grid-cols-5 gap-2">
-          {images.map((url, index) => (
-            <li key={url}>
+          {images.map((image, index) => (
+            <li key={image.url}>
               <button
                 type="button"
                 aria-label={`Show image ${index + 1}`}
@@ -58,7 +60,7 @@ function Gallery({ name, images }: { name: string; images: string[] }) {
                 onClick={() => setSelected(index)}
                 className={cn('block w-full rounded-lg', index === selected && 'ring-2 ring-ring')}
               >
-                <ProductImage src={url} alt="" />
+                <ProductImage src={image.thumbnailUrl} alt="" />
               </button>
             </li>
           ))}

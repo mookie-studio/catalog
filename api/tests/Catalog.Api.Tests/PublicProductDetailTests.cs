@@ -32,7 +32,7 @@ public sealed class PublicProductDetailTests(CatalogApiFactory factory) : ApiTes
         Assert.Equal("hammer-drill", detail!.Slug);
         Assert.Equal("Hammer Drill", detail.Name);
         Assert.Equal("Powerful", detail.Description);
-        Assert.Equal([first!.Url, second!.Url], detail.Images);
+        Assert.Equal([new PublicImageBody(first!.Url, first.ThumbnailUrl), new PublicImageBody(second!.Url, second.ThumbnailUrl)], detail.Images);
         var attributes = detail.Attributes.ToDictionary(x => x.Name);
         Assert.Equal("Acme", attributes["Brand"].Value.GetString());
         Assert.Equal("Blue", attributes["Color"].Value.GetString());

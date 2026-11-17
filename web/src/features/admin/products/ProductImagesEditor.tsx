@@ -61,7 +61,7 @@ export function ProductImagesEditor({ product }: { product: Product }) {
           {images.map((image, index) => (
             <li key={image.id} aria-label={`Image ${index + 1}`} className="flex flex-col gap-2">
               <div className="relative">
-                <img src={image.url} alt={`Image ${index + 1}`} className="aspect-square w-full rounded-lg border object-cover" />
+                <img src={image.thumbnailUrl} alt={`Image ${index + 1}`} className="aspect-square w-full rounded-lg border object-cover" />
                 {index === 0 && (
                   <span className="absolute left-1 top-1 rounded bg-background/90 px-1.5 py-0.5 text-xs font-medium">Main image</span>
                 )}

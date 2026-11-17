@@ -10,8 +10,16 @@ public sealed class InMemoryImageStorage : IImageStorage
 
     public IReadOnlyDictionary<string, (byte[] Content, string ContentType)> Files => _files;
 
+    /// <summary>When set, saving a key that matches throws, to simulate a storage failure.</summary>
+    public Func<string, bool>? FailSaving { get; set; }
+
     public async Task SaveAsync(string key, Stream content, string contentType, CancellationToken ct)
     {
+        if (FailSaving?.Invoke(key) == true)
+        {
+            throw new IOException($"Simulated storage failure for {key}.");
+        }
+
         using var buffer = new MemoryStream();
         await content.CopyToAsync(buffer, ct);
         _files[key] = (buffer.ToArray(), contentType);
@@ -27,5 +35,9 @@ public sealed class InMemoryImageStorage : IImageStorage
 
     public static string KeyOf(string url) => url["https://images.test/".Length..];
 
-    public void Reset() => _files.Clear();
+    public void Reset()
+    {
+        _files.Clear();
+        FailSaving = null;
+    }
 }

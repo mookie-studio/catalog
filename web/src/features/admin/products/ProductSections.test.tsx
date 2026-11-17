@@ -8,7 +8,12 @@ import { renderApp } from '@/test/render'
 vi.mock('@/features/auth/session', () => import('@/test/session'))
 
 const categories = [{ id: 'tools', name: 'Tools', children: [{ id: 'drills', name: 'Drills', children: [] }] }]
-const image = (id: string, position: number) => ({ id, url: `https://images.test/${id}.jpg`, position })
+const image = (id: string, position: number) => ({
+  id,
+  url: `https://images.test/${id}.jpg`,
+  thumbnailUrl: `https://images.test/${id}-thumb.webp`,
+  position,
+})
 
 function productApi(overrides: Record<string, unknown> = {}, routes: Record<string, unknown> = {}) {
   mockApi({
@@ -57,7 +62,7 @@ describe('product images', () => {
     const section = await screen.findByRole('region', { name: 'Images' })
 
     const items = within(section).getAllByRole('img').map((img) => img.getAttribute('src'))
-    expect(items).toEqual(['https://images.test/a.jpg', 'https://images.test/b.jpg'])
+    expect(items).toEqual(['https://images.test/a-thumb.webp', 'https://images.test/b-thumb.webp'])
     expect(within(within(section).getByRole('listitem', { name: 'Image 1' })).getByText('Main image')).toBeInTheDocument()
   })
 

@@ -11,7 +11,10 @@ public static class GetPublicProduct
 {
     public sealed record Attribute(string Name, AttributeType Type, JsonElement Value);
 
-    public sealed record Response(string Slug, string Name, string? Description, IReadOnlyList<string> Images, IReadOnlyList<Attribute> Attributes);
+    /// <summary>An Image: <c>Url</c> is the original, <c>ThumbnailUrl</c> the Thumbnail (or the original when there is none).</summary>
+    public sealed record Image(string Url, string ThumbnailUrl);
+
+    public sealed record Response(string Slug, string Name, string? Description, IReadOnlyList<Image> Images, IReadOnlyList<Attribute> Attributes);
 
     public static RouteGroupBuilder MapGetPublicProduct(this RouteGroupBuilder publicGroup)
     {
@@ -32,7 +35,7 @@ public static class GetPublicProduct
         var images = await db.ProductImages.AsNoTracking()
             .Where(i => i.ProductId == product.Id)
             .OrderBy(i => i.Position)
-            .Select(i => i.StorageKey)
+            .Select(i => new { i.StorageKey, i.ThumbnailKey })
             .ToListAsync(ct);
 
         var definitions = await db.AttributeDefinitions.Include(d => d.Options).AsNoTracking().ToDictionaryAsync(d => d.Id, ct);
@@ -40,8 +43,10 @@ public static class GetPublicProduct
             .Select(a => new Attribute(a.Name, a.Type, ToDisplayValue(definitions[a.DefinitionId], a.Value)))
             .ToList();
 
-        return TypedResults.Ok(new Response(
-            product.Slug, product.Name, product.Description, images.Select(storage.GetPublicUrl).ToList(), attributes));
+        var imageUrls = images
+            .Select(i => new Image(storage.GetPublicUrl(i.StorageKey), storage.GetPublicUrl(i.ThumbnailKey ?? i.StorageKey)))
+            .ToList();
+        return TypedResults.Ok(new Response(product.Slug, product.Name, product.Description, imageUrls, attributes));
     }
 
     private static JsonElement ToDisplayValue(AttributeDefinition definition, JsonElement value)

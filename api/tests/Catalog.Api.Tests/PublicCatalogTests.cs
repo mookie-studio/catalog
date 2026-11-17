@@ -58,7 +58,7 @@ public sealed class PublicCatalogTests(CatalogApiFactory factory) : ApiTest(fact
     }
 
     [Fact]
-    public async Task MainImageUrl_is_the_first_Image_or_null()
+    public async Task MainImageUrl_is_the_Thumbnail_of_the_first_Image_or_null()
     {
         var a = await CreateTenantWithAdmin("tenant-a");
         var withImages = await CreatePublishedProduct(a.Client, "A with images", "A-1");
@@ -69,12 +69,12 @@ public sealed class PublicCatalogTests(CatalogApiFactory factory) : ApiTest(fact
             .Content.ReadFromJsonAsync<ImageBody>();
 
         var page = await Client.GetFromJsonAsync<PagedBody<PublicProductItem>>("/api/public/tenant-a/products");
-        Assert.Equal(first!.Url, page!.Items[0].MainImageUrl);
+        Assert.Equal(first!.ThumbnailUrl, page!.Items[0].MainImageUrl);
         Assert.Null(page.Items[1].MainImageUrl);
 
         await a.Client.PutAsJsonAsync($"/api/admin/products/{withImages.Id}/images/order", new { imageIds = new[] { second!.Id, first.Id } });
         page = await Client.GetFromJsonAsync<PagedBody<PublicProductItem>>("/api/public/tenant-a/products");
-        Assert.Equal(second.Url, page!.Items[0].MainImageUrl);
+        Assert.Equal(second.ThumbnailUrl, page!.Items[0].MainImageUrl);
     }
 
     [Fact]

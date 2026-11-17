@@ -29,7 +29,7 @@ public sealed record CategoryBody(Guid Id, string Name, List<CategoryBody> Child
 
 public sealed record ProductCategoriesBody(Guid Id, List<Guid> CategoryIds);
 
-public sealed record ImageBody(Guid Id, string Url, int Position);
+public sealed record ImageBody(Guid Id, string Url, string ThumbnailUrl, int Position);
 
 public sealed record ProductImagesBody(Guid Id, List<ImageBody> Images);
 
@@ -37,7 +37,9 @@ public sealed record PublicProductItem(string Slug, string Name, string? MainIma
 
 public sealed record PublicAttributeBody(string Name, string Type, System.Text.Json.JsonElement Value);
 
-public sealed record PublicProductBody(string Slug, string Name, string? Description, List<string> Images, List<PublicAttributeBody> Attributes);
+public sealed record PublicImageBody(string Url, string ThumbnailUrl);
+
+public sealed record PublicProductBody(string Slug, string Name, string? Description, List<PublicImageBody> Images, List<PublicAttributeBody> Attributes);
 
 public sealed record PublicFilterOption(Guid Id, string Value);
 
