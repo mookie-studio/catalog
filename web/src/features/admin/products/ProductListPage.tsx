@@ -1,4 +1,4 @@
-import { type FormEvent, useMemo } from 'react'
+import { type FormEvent, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { Pagination } from '@/components/Pagination'
 import { Button, ButtonLink } from '@/components/ui/button'
@@ -12,6 +12,7 @@ import {
   useProducts,
   writeProductListQuery,
 } from '@/features/admin/products/products-api'
+import { downloadProductsCsv } from '@/features/admin/products/product-csv'
 import { ProductStatusBadge } from '@/features/admin/products/ProductStatusBadge'
 
 const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' })
@@ -21,6 +22,21 @@ export function ProductListPage() {
   const query = useMemo(() => readProductListQuery(searchParams), [searchParams])
   const products = useProducts(query)
   const categories = useCategories()
+  const [exporting, setExporting] = useState(false)
+  const [exportError, setExportError] = useState<string | null>(null)
+
+  async function exportCsv() {
+    setExporting(true)
+    setExportError(null)
+    try {
+      await downloadProductsCsv()
+    } catch (error) {
+      setExportError(error instanceof Error ? error.message : 'The export failed.')
+    } finally {
+      setExporting(false)
+    }
+  }
+
   const filtered = query.q !== '' || query.status !== null || query.categoryId !== null || query.featured
 
   // Changing the search or a filter goes back to the first page.
@@ -35,8 +51,21 @@ export function ProductListPage() {
     <main className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold tracking-tight">Products</h1>
-        <ButtonLink to="/admin/products/new">New product</ButtonLink>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" disabled={exporting} onClick={exportCsv}>
+            Export CSV
+          </Button>
+          <ButtonLink variant="outline" to="/admin/products/import">
+            Import CSV
+          </ButtonLink>
+          <ButtonLink to="/admin/products/new">New product</ButtonLink>
+        </div>
       </div>
+      {exportError && (
+        <p role="alert" className="text-sm text-destructive">
+          {exportError}
+        </p>
+      )}
       <div className="flex flex-col gap-3 md:flex-row">
         <form role="search" className="flex flex-1 gap-2" onSubmit={handleSearch}>
           <Input key={query.q} name="q" type="search" defaultValue={query.q} placeholder="Search by name or SKU" aria-label="Search products" />

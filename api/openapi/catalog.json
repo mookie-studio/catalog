@@ -1016,6 +1016,80 @@
         }
       }
     },
+    "/api/admin/products/export": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "ExportProducts",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/products/import": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "ImportProducts",
+        "parameters": [
+          {
+            "name": "dryRun",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "$ref": "#/components/schemas/IFormFile"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportProductsReport"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/admin/products/{id}/attributes": {
       "put": {
         "tags": [
@@ -2602,6 +2676,94 @@
       "IFormFile": {
         "type": "string",
         "format": "binary"
+      },
+      "ImportProductsOutcome": {
+        "enum": [
+          "Create",
+          "Update",
+          "Skip"
+        ]
+      },
+      "ImportProductsReport": {
+        "required": [
+          "created",
+          "updated",
+          "skipped",
+          "rows",
+          "warnings"
+        ],
+        "type": "object",
+        "properties": {
+          "created": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updated": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "skipped": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImportProductsRowReport"
+            }
+          },
+          "warnings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ImportProductsRowError": {
+        "required": [
+          "column",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "column": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "ImportProductsRowReport": {
+        "required": [
+          "row",
+          "sku",
+          "outcome",
+          "errors"
+        ],
+        "type": "object",
+        "properties": {
+          "row": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sku": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "outcome": {
+            "$ref": "#/components/schemas/ImportProductsOutcome"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImportProductsRowError"
+            }
+          }
+        }
       },
       "InquiryProduct": {
         "required": [

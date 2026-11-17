@@ -3,6 +3,7 @@ import { NotFoundPage } from '@/components/NotFoundPage'
 import { useCurrentTenant } from '@/features/admin/admin-api'
 import { AttributesPage } from '@/features/admin/attributes/AttributesPage'
 import { CategoriesPage } from '@/features/admin/categories/CategoriesPage'
+import { ImportProductsPage } from '@/features/admin/products/ImportProductsPage'
 import { NewProductPage } from '@/features/admin/products/NewProductPage'
 import { InquiriesPage } from '@/features/admin/inquiries/InquiriesPage'
 import { useOpenInquiryCount } from '@/features/admin/inquiries/inquiries-api'
@@ -69,6 +70,7 @@ function AdminLayout() {
           <Route index element={<Navigate to="products" replace />} />
           <Route path="products" element={<ProductListPage />} />
           <Route path="products/new" element={<NewProductPage />} />
+          <Route path="products/import" element={<ImportProductsPage />} />
           <Route path="products/:id" element={<ProductEditPage />} />
           <Route path="attributes" element={<AttributesPage />} />
           <Route path="categories" element={<CategoriesPage />} />

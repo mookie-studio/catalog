@@ -324,6 +324,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/products/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ExportProducts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/products/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ImportProducts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/products/{id}/attributes": {
         parameters: {
             query?: never;
@@ -725,6 +757,29 @@ export interface components {
         };
         /** Format: binary */
         IFormFile: string;
+        /** @enum {unknown} */
+        ImportProductsOutcome: "Create" | "Update" | "Skip";
+        ImportProductsReport: {
+            /** Format: int32 */
+            created: number;
+            /** Format: int32 */
+            updated: number;
+            /** Format: int32 */
+            skipped: number;
+            rows: components["schemas"]["ImportProductsRowReport"][];
+            warnings: string[];
+        };
+        ImportProductsRowError: {
+            column: string;
+            message: string;
+        };
+        ImportProductsRowReport: {
+            /** Format: int32 */
+            row: number;
+            sku: null | string;
+            outcome: components["schemas"]["ImportProductsOutcome"];
+            errors: components["schemas"]["ImportProductsRowError"][];
+        };
         InquiryProduct: {
             /** Format: uuid */
             id: string;
@@ -1736,6 +1791,63 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    ExportProducts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": string;
+                };
+            };
+        };
+    };
+    ImportProducts: {
+        parameters: {
+            query?: {
+                dryRun?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    file?: components["schemas"]["IFormFile"];
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportProductsReport"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["HttpValidationProblemDetails"];
+                };
             };
         };
     };
