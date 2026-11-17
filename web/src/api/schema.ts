@@ -308,6 +308,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/products/{id}/featured": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["SetProductFeatured"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/products/{id}/attributes": {
         parameters: {
             query?: never;
@@ -744,6 +760,7 @@ export interface components {
             status: components["schemas"]["ProductStatus"];
             /** Format: date-time */
             updatedAt: string;
+            isFeatured: boolean;
         };
         ListPublicFiltersFilter: {
             /** Format: uuid */
@@ -762,6 +779,7 @@ export interface components {
             slug: string;
             name: string;
             mainImageUrl: null | string;
+            isFeatured: boolean;
         };
         MoveCategoryRequest: {
             /** Format: uuid */
@@ -848,6 +866,9 @@ export interface components {
             attributes: components["schemas"]["ProductAttributesAttributeValue"][];
             categoryIds: string[];
             images: components["schemas"]["ProductImageResponse"][];
+            isFeatured: boolean;
+            /** Format: date-time */
+            publishedAt: null | string;
         };
         /** @enum {unknown} */
         ProductStatus: "Draft" | "Published" | "Archived";
@@ -864,6 +885,9 @@ export interface components {
         };
         SetProductCategoriesRequest: {
             categoryIds: null | string[];
+        };
+        SetProductFeaturedRequest: {
+            featured: null | boolean;
         };
         TenantLogoResponse: {
             logoUrl: string;
@@ -986,6 +1010,8 @@ export interface operations {
                 pageSize?: number;
                 q?: string;
                 categoryId?: string;
+                sort?: string;
+                featured?: boolean;
             };
             header?: never;
             path: {
@@ -1490,6 +1516,7 @@ export interface operations {
                 q?: string;
                 status?: components["schemas"]["NullableOfProductStatus"];
                 categoryId?: string;
+                featured?: boolean;
             };
             header?: never;
             path?: never;
@@ -1651,6 +1678,48 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["HttpValidationProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SetProductFeatured: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetProductFeaturedRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductResponse"];
+                };
             };
             /** @description Bad Request */
             400: {

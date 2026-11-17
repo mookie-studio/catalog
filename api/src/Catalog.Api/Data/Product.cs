@@ -26,6 +26,12 @@ public sealed class Product : ITenantScoped
     public required string Slug { get; set; }
     public ProductStatus Status { get; set; } = ProductStatus.Draft;
 
+    /// <summary>Featured products are shown first in the public catalog (see GLOSSARY.md).</summary>
+    public bool IsFeatured { get; set; }
+
+    /// <summary>When the product last moved to Published; null if it never was.</summary>
+    public DateTimeOffset? PublishedAt { get; set; }
+
     /// <summary>Attribute values keyed by Attribute Definition id, stored as jsonb (ADR 0006).</summary>
     public string Attributes { get; set; } = "{}";
 

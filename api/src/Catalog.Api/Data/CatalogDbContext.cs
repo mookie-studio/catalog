@@ -64,6 +64,7 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
             product.HasIndex(p => new { p.TenantId, p.Sku }).IsUnique();
             product.HasIndex(p => new { p.TenantId, p.Slug }).IsUnique();
             product.HasIndex(p => p.Attributes).HasMethod("gin");
+            product.Property(p => p.IsFeatured).HasDefaultValue(false);
             product.Property(p => p.SearchVector)
                 .HasComputedColumnSql(
                     "setweight(to_tsvector('spanish'::regconfig, coalesce(\"Name\", '')), 'A') || " +

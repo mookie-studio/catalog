@@ -7,7 +7,7 @@ namespace Catalog.Api.Features.Admin.Products;
 
 public static class ListProducts
 {
-    public sealed record Item(Guid Id, string Name, string Sku, string Slug, ProductStatus Status, DateTimeOffset UpdatedAt);
+    public sealed record Item(Guid Id, string Name, string Sku, string Slug, ProductStatus Status, DateTimeOffset UpdatedAt, bool IsFeatured);
 
     public static RouteGroupBuilder MapListProducts(this RouteGroupBuilder admin)
     {
@@ -16,7 +16,8 @@ public static class ListProducts
     }
 
     private static async Task<Ok<PagedResponse<Item>>> Handle(
-        int? page, int? pageSize, string? q, ProductStatus? status, Guid? categoryId, CatalogDbContext db, CancellationToken ct)
+        int? page, int? pageSize, string? q, ProductStatus? status, Guid? categoryId, bool? featured, CatalogDbContext db,
+        CancellationToken ct)
     {
         var paging = Paging.From(page, pageSize);
         var query = db.Products.AsQueryable();
@@ -37,11 +38,16 @@ public static class ListProducts
             query = query.Where(p => p.Status == s);
         }
 
+        if (featured is { } f)
+        {
+            query = query.Where(p => p.IsFeatured == f);
+        }
+
         var totalCount = await query.CountAsync(ct);
         var items = await query
             .OrderByDescending(p => p.UpdatedAt).ThenByDescending(p => p.Id)
             .Skip(paging.Skip).Take(paging.PageSize)
-            .Select(p => new Item(p.Id, p.Name, p.Sku, p.Slug, p.Status, p.UpdatedAt))
+            .Select(p => new Item(p.Id, p.Name, p.Sku, p.Slug, p.Status, p.UpdatedAt, p.IsFeatured))
             .ToListAsync(ct);
 
         return TypedResults.Ok(new PagedResponse<Item>(items, paging.Page, paging.PageSize, totalCount));
