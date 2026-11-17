@@ -15,35 +15,36 @@ concurrency:
   group: deploy-api
   cancel-in-progress: false
 
-env:
-  IMAGE: ghcr.io/${{ github.repository }}/api
-
 jobs:
-  image:
+  build:
     # Skipped until the production environment is configured (docs/deployment.md).
-    if: vars.AZURE_CONTAINER_APP_NAME != ''
+    if: vars.AZURE_WEBAPP_NAME != ''
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    defaults:
+      run:
+        working-directory: api
     steps:
       - uses: actions/checkout@v4
 
-      - uses: docker/login-action@v3
+      - uses: actions/setup-dotnet@v4
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          dotnet-version: "10.0.x"
 
-      - uses: docker/build-push-action@v6
+      # Code deployment to App Service (ADR 0011); the OpenAPI document is committed, not regenerated.
+      - name: Publish
+        run: >
+          dotnet publish src/Catalog.Api/Catalog.Api.csproj -c Release -r linux-x64 --self-contained false
+          -p:OpenApiGenerateDocuments=false -o "$GITHUB_WORKSPACE/publish"
+
+      - uses: actions/upload-artifact@v4
         with:
-          context: api
-          push: true
-          tags: ${{ env.IMAGE }}:${{ github.sha }}
+          name: api
+          path: publish
+          if-no-files-found: error
 
   migrate:
-    # Migrations run before the new revision goes live, and never at API start-up.
-    needs: image
+    # Migrations run before the new version goes live, and never at API start-up.
+    needs: build
     runs-on: ubuntu-latest
     environment: production
     defaults:
@@ -75,14 +76,35 @@ jobs:
       contents: read
       id-token: write
     steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: api
+          path: publish
+
       - uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Update the Container App to the new image
+      - uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ vars.AZURE_WEBAPP_NAME }}
+          package: publish
+
+      # The Free plan unloads idle apps, so the first request can take a while.
+      - name: Wait for /api/health
         env:
-          APP_NAME: ${{ vars.AZURE_CONTAINER_APP_NAME }}
-          RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
-        run: az containerapp update --name "$APP_NAME" --resource-group "$RESOURCE_GROUP" --image "$IMAGE:$GITHUB_SHA"
+          HEALTH_URL: https://${{ vars.AZURE_WEBAPP_NAME }}.azurewebsites.net/api/health
+        run: |
+          for attempt in $(seq 1 20); do
+            if curl --silent --fail --max-time 30 "$HEALTH_URL"; then
+              echo
+              echo "API is healthy."
+              exit 0
+            fi
+            echo "Attempt $attempt: not healthy yet."
+            sleep 15
+          done
+          echo "::error::$HEALTH_URL never answered 200."
+          exit 1

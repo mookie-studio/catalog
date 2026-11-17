@@ -1,5 +1,7 @@
 # Free-tier infrastructure for the demo: Supabase, Cloudflare R2, Azure Container Apps and Cloudflare Pages
 
+> The API host was changed by ADR 0011: Azure App Service (Free F1) instead of Azure Container Apps.
+
 To keep the demo at zero cost, PostgreSQL lives in the Supabase project (the same one used for authentication), images in Cloudflare R2 served from a public Cloudflare domain, the .NET API in Azure Container Apps with scale to zero, and the SPA in Cloudflare Pages. Each piece was chosen for its free tier and for avoiding lock-in: the API reaches PostgreSQL through EF Core (not the Supabase client) and R2 through its S3-compatible API, behind Catalog's own storage interface.
 
 ## Considered Options

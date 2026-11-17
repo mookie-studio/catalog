@@ -3,28 +3,29 @@
 To create the infrastructure for the first time, follow the portal walkthrough in
 [infra-setup.md](infra-setup.md). This page is the reference of what each workflow needs.
 
-Merging to `main` deploys (ADR 0005):
+Merging to `main` deploys (ADR 0005, ADR 0011):
 
-- `api/**` changes run `.github/workflows/deploy-api.yml`: build the API image and push it to GitHub
-  Container Registry, apply EF Core migrations with a migrations bundle against the Supabase database,
-  then update the Azure Container App to the new image. Migrations run before the new revision goes live.
+- `api/**` changes run `.github/workflows/deploy-api.yml`: publish the API (`dotnet publish`), apply
+  EF Core migrations with a migrations bundle against the Supabase database, then deploy the published
+  output to the Azure App Service web app and wait until `/api/health` answers. Migrations run before
+  the new version goes live.
 - `web/**` changes run `.github/workflows/deploy-web.yml`: build the SPA with the production `VITE_*`
   variables and deploy it with `wrangler pages deploy`.
 
 Both workflows can also be started by hand (`workflow_dispatch`). They use the GitHub environment
 `production`; add the secrets and variables below to that environment. No secret is stored in the repository.
-Until `AZURE_CONTAINER_APP_NAME` (API) or `CLOUDFLARE_PAGES_PROJECT` (SPA) is set, the workflows are skipped.
+Until `AZURE_WEBAPP_NAME` (API) or `CLOUDFLARE_PAGES_PROJECT` (SPA) is set, the workflows are skipped.
 
 Variables used in `if:` conditions must be repository variables (or organization variables), because
 environment variables are only visible to jobs that already run in that environment.
 
-## API (Azure Container Apps)
+## API (Azure App Service)
 
 ### GitHub secrets
 
 | Secret | What it is |
 | --- | --- |
-| `AZURE_CLIENT_ID` | Client id of the Entra ID app (or managed identity) with a federated credential for this repository's `production` environment (OIDC, no password). It needs the Contributor role on the Container App's resource group. |
+| `AZURE_CLIENT_ID` | Client id of the Entra ID app (or managed identity) with a federated credential for this repository's `production` environment (OIDC, no password). It needs the Website Contributor role on the web app. |
 | `AZURE_TENANT_ID` | Entra ID tenant id. |
 | `AZURE_SUBSCRIPTION_ID` | Azure subscription id. |
 | `DATABASE_CONNECTION_STRING` | Npgsql connection string of the Supabase database, used to apply migrations through the session pooler, because GitHub runners have no IPv6 (for example `Host=aws-0-<region>.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.<project>;Password=...;SSL Mode=Require`). |
@@ -33,15 +34,14 @@ environment variables are only visible to jobs that already run in that environm
 
 | Variable | What it is |
 | --- | --- |
-| `AZURE_CONTAINER_APP_NAME` | Name of the Container App. |
-| `AZURE_RESOURCE_GROUP` | Its resource group. |
+| `AZURE_WEBAPP_NAME` | Name of the App Service web app (for example `catalog-api`). The API URL is `https://<name>.azurewebsites.net`. |
 
-### Container App settings
+### Web app settings
 
-Configure these once on the Container App (as secrets referenced by environment variables). The
-workflow only changes the image.
+Configure these once on the web app (**Settings → Environment variables → App settings**). The
+workflow only replaces the code, so they survive every deploy.
 
-| Environment variable | Value |
+| App setting | Value |
 | --- | --- |
 | `ConnectionStrings__Catalog` | Supabase database connection string (session pooler; the direct host is IPv6 only). |
 | `Auth__Issuer` | `https://<project>.supabase.co/auth/v1` |
@@ -57,9 +57,7 @@ workflow only changes the image.
 | `Storage__Region` | `auto` |
 | `Cors__AllowedOrigins__0` | `https://<spa-domain>` |
 
-The image runs as a non-root user and listens on port 8080 (set the ingress target port to 8080).
-The registry is `ghcr.io/<owner>/<repo>/api`; if the package is private, give the Container App
-registry credentials for GHCR.
+App Service tells the API which port to listen on; no port setting is needed.
 
 ## SPA (Cloudflare Pages)
 
@@ -75,7 +73,7 @@ registry credentials for GHCR.
 | Variable | What it is |
 | --- | --- |
 | `CLOUDFLARE_PAGES_PROJECT` | Name of the Pages project (create it once with "Direct Upload"). |
-| `VITE_API_URL` | Public URL of the API, for example `https://catalog-api.<region>.azurecontainerapps.io`. |
+| `VITE_API_URL` | Public URL of the API, for example `https://catalog-api.azurewebsites.net`. |
 | `VITE_SUPABASE_URL` | `https://<project>.supabase.co` |
 | `VITE_SUPABASE_ANON_KEY` | Supabase publishable key (`sb_publishable_...`) or legacy anon key. It is public by design. |
 
