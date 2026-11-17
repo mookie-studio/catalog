@@ -9,6 +9,8 @@ using Catalog.Api.Infrastructure.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.AddServiceDefaults();
+
 builder.Services.AddProblemDetails();
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -23,6 +25,7 @@ builder.Services.AddOpenApi(options =>
     OpenApiJsonValues.Configure(options);
 });
 builder.Services.AddCatalogData();
+builder.Services.AddHealthChecks().AddDbContextCheck<CatalogDbContext>("database");
 builder.Services.AddCatalogAuth();
 builder.Services.AddCatalogIdentityProvider();
 builder.Services.AddCatalogImageStorage(builder.Configuration);
@@ -43,6 +46,7 @@ app.UseRateLimiter();
 app.MapOpenApi();
 
 app.MapGetHealth();
+app.MapDefaultEndpoints();
 app.MapGetMe();
 app.MapRouteGroups();
 

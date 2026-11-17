@@ -14,7 +14,9 @@ Read this before working on any issue. Issues are small (size S) and meant to be
 ```
 api/
   Catalog.slnx
-  src/Catalog.Api/            # the only API project
+  src/Catalog.Api/            # the API (the only deployed project)
+  src/Catalog.ServiceDefaults/ # Aspire telemetry and health checks (ADR 0010)
+  src/Catalog.AppHost/        # Aspire AppHost, local development only (ADR 0010)
   tests/Catalog.Api.Tests/    # HTTP-level integration tests
 web/                          # React SPA (Vite + TypeScript)
 docker-compose.yml            # local environment (docs/local-development.md)
