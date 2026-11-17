@@ -13,6 +13,7 @@ public sealed class Tenant
     public const int AddressMaxLength = 300;
     public const int WebsiteUrlMaxLength = 300;
     public const int BrandColorLength = 7;
+    public const int LogoKeyMaxLength = 200;
 
     public Guid Id { get; init; } = Guid.CreateVersion7();
     public required string Name { get; set; }
@@ -29,4 +30,7 @@ public sealed class Tenant
 
     /// <summary>Brand color as "#RRGGBB", upper-case.</summary>
     public string? BrandColor { get; set; }
+
+    /// <summary>Image storage key of the Logo, if any.</summary>
+    public string? LogoKey { get; set; }
 }

@@ -133,9 +133,9 @@ public sealed class AdminTenantProfileTests(CatalogApiFactory factory) : ApiTest
 
     private sealed record TenantProfileBody(
         string Name, string Slug, string? Description, string? ContactEmail, string? Phone, string? Address,
-        string? WebsiteUrl, string? BrandColor);
+        string? WebsiteUrl, string? BrandColor, string? LogoUrl = null);
 
     private sealed record PublicTenantBody(
         string Name, string Slug, string? Description, string? ContactEmail, string? Phone, string? Address,
-        string? WebsiteUrl, string? BrandColor);
+        string? WebsiteUrl, string? BrandColor, string? LogoUrl = null);
 }

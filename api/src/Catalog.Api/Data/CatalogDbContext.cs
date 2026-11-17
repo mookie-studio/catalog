@@ -39,6 +39,7 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
             tenant.Property(t => t.Address).HasMaxLength(Tenant.AddressMaxLength);
             tenant.Property(t => t.WebsiteUrl).HasMaxLength(Tenant.WebsiteUrlMaxLength);
             tenant.Property(t => t.BrandColor).HasMaxLength(Tenant.BrandColorLength);
+            tenant.Property(t => t.LogoKey).HasMaxLength(Tenant.LogoKeyMaxLength);
         });
 
         modelBuilder.Entity<AdminMembership>(membership =>

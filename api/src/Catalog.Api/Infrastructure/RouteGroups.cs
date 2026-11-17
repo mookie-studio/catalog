@@ -35,6 +35,7 @@ public static class RouteGroups
             .RequireAuthorization(AuthServiceCollectionExtensions.AdminPolicy)
             .MapGetCurrentTenant()
             .MapTenantProfile()
+            .MapTenantLogo()
             .MapListAdmins()
             .MapInviteAdmin()
             .MapRemoveAdmin()

@@ -148,6 +148,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/tenant/logo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UploadTenantLogo"];
+        post?: never;
+        delete: operations["RemoveTenantLogo"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/admins": {
         parameters: {
             query?: never;
@@ -604,6 +620,7 @@ export interface components {
             address: null | string;
             websiteUrl: null | string;
             brandColor: null | string;
+            logoUrl: null | string;
         };
         HttpValidationProblemDetails: {
             type?: null | string;
@@ -744,6 +761,9 @@ export interface components {
         SetProductCategoriesRequest: {
             categoryIds: null | string[];
         };
+        TenantLogoResponse: {
+            logoUrl: string;
+        };
         TenantProfileRequest: {
             description: null | string;
             contactEmail: null | string;
@@ -761,6 +781,7 @@ export interface components {
             address: null | string;
             websiteUrl: null | string;
             brandColor: null | string;
+            logoUrl: null | string;
         };
         TenantResponse: {
             /** Format: uuid */
@@ -1046,6 +1067,73 @@ export interface operations {
                 content: {
                     "application/problem+json": components["schemas"]["HttpValidationProblemDetails"];
                 };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UploadTenantLogo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    file?: components["schemas"]["IFormFile"];
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TenantLogoResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["HttpValidationProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RemoveTenantLogo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Not Found */
             404: {

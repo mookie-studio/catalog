@@ -2,6 +2,7 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using Catalog.Api.Data;
 using Catalog.Api.Infrastructure;
+using Catalog.Api.Infrastructure.Storage;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +22,8 @@ public static partial class TenantProfile
         string? Phone,
         string? Address,
         string? WebsiteUrl,
-        string? BrandColor);
+        string? BrandColor,
+        string? LogoUrl);
 
     [GeneratedRegex("^#[0-9a-fA-F]{6}$")]
     private static partial Regex BrandColorPattern();
@@ -34,14 +36,14 @@ public static partial class TenantProfile
     }
 
     private static async Task<Results<Ok<Response>, NotFound>> Get(
-        ICurrentTenant currentTenant, CatalogDbContext db, CancellationToken ct)
+        ICurrentTenant currentTenant, CatalogDbContext db, IImageStorage storage, CancellationToken ct)
     {
         var tenant = await db.Tenants.SingleOrDefaultAsync(t => t.Id == currentTenant.TenantId, ct);
-        return tenant is null ? TypedResults.NotFound() : TypedResults.Ok(ToResponse(tenant));
+        return tenant is null ? TypedResults.NotFound() : TypedResults.Ok(ToResponse(tenant, storage));
     }
 
     private static async Task<Results<Ok<Response>, ValidationProblem, NotFound>> Update(
-        Request request, ICurrentTenant currentTenant, CatalogDbContext db, CancellationToken ct)
+        Request request, ICurrentTenant currentTenant, CatalogDbContext db, IImageStorage storage, CancellationToken ct)
     {
         var description = Clean(request.Description);
         var contactEmail = Clean(request.ContactEmail);
@@ -87,11 +89,17 @@ public static partial class TenantProfile
         tenant.WebsiteUrl = websiteUrl;
         tenant.BrandColor = brandColor?.ToUpperInvariant();
         await db.SaveChangesAsync(ct);
-        return TypedResults.Ok(ToResponse(tenant));
+        return TypedResults.Ok(ToResponse(tenant, storage));
     }
 
-    private static Response ToResponse(Tenant t) =>
-        new(t.Name, t.Slug, t.Description, t.ContactEmail, t.Phone, t.Address, t.WebsiteUrl, t.BrandColor);
+    private static Response ToResponse(Tenant t, IImageStorage storage) =>
+        new(
+            t.Name, t.Slug, t.Description, t.ContactEmail, t.Phone, t.Address, t.WebsiteUrl, t.BrandColor,
+            LogoUrl(t.LogoKey, storage));
+
+    /// <summary>The public URL of a Logo, or null when the tenant has none.</summary>
+    public static string? LogoUrl(string? logoKey, IImageStorage storage) =>
+        logoKey is null ? null : storage.GetPublicUrl(logoKey);
 
     private static string? Clean(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 

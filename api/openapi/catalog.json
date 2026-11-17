@@ -340,6 +340,68 @@
         }
       }
     },
+    "/api/admin/tenant/logo": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "UploadTenantLogo",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "$ref": "#/components/schemas/IFormFile"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TenantLogoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "RemoveTenantLogo",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/admin/admins": {
       "get": {
         "tags": [
@@ -2129,7 +2191,8 @@
           "phone",
           "address",
           "websiteUrl",
-          "brandColor"
+          "brandColor",
+          "logoUrl"
         ],
         "type": "object",
         "properties": {
@@ -2170,6 +2233,12 @@
             ]
           },
           "brandColor": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "logoUrl": {
             "type": [
               "null",
               "string"
@@ -2705,6 +2774,17 @@
           }
         }
       },
+      "TenantLogoResponse": {
+        "required": [
+          "logoUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "logoUrl": {
+            "type": "string"
+          }
+        }
+      },
       "TenantProfileRequest": {
         "required": [
           "description",
@@ -2763,7 +2843,8 @@
           "phone",
           "address",
           "websiteUrl",
-          "brandColor"
+          "brandColor",
+          "logoUrl"
         ],
         "type": "object",
         "properties": {
@@ -2804,6 +2885,12 @@
             ]
           },
           "brandColor": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "logoUrl": {
             "type": [
               "null",
               "string"
