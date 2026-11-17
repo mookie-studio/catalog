@@ -56,7 +56,12 @@ public static partial class ProductRules
             .Where(p => p.Slug == baseSlug || p.Slug.StartsWith(baseSlug + "-"))
             .Select(p => p.Slug)
             .ToListAsync(ct);
-        var takenSet = taken.ToHashSet(StringComparer.Ordinal);
+        // Old slugs stay reserved (ADR 0009).
+        var oldSlugs = await db.OldProductSlugs
+            .Where(o => o.Slug == baseSlug || o.Slug.StartsWith(baseSlug + "-"))
+            .Select(o => o.Slug)
+            .ToListAsync(ct);
+        var takenSet = taken.Concat(oldSlugs).ToHashSet(StringComparer.Ordinal);
         if (alsoTaken is not null)
         {
             takenSet.UnionWith(alsoTaken);

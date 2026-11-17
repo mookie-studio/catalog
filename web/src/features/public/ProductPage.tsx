@@ -1,16 +1,30 @@
-import { useState } from 'react'
-import { useParams } from 'react-router'
+import { useQueryClient } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router'
 import { NotFoundPage } from '@/components/NotFoundPage'
 import { cn } from '@/lib/utils'
 import { ProductImage } from '@/features/public/ProductImage'
 import { formatAttribute } from '@/features/public/format-attribute'
 import { InquiryForm } from '@/features/public/InquiryForm'
-import { NotFoundError, usePublicProduct, usePublicTenant } from '@/features/public/public-api'
+import { NotFoundError, publicProductKey, usePublicProduct, usePublicTenant } from '@/features/public/public-api'
 
 export function ProductPage({ tenantSlug }: { tenantSlug: string }) {
   const productSlug = useParams().productSlug ?? ''
   const product = usePublicProduct(tenantSlug, productSlug)
   const tenant = usePublicTenant(tenantSlug)
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
+  const { search } = useLocation()
+
+  // An Old Product slug still loads the product (ADR 0009); replace the address with the current slug,
+  // seeding its cache so the page does not flash a loading state.
+  useEffect(() => {
+    const current = product.data
+    if (current && current.slug !== productSlug) {
+      queryClient.setQueryData(publicProductKey(tenantSlug, current.slug), current)
+      navigate(`/${tenantSlug}/p/${current.slug}${search}`, { replace: true })
+    }
+  }, [product.data, productSlug, tenantSlug, search, navigate, queryClient])
 
   if (product.error instanceof NotFoundError) return <NotFoundPage />
   if (product.isError) return <p role="alert" className="p-6">The product could not be loaded.</p>

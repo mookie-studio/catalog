@@ -25,9 +25,12 @@ public static class GetPublicProduct
     private static async Task<Results<Ok<Response>, NotFound>> Handle(
         string productSlug, CatalogDbContext db, IImageStorage storage, CancellationToken ct)
     {
-        var product = await db.Products.AsNoTracking()
-            .SingleOrDefaultAsync(p => p.Slug == productSlug && p.Status == ProductStatus.Published, ct);
-        if (product is null)
+        // An Old Product slug resolves to its product (ADR 0009); the response carries the current slug.
+        var product = await db.Products.AsNoTracking().SingleOrDefaultAsync(p => p.Slug == productSlug, ct)
+            ?? await db.Products.AsNoTracking()
+                .Where(p => db.OldProductSlugs.Any(o => o.ProductId == p.Id && o.Slug == productSlug))
+                .SingleOrDefaultAsync(ct);
+        if (product is null || product.Status != ProductStatus.Published)
         {
             return TypedResults.NotFound();
         }

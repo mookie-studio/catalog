@@ -27,7 +27,7 @@ public static class CreateTenant
             return TypedResults.ValidationProblem(errors.ToDictionary());
         }
 
-        if (await db.Tenants.AnyAsync(t => t.Slug == request.Slug, ct))
+        if (await db.Tenants.AnyAsync(t => t.Slug == request.Slug, ct) || await db.OldTenantSlugs.AnyAsync(o => o.Slug == request.Slug, ct))
         {
             return SlugInUse();
         }

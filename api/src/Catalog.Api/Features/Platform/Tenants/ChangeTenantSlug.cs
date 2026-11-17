@@ -37,11 +37,21 @@ public static class ChangeTenantSlug
             return TypedResults.Ok(TenantResponse.From(tenant));
         }
 
-        if (await db.Tenants.AnyAsync(t => t.Slug == request.Slug && t.Id != id, ct))
+        if (await db.Tenants.AnyAsync(t => t.Slug == request.Slug && t.Id != id, ct)
+            || await db.OldTenantSlugs.AnyAsync(o => o.Slug == request.Slug && o.TenantId != id, ct))
         {
             return SlugInUse();
         }
 
+        // The previous slug stays reserved for this tenant (ADR 0009); going back to one of its
+        // own Old slugs makes it current again.
+        var reused = await db.OldTenantSlugs.SingleOrDefaultAsync(o => o.TenantId == id && o.Slug == request.Slug, ct);
+        if (reused is not null)
+        {
+            db.OldTenantSlugs.Remove(reused);
+        }
+
+        db.OldTenantSlugs.Add(new OldTenantSlug { TenantId = id, Slug = tenant.Slug });
         tenant.Slug = request.Slug!;
         try
         {
