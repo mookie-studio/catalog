@@ -114,6 +114,20 @@
             }
           },
           {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "featured",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
             "name": "tenantSlug",
             "in": "path",
             "required": true,
@@ -782,6 +796,13 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "featured",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -924,6 +945,60 @@
         "responses": {
           "204": {
             "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/admin/products/{id}/featured": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "SetProductFeatured",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetProductFeaturedRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request",
@@ -2627,7 +2702,8 @@
           "sku",
           "slug",
           "status",
-          "updatedAt"
+          "updatedAt",
+          "isFeatured"
         ],
         "type": "object",
         "properties": {
@@ -2650,6 +2726,9 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "isFeatured": {
+            "type": "boolean"
           }
         }
       },
@@ -2707,7 +2786,8 @@
         "required": [
           "slug",
           "name",
-          "mainImageUrl"
+          "mainImageUrl",
+          "isFeatured"
         ],
         "type": "object",
         "properties": {
@@ -2722,6 +2802,9 @@
               "null",
               "string"
             ]
+          },
+          "isFeatured": {
+            "type": "boolean"
           }
         }
       },
@@ -2979,7 +3062,9 @@
           "updatedAt",
           "attributes",
           "categoryIds",
-          "images"
+          "images",
+          "isFeatured",
+          "publishedAt"
         ],
         "type": "object",
         "properties": {
@@ -3031,6 +3116,16 @@
             "items": {
               "$ref": "#/components/schemas/ProductImageResponse"
             }
+          },
+          "isFeatured": {
+            "type": "boolean"
+          },
+          "publishedAt": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
           }
         }
       },
@@ -3103,6 +3198,20 @@
               "type": "string",
               "format": "uuid"
             }
+          }
+        }
+      },
+      "SetProductFeaturedRequest": {
+        "required": [
+          "featured"
+        ],
+        "type": "object",
+        "properties": {
+          "featured": {
+            "type": [
+              "null",
+              "boolean"
+            ]
           }
         }
       },

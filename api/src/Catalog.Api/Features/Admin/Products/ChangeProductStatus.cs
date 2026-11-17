@@ -44,6 +44,11 @@ public static class ChangeProductStatus
         {
             product.Status = status;
             product.UpdatedAt = Timestamps.UtcNow();
+            if (status == ProductStatus.Published)
+            {
+                product.PublishedAt = product.UpdatedAt;
+            }
+
             await db.SaveChangesAsync(ct);
         }
 

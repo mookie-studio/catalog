@@ -1,12 +1,12 @@
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { mockApi, urlsTo } from '@/test/api'
 import { renderApp } from '@/test/render'
 
 const tenant = { name: 'Acme Hardware', slug: 'acme' }
-const drill = { slug: 'hammer-drill', name: 'Hammer drill', mainImageUrl: 'https://images.test/drill.jpg' }
-const saw = { slug: 'circular-saw', name: 'Circular saw', mainImageUrl: null }
+const drill = { slug: 'hammer-drill', name: 'Hammer drill', mainImageUrl: 'https://images.test/drill.jpg', isFeatured: true }
+const saw = { slug: 'circular-saw', name: 'Circular saw', mainImageUrl: null, isFeatured: false }
 
 const colorId = '0198a000-0000-7000-8000-000000000001'
 const red = '0198a000-0000-7000-8000-0000000000a1'
@@ -21,17 +21,19 @@ const filters = [
 ]
 const categories = [{ id: toolsId, name: 'Tools', children: [{ id: drillsId, name: 'Drills', children: [] }] }]
 
-function catalog(options: { totalCount?: number; categories?: unknown[] } = {}) {
+function catalog(options: { totalCount?: number; categories?: unknown[]; featured?: unknown[] } = {}) {
   mockApi({
     '/api/public/acme': tenant,
     '/api/public/acme/products': (url: URL) =>
-      Response.json({ items: [drill, saw], page: Number(url.searchParams.get('page')), pageSize: 20, totalCount: options.totalCount ?? 2 }),
+      url.searchParams.get('featured') === 'true'
+        ? Response.json({ items: options.featured ?? [], page: 1, pageSize: 8, totalCount: options.featured?.length ?? 0 })
+        : Response.json({ items: [drill, saw], page: Number(url.searchParams.get('page')), pageSize: 20, totalCount: options.totalCount ?? 2 }),
     '/api/public/acme/filters': filters,
     '/api/public/acme/categories': options.categories ?? categories,
   })
 }
 
-const lastProductsRequest = () => urlsTo('/api/public/acme/products').at(-1)!
+const lastProductsRequest = () => urlsTo('/api/public/acme/products').filter((url) => url.searchParams.get('featured') !== 'true').at(-1)!
 
 describe('public product list', () => {
   it('shows the tenant name and a card per product linking to its page', async () => {
@@ -152,5 +154,66 @@ describe('public category navigation', () => {
 
     await screen.findByRole('link', { name: /Hammer drill/ })
     expect(screen.queryByRole('navigation', { name: 'Categories' })).not.toBeInTheDocument()
+  })
+})
+
+describe('featured strip, sort and view', () => {
+  it('shows the Featured strip on the catalog home only', async () => {
+    catalog({ featured: [drill] })
+    const router = renderApp('/acme')
+
+    const strip = await screen.findByRole('region', { name: 'Featured' })
+    expect(within(strip).getByRole('link', { name: /Hammer drill/ })).toHaveAttribute('href', '/acme/p/hammer-drill')
+    expect(urlsTo('/api/public/acme/products').some((url) => url.searchParams.get('featured') === 'true' && url.searchParams.get('pageSize') === '8')).toBe(true)
+
+    await router.navigate('/acme?q=drill')
+    await vi.waitFor(() => expect(screen.queryByRole('region', { name: 'Featured' })).not.toBeInTheDocument())
+  })
+
+  it('hides the strip when there are no Featured products', async () => {
+    catalog()
+    renderApp('/acme')
+
+    await screen.findByRole('link', { name: /Hammer drill/ })
+    expect(screen.queryByRole('region', { name: 'Featured' })).not.toBeInTheDocument()
+  })
+
+  it('keeps the chosen sort in the URL and sends it to the API', async () => {
+    catalog({ totalCount: 60 })
+    const router = renderApp('/acme?page=2')
+    await screen.findByRole('link', { name: /Hammer drill/ })
+
+    expect(within(screen.getByRole('combobox', { name: 'Sort by' })).queryByRole('option', { name: 'Relevance' })).not.toBeInTheDocument()
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Sort by' }), 'newest')
+
+    await vi.waitFor(() => expect(router.state.location.search).toBe('?sort=newest'))
+    await vi.waitFor(() => expect(lastProductsRequest().searchParams.get('sort')).toBe('newest'))
+
+    await userEvent.click(await screen.findByRole('link', { name: 'Next' }))
+    await vi.waitFor(() => expect(router.state.location.search).toBe('?sort=newest&page=2'))
+  })
+
+  it('switches to the list view, keeping the page and filters in the URL', async () => {
+    catalog({ totalCount: 60 })
+    const router = renderApp('/acme?q=drill&page=2')
+    await screen.findByRole('link', { name: /Hammer drill/ })
+
+    await userEvent.click(screen.getByRole('button', { name: 'List view' }))
+
+    await vi.waitFor(() => expect(router.state.location.search).toBe('?q=drill&view=list&page=2'))
+    expect(screen.getByRole('button', { name: 'List view' })).toHaveAttribute('aria-pressed', 'true')
+    const rows = within(screen.getByRole('list', { name: 'Products' })).getAllByRole('listitem')
+    expect(within(rows[0]).getByRole('img', { name: 'Hammer drill' })).toBeInTheDocument()
+    expect(within(rows[0]).getByText('Featured')).toBeInTheDocument()
+    expect(within(rows[1]).queryByText('Featured')).not.toBeInTheDocument()
+  })
+
+  it('remembers the last view when the URL has none', async () => {
+    window.localStorage.setItem('catalog.view', 'list')
+    catalog()
+    renderApp('/acme')
+
+    expect(await screen.findByRole('button', { name: 'List view' })).toHaveAttribute('aria-pressed', 'true')
+    window.localStorage.removeItem('catalog.view')
   })
 })

@@ -145,12 +145,16 @@ public sealed record ProductResponse(
     DateTimeOffset CreatedAt, DateTimeOffset UpdatedAt,
     IReadOnlyList<ProductAttributes.AttributeValue> Attributes,
     IReadOnlyList<Guid> CategoryIds,
-    IReadOnlyList<ProductImageResponse> Images)
+    IReadOnlyList<ProductImageResponse> Images,
+    bool IsFeatured,
+    DateTimeOffset? PublishedAt)
 {
     public static ProductResponse From(
         Product p, IReadOnlyList<ProductAttributes.AttributeValue> attributes, IReadOnlyList<Guid> categoryIds,
         IReadOnlyList<ProductImageResponse> images) =>
-        new(p.Id, p.Name, p.Description, p.Sku, p.Slug, p.Status, p.CreatedAt, p.UpdatedAt, attributes, categoryIds, images);
+        new(
+            p.Id, p.Name, p.Description, p.Sku, p.Slug, p.Status, p.CreatedAt, p.UpdatedAt, attributes, categoryIds, images,
+            p.IsFeatured, p.PublishedAt);
 
     /// <summary>Builds the full response, joining the Product's Attributes with the Tenant's definitions.</summary>
     public static async Task<ProductResponse> LoadAsync(Product p, CatalogDbContext db, IImageStorage storage, CancellationToken ct)

@@ -21,7 +21,7 @@ export function ProductListPage() {
   const query = useMemo(() => readProductListQuery(searchParams), [searchParams])
   const products = useProducts(query)
   const categories = useCategories()
-  const filtered = query.q !== '' || query.status !== null || query.categoryId !== null
+  const filtered = query.q !== '' || query.status !== null || query.categoryId !== null || query.featured
 
   // Changing the search or a filter goes back to the first page.
   const refine = (change: Partial<ProductListQuery>) => setSearchParams(writeProductListQuery({ ...query, ...change, page: 1 }))
@@ -68,6 +68,10 @@ export function ProductListPage() {
             </option>
           ))}
         </Select>
+        <label className="flex items-center gap-2 whitespace-nowrap text-sm">
+          <input type="checkbox" className="size-4" checked={query.featured} onChange={(event) => refine({ featured: event.target.checked })} />
+          Featured only
+        </label>
       </div>
       {products.isPending ? (
         <p role="status" className="text-muted-foreground">Loading…</p>
@@ -103,6 +107,11 @@ export function ProductListPage() {
                       <Link to={`/admin/products/${product.id}`} className="font-medium hover:underline">
                         {product.name}
                       </Link>
+                      {product.isFeatured && (
+                        <span aria-label="Featured" title="Featured" className="ml-2 text-amber-500">
+                          ★
+                        </span>
+                      )}
                     </td>
                     <td className="px-3 py-2 font-mono text-xs">{product.sku}</td>
                     <td className="px-3 py-2">
