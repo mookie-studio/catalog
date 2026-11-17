@@ -181,4 +181,31 @@ describe('editing a product', () => {
 
     expect(await screen.findByRole('heading', { name: 'Page not found' })).toBeInTheDocument()
   })
+
+  it('marks a product as Featured from its page', async () => {
+    mockApi({
+      ...adminSession,
+      'GET /api/admin/products/p1': product(),
+      'PUT /api/admin/products/p1/featured': () => json(product({ isFeatured: true })),
+    })
+    renderApp('/admin/products/p1')
+
+    const featured = await screen.findByRole('checkbox', { name: 'Featured' })
+    await userEvent.click(featured)
+
+    expect(await lastBody('/api/admin/products/p1/featured', 'PUT')).toEqual({ featured: true })
+    await vi.waitFor(() => expect(screen.getByRole('checkbox', { name: 'Featured' })).toBeChecked())
+  })
+
+  it('stars Featured products and filters by them through the URL', async () => {
+    listApi([{ id: 'p1', name: 'Hammer drill', sku: 'HD-1', slug: 'hammer-drill', status: 'Draft', updatedAt: '2026-11-16T10:00:00Z', isFeatured: true }])
+    const router = renderApp('/admin/products')
+
+    const row = (await screen.findByRole('link', { name: 'Hammer drill' })).closest('tr')!
+    expect(within(row).getByLabelText('Featured')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Featured only' }))
+
+    await vi.waitFor(() => expect(router.state.location.search).toBe('?featured=true'))
+    await vi.waitFor(() => expect(lastListRequest().searchParams.get('featured')).toBe('true'))
+  })
 })

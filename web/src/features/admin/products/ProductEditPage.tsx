@@ -75,6 +75,14 @@ function ProductEditor({ product }: { product: Product }) {
     },
   })
 
+  const feature = useMutation({
+    mutationFn: (featured: boolean) => call(api.PUT('/api/admin/products/{id}/featured', { ...path, body: { featured } })),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(productQueryKey(product.id), updated)
+      queryClient.invalidateQueries({ queryKey: ['admin', 'products'] })
+    },
+  })
+
   // Errors of the last action, shown next to their fields (for example the description required to publish).
   const lastError = changeStatus.error ?? save.error
   const problem = lastError instanceof ApiProblem ? lastError : null
@@ -111,6 +119,16 @@ function ProductEditor({ product }: { product: Product }) {
             {action.label}
           </Button>
         ))}
+        <label className="ml-auto flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            className="size-4"
+            checked={product.isFeatured}
+            disabled={feature.isPending}
+            onChange={(event) => feature.mutate(event.target.checked)}
+          />
+          Featured
+        </label>
       </section>
       <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
         <ProductFields values={values} errors={fieldErrors} showSlug onChange={setValues} />

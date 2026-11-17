@@ -19,6 +19,8 @@ export function product(overrides: Record<string, unknown> = {}) {
     attributes: [],
     categoryIds: [],
     images: [],
+    isFeatured: false,
+    publishedAt: null,
     ...overrides,
   }
 }

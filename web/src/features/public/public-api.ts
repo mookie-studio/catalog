@@ -49,6 +49,19 @@ export function usePublicProducts(tenantSlug: string, query: CatalogQuery) {
   })
 }
 
+export function useFeaturedProducts(tenantSlug: string) {
+  return useQuery({
+    queryKey: ['public', tenantSlug, 'featured'],
+    queryFn: async () => {
+      const { data, response } = await api.GET('/api/public/{tenantSlug}/products', {
+        params: { path: { tenantSlug }, query: { featured: true, pageSize: 8 } },
+      })
+      return unwrap(data, response)
+    },
+    retry: retryUnlessNotFound,
+  })
+}
+
 export function usePublicFilters(tenantSlug: string) {
   return useQuery({
     queryKey: ['public', tenantSlug, 'filters'],
