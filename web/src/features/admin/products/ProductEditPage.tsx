@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { type FormEvent, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { api } from '@/api/client'
 import { ApiProblem, call, isNotFound } from '@/api/problem'
 import { NotFoundPage } from '@/components/NotFoundPage'
@@ -45,8 +45,13 @@ function toValues(product: Product): ProductFieldValues {
   return { name: product.name, sku: product.sku, description: product.description ?? '', slug: product.slug }
 }
 
+/** Message shown once on the edit page after navigating to it, for example after duplicating. */
+type EditPageState = { notice?: string } | null
+
 function ProductEditor({ product }: { product: Product }) {
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
+  const notice = (useLocation().state as EditPageState)?.notice
   const [values, setValues] = useState(() => toValues(product))
   const [saved, setSaved] = useState(false)
   const path = { params: { path: { id: product.id } } }
@@ -83,8 +88,17 @@ function ProductEditor({ product }: { product: Product }) {
     },
   })
 
+  const duplicate = useMutation({
+    mutationFn: () => call(api.POST('/api/admin/products/{id}/duplicate', path)),
+    onSuccess: (copy) => {
+      queryClient.setQueryData(productQueryKey(copy.id), copy)
+      queryClient.invalidateQueries({ queryKey: ['admin', 'products'] })
+      navigate(`/admin/products/${copy.id}`, { state: { notice: 'Copy created as Draft' } satisfies EditPageState })
+    },
+  })
+
   // Errors of the last action, shown next to their fields (for example the description required to publish).
-  const lastError = changeStatus.error ?? save.error
+  const lastError = changeStatus.error ?? save.error ?? duplicate.error
   const problem = lastError instanceof ApiProblem ? lastError : null
   const fieldErrors = problem?.fields ?? {}
   const generalError = lastError && Object.keys(fieldErrors).length === 0 ? lastError.message : null
@@ -111,7 +125,15 @@ function ProductEditor({ product }: { product: Product }) {
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="text-2xl font-semibold tracking-tight">{product.name}</h1>
           <ProductStatusBadge status={product.status} />
+          <Button variant="outline" size="sm" className="ml-auto" disabled={duplicate.isPending} onClick={() => duplicate.mutate()}>
+            Duplicate
+          </Button>
         </div>
+        {notice && (
+          <p role="status" className="text-sm text-muted-foreground">
+            {notice}
+          </p>
+        )}
       </div>
       <section aria-label="Status" className="flex flex-wrap gap-2">
         {statusActions[product.status].map((action) => (
