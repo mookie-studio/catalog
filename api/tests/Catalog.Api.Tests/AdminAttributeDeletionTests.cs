@@ -112,7 +112,7 @@ public sealed class AdminAttributeDeletionTests(CatalogApiFactory factory) : Api
     }
 
     private static async Task<List<DefinitionBody>> Definitions(HttpClient client) =>
-        (await client.GetFromJsonAsync<List<DefinitionBody>>("/api/admin/attribute-definitions"))!;
+        (await client.GetFromJsonAsync<PagedBody<DefinitionBody>>("/api/admin/attribute-definitions"))!.Items;
 
     private static async Task SetAttributes(HttpClient client, Guid productId, Dictionary<string, object> values) =>
         (await client.PutAsJsonAsync($"/api/admin/products/{productId}/attributes", new { values })).EnsureSuccessStatusCode();

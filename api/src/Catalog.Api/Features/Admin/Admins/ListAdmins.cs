@@ -1,4 +1,5 @@
 using Catalog.Api.Data;
+using Catalog.Api.Infrastructure;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,15 +13,18 @@ public static class ListAdmins
         return admin;
     }
 
-    private static async Task<Ok<List<AdminInvitation.AdminResponse>>> Handle(
-        ICurrentTenant currentTenant, CatalogDbContext db, CancellationToken ct)
+    private static async Task<Ok<PagedResponse<AdminInvitation.AdminResponse>>> Handle(
+        int? page, int? pageSize, ICurrentTenant currentTenant, CatalogDbContext db, CancellationToken ct)
     {
-        var admins = await db.AdminMemberships
-            .Where(m => m.TenantId == currentTenant.TenantId)
-            .OrderBy(m => m.Email)
+        var paging = Paging.From(page, pageSize);
+        var memberships = db.AdminMemberships.Where(m => m.TenantId == currentTenant.TenantId);
+        var totalCount = await memberships.CountAsync(ct);
+        var admins = await memberships
+            .OrderBy(m => m.Email).ThenBy(m => m.Id)
+            .Skip(paging.Skip).Take(paging.PageSize)
             .Select(m => new AdminInvitation.AdminResponse(m.Id, m.UserId, m.Email))
             .ToListAsync(ct);
 
-        return TypedResults.Ok(admins);
+        return TypedResults.Ok(new PagedResponse<AdminInvitation.AdminResponse>(admins, paging.Page, paging.PageSize, totalCount));
     }
 }

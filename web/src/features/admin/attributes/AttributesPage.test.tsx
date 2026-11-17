@@ -2,7 +2,7 @@ import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { adminSession, created, noContent } from '@/test/admin'
-import { json, lastBody, mockApi, problem, requestsTo } from '@/test/api'
+import { json, lastBody, mockApi, paged, problem, requestsTo } from '@/test/api'
 import { renderApp } from '@/test/render'
 
 vi.mock('@/features/auth/session', () => import('@/test/session'))
@@ -22,7 +22,7 @@ const color = {
 const material = { id: 'd2', name: 'Material', type: 'Text', isFilterable: false, allowsMultiple: false, createdAt: '2026-11-16T10:00:00Z', options: [] }
 
 function attributesApi(routes: Record<string, unknown> = {}) {
-  mockApi({ ...adminSession, 'GET /api/admin/attribute-definitions': [color, material], ...routes })
+  mockApi({ ...adminSession, 'GET /api/admin/attribute-definitions': paged([color, material]), ...routes })
 }
 
 const card = (name: string) => screen.findByRole('region', { name })
@@ -113,5 +113,46 @@ describe('admin attribute definitions', () => {
 
     await vi.waitFor(() => expect(requestsTo('/api/admin/attribute-definitions/d2', 'DELETE')).toHaveLength(1))
     expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
+  })
+})
+
+describe('paging Attribute Definitions', () => {
+  it('requests the page in the URL and links to the neighbouring pages', async () => {
+    mockApi({
+      ...adminSession,
+      'GET /api/admin/attribute-definitions': (url: URL) =>
+        json(paged([material], Number(url.searchParams.get('page')), 20, 45)),
+    })
+
+    renderApp('/admin/attributes?page=2')
+
+    expect(await screen.findByText('Page 2 of 3')).toBeInTheDocument()
+    expect(requestsTo('/api/admin/attribute-definitions').at(-1)!.url).toContain('page=2')
+    expect(screen.getByRole('link', { name: 'Previous' })).toHaveAttribute('href', '/admin/attributes')
+    expect(screen.getByRole('link', { name: 'Next' })).toHaveAttribute('href', '/admin/attributes?page=3')
+  })
+
+  it('goes back one page after the last definition of a page is gone', async () => {
+    mockApi({
+      ...adminSession,
+      'GET /api/admin/attribute-definitions': (url: URL) =>
+        url.searchParams.get('page') === '3' ? json(paged([], 3, 20, 40)) : json(paged([material], 2, 20, 40)),
+    })
+
+    const router = renderApp('/admin/attributes?page=3')
+
+    expect(await screen.findByRole('region', { name: 'Material' })).toBeInTheDocument()
+    expect(router.state.location.search).toBe('?page=2')
+  })
+
+  it('confirms a new definition even when it lands on another page', async () => {
+    attributesApi({ 'POST /api/admin/attribute-definitions': () => created({ ...material, id: 'd3', name: 'Weight' }) })
+    renderApp('/admin/attributes')
+
+    const form = await screen.findByRole('form', { name: 'New Attribute Definition' })
+    await userEvent.type(within(form).getByLabelText('Name'), 'Weight')
+    await userEvent.click(within(form).getByRole('button', { name: 'Add attribute' }))
+
+    expect(await within(form).findByRole('status')).toHaveTextContent('Weight added.')
   })
 })

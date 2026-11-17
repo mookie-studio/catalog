@@ -14,8 +14,8 @@ public sealed class AdminAdminsTests(CatalogApiFactory factory) : ApiTest(factor
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         Assert.Contains("colleague@tenant-a.test", Factory.IdentityProvider.Invitations);
-        var admins = await a.Client.GetFromJsonAsync<List<AdminBody>>("/api/admin/admins");
-        Assert.Equal(["admin@tenant-a.test", "colleague@tenant-a.test"], admins!.Select(x => x.Email));
+        var admins = await a.Client.GetFromJsonAsync<PagedBody<AdminBody>>("/api/admin/admins");
+        Assert.Equal(["admin@tenant-a.test", "colleague@tenant-a.test"], admins!.Items.Select(x => x.Email));
     }
 
     [Fact]
@@ -52,8 +52,8 @@ public sealed class AdminAdminsTests(CatalogApiFactory factory) : ApiTest(factor
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         Assert.Contains(colleague.UserId, Factory.IdentityProvider.Deletions);
-        var admins = await a.Client.GetFromJsonAsync<List<AdminBody>>("/api/admin/admins");
-        Assert.DoesNotContain(admins!, x => x.Id == colleague.Id);
+        var admins = await a.Client.GetFromJsonAsync<PagedBody<AdminBody>>("/api/admin/admins");
+        Assert.DoesNotContain(admins!.Items, x => x.Id == colleague.Id);
         Assert.Equal(HttpStatusCode.Forbidden,
             (await ClientFor(colleague.UserId, colleague.Email).GetAsync("/api/admin/tenant")).StatusCode);
     }
@@ -75,11 +75,11 @@ public sealed class AdminAdminsTests(CatalogApiFactory factory) : ApiTest(factor
         var a = await CreateTenantWithAdmin("tenant-a");
         var b = await CreateTenantWithAdmin("tenant-b");
 
-        var admins = await a.Client.GetFromJsonAsync<List<AdminBody>>("/api/admin/admins");
+        var admins = await a.Client.GetFromJsonAsync<PagedBody<AdminBody>>("/api/admin/admins");
         var removal = await a.Client.DeleteAsync($"/api/admin/admins/{b.Admin.Id}");
 
-        Assert.DoesNotContain(admins!, x => x.Id == b.Admin.Id);
+        Assert.DoesNotContain(admins!.Items, x => x.Id == b.Admin.Id);
         Assert.Equal(HttpStatusCode.NotFound, removal.StatusCode);
-        Assert.Contains(await b.Client.GetFromJsonAsync<List<AdminBody>>("/api/admin/admins") ?? [], x => x.Id == b.Admin.Id);
+        Assert.Contains((await b.Client.GetFromJsonAsync<PagedBody<AdminBody>>("/api/admin/admins"))!.Items, x => x.Id == b.Admin.Id);
     }
 }

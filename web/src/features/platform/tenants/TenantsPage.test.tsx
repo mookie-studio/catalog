@@ -2,7 +2,7 @@ import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { created, noContent } from '@/test/admin'
-import { json, lastBody, mockApi, problem, urlsTo } from '@/test/api'
+import { json, lastBody, mockApi, paged, problem, urlsTo } from '@/test/api'
 import { renderApp } from '@/test/render'
 
 vi.mock('@/features/auth/session', () => import('@/test/session'))
@@ -26,7 +26,7 @@ function platformApi(routes: Record<string, unknown> = {}) {
       tenants = [...tenants, tenant]
       return created(tenant)
     },
-    'GET /api/platform/tenants/t1/admins': () => json(admins),
+    'GET /api/platform/tenants/t1/admins': () => json(paged(admins)),
     'POST /api/platform/tenants/t1/admins': async (_url: URL, request: Request) => {
       const { email } = (await request.json()) as { email: string }
       const admin = { id: 'm1', userId: 'u1', email }
@@ -128,5 +128,24 @@ describe('platform tenants', () => {
 
     expect(await within(section).findByText('The public catalog is now at /acme-tools.')).toBeInTheDocument()
     expect(await within(row).findByText('/acme-tools')).toBeInTheDocument()
+  })
+})
+
+describe("paging a Tenant's Admins", () => {
+  it('moves between pages with buttons', async () => {
+    platformApi({
+      'GET /api/platform/tenants/t1/admins': (url: URL) => {
+        const page = Number(url.searchParams.get('page'))
+        return json(paged([{ id: `m${page}`, userId: `u${page}`, email: `admin${page}@test` }], page, 20, 25))
+      },
+    })
+    renderApp('/platform/tenants')
+
+    const row = await openTenant('Acme Hardware')
+    expect(await within(row).findByText('admin1@test')).toBeInTheDocument()
+    await userEvent.click(within(row).getByRole('button', { name: 'Next' }))
+
+    expect(await within(row).findByText('admin2@test')).toBeInTheDocument()
+    expect(within(row).getByText('Page 2 of 2')).toBeInTheDocument()
   })
 })

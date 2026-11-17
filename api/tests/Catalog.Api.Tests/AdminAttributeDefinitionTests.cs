@@ -23,7 +23,7 @@ public sealed class AdminAttributeDefinitionTests(CatalogApiFactory factory) : A
         var created = await response.Content.ReadFromJsonAsync<DefinitionBody>();
         Assert.Equal(type, created!.Type);
         Assert.Equal(allowsMultiple, created.AllowsMultiple);
-        var list = await a.Client.GetFromJsonAsync<List<DefinitionBody>>("/api/admin/attribute-definitions");
+        var list = (await a.Client.GetFromJsonAsync<PagedBody<DefinitionBody>>("/api/admin/attribute-definitions"))!.Items;
         Assert.Equal(created.Id, Assert.Single(list!).Id);
     }
 
@@ -35,9 +35,30 @@ public sealed class AdminAttributeDefinitionTests(CatalogApiFactory factory) : A
         await CreateDefinition(a.Client, "color", "Text");
         await CreateDefinition(a.Client, "Brand", "Text");
 
-        var list = await a.Client.GetFromJsonAsync<List<DefinitionBody>>("/api/admin/attribute-definitions");
+        var list = (await a.Client.GetFromJsonAsync<PagedBody<DefinitionBody>>("/api/admin/attribute-definitions"))!.Items;
 
         Assert.Equal(["Brand", "color", "Weight"], list!.Select(d => d.Name));
+    }
+
+    [Fact]
+    public async Task The_list_is_paged_and_keeps_Options()
+    {
+        var a = await CreateTenantWithAdmin("tenant-a");
+        for (var i = 0; i < 22; i++)
+        {
+            await CreateDefinition(a.Client, $"Attr {i:00}", "OptionList", options: ["One", "Two"]);
+        }
+
+        var first = await a.Client.GetFromJsonAsync<PagedBody<DefinitionBody>>("/api/admin/attribute-definitions");
+        var second = await a.Client.GetFromJsonAsync<PagedBody<DefinitionBody>>("/api/admin/attribute-definitions?page=2");
+        var capped = await a.Client.GetFromJsonAsync<PagedBody<DefinitionBody>>("/api/admin/attribute-definitions?pageSize=100");
+
+        Assert.Equal((1, 20, 22), (first!.Page, first.PageSize, first.TotalCount));
+        Assert.Equal(20, first.Items.Count);
+        Assert.Equal(["Attr 20", "Attr 21"], second!.Items.Select(d => d.Name));
+        Assert.All(second.Items, d => Assert.Equal(["One", "Two"], d.Options.Select(o => o.Value)));
+        Assert.Equal(50, capped!.PageSize);
+        Assert.Equal(22, capped.Items.Count);
     }
 
     [Fact]
@@ -64,7 +85,7 @@ public sealed class AdminAttributeDefinitionTests(CatalogApiFactory factory) : A
             new { name = "Color", isFilterable = true, type = "Text", allowsMultiple = false });
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var updated = Assert.Single((await a.Client.GetFromJsonAsync<List<DefinitionBody>>("/api/admin/attribute-definitions"))!);
+        var updated = Assert.Single((await a.Client.GetFromJsonAsync<PagedBody<DefinitionBody>>("/api/admin/attribute-definitions"))!.Items);
         Assert.Equal("Color", updated.Name);
         Assert.True(updated.IsFilterable);
         Assert.Equal("OptionList", updated.Type);
@@ -105,13 +126,13 @@ public sealed class AdminAttributeDefinitionTests(CatalogApiFactory factory) : A
         var b = await CreateTenantWithAdmin("tenant-b");
         var definition = await CreateDefinition(a.Client, "Color", "OptionList", options: "Red");
 
-        Assert.Empty((await b.Client.GetFromJsonAsync<List<DefinitionBody>>("/api/admin/attribute-definitions"))!);
+        Assert.Empty((await b.Client.GetFromJsonAsync<PagedBody<DefinitionBody>>("/api/admin/attribute-definitions"))!.Items);
         Assert.Equal(HttpStatusCode.NotFound, (await b.Client.PutAsJsonAsync($"/api/admin/attribute-definitions/{definition.Id}",
             new { name = "Hacked", isFilterable = true })).StatusCode);
         Assert.Equal(HttpStatusCode.NotFound, (await b.Client.PostAsJsonAsync($"/api/admin/attribute-definitions/{definition.Id}/options",
             new { value = "Blue" })).StatusCode);
         Assert.Equal(HttpStatusCode.NotFound, (await b.Client.DeleteAsync($"/api/admin/attribute-definitions/{definition.Id}/options/{definition.Options[0].Id}?confirm=true")).StatusCode);
         Assert.Equal(HttpStatusCode.NotFound, (await b.Client.DeleteAsync($"/api/admin/attribute-definitions/{definition.Id}?confirm=true")).StatusCode);
-        Assert.Single((await a.Client.GetFromJsonAsync<List<DefinitionBody>>("/api/admin/attribute-definitions"))!);
+        Assert.Single((await a.Client.GetFromJsonAsync<PagedBody<DefinitionBody>>("/api/admin/attribute-definitions"))!.Items);
     }
 }

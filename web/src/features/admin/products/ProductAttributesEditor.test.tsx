@@ -2,7 +2,7 @@ import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { adminSession, product } from '@/test/admin'
-import { json, lastBody, mockApi, problem } from '@/test/api'
+import { json, lastBody, mockApi, paged, problem } from '@/test/api'
 import { renderApp } from '@/test/render'
 
 vi.mock('@/features/auth/session', () => import('@/test/session'))
@@ -34,7 +34,7 @@ function editorApi(attributes: unknown[] = [], put: () => Response = () => json(
   mockApi({
     ...adminSession,
     'GET /api/admin/products/p1': product({ attributes }),
-    'GET /api/admin/attribute-definitions': definitions,
+    'GET /api/admin/attribute-definitions': paged(definitions),
     'PUT /api/admin/products/p1/attributes': put,
   })
 }
