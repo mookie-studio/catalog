@@ -116,6 +116,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/public/{tenantSlug}/products/{productSlug}/inquiries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateInquiry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/tenant": {
         parameters: {
             query?: never;
@@ -159,6 +175,54 @@ export interface paths {
         put: operations["UploadTenantLogo"];
         post?: never;
         delete: operations["RemoveTenantLogo"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/inquiries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListInquiries"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/inquiries/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ChangeInquiryStatus"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/inquiries/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteInquiry"];
         options?: never;
         head?: never;
         patch?: never;
@@ -556,6 +620,9 @@ export interface components {
             name: string;
             children: components["schemas"]["CategoryNode"][];
         };
+        ChangeInquiryStatusRequest: {
+            status: null | string;
+        };
         ChangeProductStatusRequest: {
             status: null | components["schemas"]["NullableOfProductStatus"];
         };
@@ -572,6 +639,12 @@ export interface components {
             name: null | string;
             /** Format: uuid */
             parentId: null | string;
+        };
+        CreateInquiryRequest: {
+            name: null | string;
+            email: null | string;
+            message: null | string;
+            website: null | string;
         };
         CreateProductRequest: {
             name: null | string;
@@ -621,6 +694,7 @@ export interface components {
             websiteUrl: null | string;
             brandColor: null | string;
             logoUrl: null | string;
+            inquiriesEnabled: boolean;
         };
         HttpValidationProblemDetails: {
             type?: null | string;
@@ -635,6 +709,25 @@ export interface components {
         };
         /** Format: binary */
         IFormFile: string;
+        InquiryProduct: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            slug: string;
+        };
+        InquiryResponse: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+            email: string;
+            message: string;
+            status: components["schemas"]["InquiryStatus"];
+            /** Format: date-time */
+            createdAt: string;
+            product: components["schemas"]["InquiryProduct"];
+        };
+        /** @enum {unknown} */
+        InquiryStatus: "Open" | "Handled";
         InviteAdminRequest: {
             email: null | string;
         };
@@ -679,7 +772,18 @@ export interface components {
         /** @enum {unknown} */
         NullableOfAttributeType: "Text" | "Number" | "Boolean" | "Date" | "OptionList" | null;
         /** @enum {unknown} */
+        NullableOfInquiryStatus: "Open" | "Handled" | null;
+        /** @enum {unknown} */
         NullableOfProductStatus: "Draft" | "Published" | "Archived" | null;
+        PagedResponseOfInquiryResponse: {
+            items: components["schemas"]["InquiryResponse"][];
+            /** Format: int32 */
+            page: number;
+            /** Format: int32 */
+            pageSize: number;
+            /** Format: int32 */
+            totalCount: number;
+        };
         PagedResponseOfListProductsItem: {
             items: components["schemas"]["ListProductsItem"][];
             /** Format: int32 */
@@ -771,6 +875,7 @@ export interface components {
             address: null | string;
             websiteUrl: null | string;
             brandColor: null | string;
+            inquiriesEnabled?: null | boolean;
         };
         TenantProfileResponse: {
             name: string;
@@ -782,6 +887,7 @@ export interface components {
             websiteUrl: null | string;
             brandColor: null | string;
             logoUrl: null | string;
+            inquiriesEnabled: boolean;
         };
         TenantResponse: {
             /** Format: uuid */
@@ -983,6 +1089,47 @@ export interface operations {
             };
         };
     };
+    CreateInquiry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productSlug: string;
+                tenantSlug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateInquiryRequest"];
+            };
+        };
+        responses: {
+            /** @description Accepted */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["HttpValidationProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     GetCurrentTenant: {
         parameters: {
             query?: never;
@@ -1124,6 +1271,99 @@ export interface operations {
             query?: never;
             header?: never;
             path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ListInquiries: {
+        parameters: {
+            query?: {
+                page?: number;
+                pageSize?: number;
+                status?: components["schemas"]["NullableOfInquiryStatus"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PagedResponseOfInquiryResponse"];
+                };
+            };
+        };
+    };
+    ChangeInquiryStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangeInquiryStatusRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InquiryResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["HttpValidationProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DeleteInquiry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
             cookie?: never;
         };
         requestBody?: never;

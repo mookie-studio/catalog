@@ -83,6 +83,8 @@ public sealed class CatalogApiFactory : WebApplicationFactory<Program>, IAsyncLi
         builder.UseSetting("Auth:JwtSecret", TestTokens.Secret);
         builder.UseSetting("Auth:PlatformAdminUserIds:0", TestTokens.PlatformAdminUserId.ToString());
         builder.UseSetting("Cors:AllowedOrigins:0", AllowedOrigin);
+        // Every test request comes from the same address; rate-limit tests lower this on their own host.
+        builder.UseSetting("RateLimits:Inquiries:PermitLimit", "100000");
         builder.ConfigureTestServices(services =>
         {
             services.RemoveAll<IIdentityProvider>();

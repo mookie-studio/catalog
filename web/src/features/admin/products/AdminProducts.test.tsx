@@ -30,7 +30,7 @@ describe('admin product list', () => {
     expect(within(row).getByText('HD-1')).toBeInTheDocument()
     expect(within(row).getByText('Published')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Hammer drill' })).toHaveAttribute('href', '/admin/products/p1')
-    expect(screen.getByRole('navigation', { name: 'Admin' })).toHaveTextContent('ProductsAttributesCategoriesTeam')
+    expect(screen.getByRole('navigation', { name: 'Admin' })).toHaveTextContent('ProductsAttributesCategoriesInquiriesTeamProfile')
   })
 
   it('reflects search, status, category and page in the URL and the API calls', async () => {

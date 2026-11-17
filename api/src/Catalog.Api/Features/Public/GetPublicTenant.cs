@@ -17,7 +17,8 @@ public static class GetPublicTenant
         string? Address,
         string? WebsiteUrl,
         string? BrandColor,
-        string? LogoUrl);
+        string? LogoUrl,
+        bool InquiriesEnabled);
 
     public static RouteGroupBuilder MapGetPublicTenant(this RouteGroupBuilder publicGroup)
     {
@@ -31,6 +32,6 @@ public static class GetPublicTenant
         var t = await db.Tenants.AsNoTracking().SingleAsync(t => t.Id == currentTenant.TenantId, ct);
         return TypedResults.Ok(new Response(
             t.Name, t.Slug, t.Description, t.ContactEmail, t.Phone, t.Address, t.WebsiteUrl, t.BrandColor,
-            TenantProfile.LogoUrl(t.LogoKey, storage)));
+            TenantProfile.LogoUrl(t.LogoKey, storage), t.InquiriesEnabled));
     }
 }

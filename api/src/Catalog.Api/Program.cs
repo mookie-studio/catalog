@@ -27,15 +27,18 @@ builder.Services.AddCatalogAuth();
 builder.Services.AddCatalogIdentityProvider();
 builder.Services.AddCatalogImageStorage(builder.Configuration);
 builder.Services.AddCatalogCors(builder.Configuration);
+builder.Services.AddCatalogRateLimiting(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseForwardedHeaders();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 app.MapOpenApi();
 
