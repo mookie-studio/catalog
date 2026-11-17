@@ -43,6 +43,7 @@ export function ProfilePage() {
         </p>
       </div>
       <ProfileForm profile={profile.data} />
+      <InquiriesToggle enabled={profile.data.inquiriesEnabled} />
       <LogoEditor logoUrl={profile.data.logoUrl ?? null} />
     </div>
   )
@@ -120,6 +121,40 @@ function ProfileForm({ profile }: { profile: TenantProfile }) {
         )}
       </div>
     </form>
+  )
+}
+
+function InquiriesToggle({ enabled }: { enabled: boolean }) {
+  const queryClient = useQueryClient()
+  const toggle = useMutation({
+    // Only inquiriesEnabled is sent with the saved profile values, so unsaved form edits are not lost.
+    mutationFn: async (next: boolean) => {
+      const current = queryClient.getQueryData<TenantProfile>(profileQueryKey)!
+      return call(api.PUT('/api/admin/tenant/profile', { body: { ...toValues(current), inquiriesEnabled: next } }))
+    },
+    onSuccess: (data) => queryClient.setQueryData(profileQueryKey, data),
+  })
+
+  return (
+    <section aria-label="Inquiries" className="flex flex-col gap-2 border-t pt-6">
+      <h2 className="text-lg font-semibold">Inquiries</h2>
+      <label className="flex items-center gap-2 text-sm">
+        <input
+          type="checkbox"
+          checked={enabled}
+          disabled={toggle.isPending}
+          onChange={(event) => toggle.mutate(event.target.checked)}
+          className="size-4"
+        />
+        Accept Inquiries
+      </label>
+      <p className="text-sm text-muted-foreground">Visitors can ask about a Published product from its page. You read them in Inquiries.</p>
+      {toggle.error && (
+        <p role="alert" className="text-sm text-destructive">
+          {toggle.error.message}
+        </p>
+      )}
+    </section>
   )
 }
 

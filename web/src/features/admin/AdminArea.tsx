@@ -4,6 +4,8 @@ import { useCurrentTenant } from '@/features/admin/admin-api'
 import { AttributesPage } from '@/features/admin/attributes/AttributesPage'
 import { CategoriesPage } from '@/features/admin/categories/CategoriesPage'
 import { NewProductPage } from '@/features/admin/products/NewProductPage'
+import { InquiriesPage } from '@/features/admin/inquiries/InquiriesPage'
+import { useOpenInquiryCount } from '@/features/admin/inquiries/inquiries-api'
 import { ProductEditPage } from '@/features/admin/products/ProductEditPage'
 import { ProductListPage } from '@/features/admin/products/ProductListPage'
 import { ProfilePage } from '@/features/admin/profile/ProfilePage'
@@ -16,6 +18,7 @@ const sections = [
   { to: 'products', label: 'Products' },
   { to: 'attributes', label: 'Attributes' },
   { to: 'categories', label: 'Categories' },
+  { to: 'inquiries', label: 'Inquiries' },
   { to: 'team', label: 'Team' },
   { to: 'profile', label: 'Profile' },
 ]
@@ -31,6 +34,7 @@ export function AdminArea() {
 
 function AdminLayout() {
   const tenant = useCurrentTenant()
+  const openInquiries = useOpenInquiryCount()
   return (
     <div className="min-h-svh">
       <header className="border-b">
@@ -51,6 +55,11 @@ function AdminLayout() {
               }
             >
               {section.label}
+              {section.to === 'inquiries' && !!openInquiries.data && (
+                <span aria-label={`${openInquiries.data} open`} className="ml-1.5 rounded-full bg-primary px-1.5 py-0.5 text-xs text-primary-foreground">
+                  {openInquiries.data}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -63,6 +72,7 @@ function AdminLayout() {
           <Route path="products/:id" element={<ProductEditPage />} />
           <Route path="attributes" element={<AttributesPage />} />
           <Route path="categories" element={<CategoriesPage />} />
+          <Route path="inquiries" element={<InquiriesPage />} />
           <Route path="team" element={<TeamPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="*" element={<NotFoundPage />} />
