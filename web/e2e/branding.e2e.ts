@@ -22,7 +22,8 @@ test('a Visitor sends an Inquiry from a branded catalog and the Admin handles it
   await profile.getByRole('button', { name: 'Save profile' }).click()
   await expect(profile.getByText('Saved.')).toBeVisible()
   const accept = admin.getByRole('region', { name: 'Inquiries' }).getByRole('checkbox', { name: 'Accept Inquiries' })
-  await accept.check()
+  // The checkbox shows the saved value, so it turns checked only once the API answers: click, then assert.
+  await accept.click()
   await expect(accept).toBeChecked()
 
   const productSlug = await createPublishedProduct(admin, productName, `CS-${run}`, 'A light cordless saw.')
