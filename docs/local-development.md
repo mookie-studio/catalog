@@ -1,15 +1,20 @@
 # Local development
 
-Everything runs locally in Docker: Supabase (PostgreSQL, authentication and an email inbox) through the
-Supabase CLI, and the API, the SPA and S3-compatible image storage through `docker compose`.
+Supabase (authentication and an email inbox) always runs locally through the Supabase CLI. The API,
+the SPA, PostgreSQL for the catalog and S3-compatible image storage run in one of two ways:
+
+- **Aspire (recommended)**: `dotnet run` of the AppHost starts everything and opens a dashboard with
+  logs, traces and metrics ([ADR 0010](adr/0010-aspire-for-local-orchestration.md)).
+- **docker compose**: the alternative path, also used by the end-to-end job in CI.
 
 ## Requirements
 
 - Docker
 - [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started)
 - .NET 10 SDK with `dotnet-ef` (`dotnet tool install --global dotnet-ef`)
+- Node.js 22 (Aspire path only; compose runs Node in a container)
 
-## 1. Start Supabase
+## Start Supabase
 
 ```sh
 supabase start
@@ -19,10 +24,56 @@ supabase status
 `supabase/config.toml` disables public sign-up and enables the email testing inbox at
 http://localhost:54324, where invitation emails arrive. Supabase Studio is at http://localhost:54323.
 
-Copy `.env.example` to `.env` and fill in `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` and
-`SUPABASE_JWT_SECRET` from `supabase status`.
+## Create the first Platform Admin
 
-## 2. Apply the migrations
+1. In Supabase Studio, open **Authentication → Users → Add user**, and create a user with an email
+   and password (tick "Auto confirm user").
+2. Keep the user's id: the API reads it as `Auth:PlatformAdminUserIds` (set below for either path).
+
+## Option A: Aspire (recommended)
+
+The AppHost (`api/src/Catalog.AppHost`) starts PostgreSQL, image storage (S3Mock), the API and the SPA.
+No Aspire workload is needed; the packages come from NuGet.
+
+### 1. Set the AppHost parameters
+
+Copy the values from `supabase status` into the AppHost's user secrets (once):
+
+```sh
+cd api/src/Catalog.AppHost
+dotnet user-secrets set "Parameters:supabase-jwt-secret" "<JWT secret>"
+dotnet user-secrets set "Parameters:supabase-service-role-key" "<service_role key>"
+dotnet user-secrets set "Parameters:supabase-anon-key" "<anon key>"
+dotnet user-secrets set "Parameters:platform-admin-user-id" "<your Platform Admin user id>"
+# Only if Supabase is not at the CLI default http://127.0.0.1:54321:
+dotnet user-secrets set "Parameters:supabase-url" "http://127.0.0.1:54321"
+```
+
+Missing parameters are also asked for in the dashboard.
+
+### 2. Run
+
+```sh
+dotnet run --project api/src/Catalog.AppHost
+```
+
+The console prints the dashboard address (with a login token). In the dashboard:
+
+1. Wait for `postgres`, `storage`, `api` and `web` to be running (`web` runs `npm install` first).
+2. Start the **`migrate`** resource (▶). It runs `dotnet ef database update` against the AppHost's
+   PostgreSQL and then stops. Migrations never run on their own; start it again after pulling new ones.
+3. Open the `web` endpoint, http://localhost:5173 (sign in at `/login`, then go to `/platform`).
+
+Logs, traces (HTTP requests and SQL) and metrics of the API are under **Structured logs**, **Traces**
+and **Metrics**. The catalog data lives in the AppHost's PostgreSQL (volume `catalog-postgres-data`),
+not in Supabase's database; images live in the `catalog-storage-data` volume.
+
+## Option B: docker compose
+
+Copy `.env.example` to `.env` and fill in `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
+`SUPABASE_JWT_SECRET` from `supabase status`, and `PLATFORM_ADMIN_USER_ID` with your Platform Admin's id.
+
+### 1. Apply the migrations
 
 Migrations are never applied at start-up. Apply them to the local Supabase database:
 
@@ -32,14 +83,7 @@ ConnectionStrings__Catalog="Host=localhost;Port=54322;Database=postgres;Username
   dotnet ef database update --project src/Catalog.Api
 ```
 
-## 3. Create the first Platform Admin
-
-1. In Supabase Studio, open **Authentication → Users → Add user**, and create a user with an email
-   and password (tick "Auto confirm user").
-2. Copy the user's id into `PLATFORM_ADMIN_USER_ID` in `.env`. The API reads it as
-   `Auth:PlatformAdminUserIds`.
-
-## 4. Start the API, the SPA and image storage
+### 2. Start the API, the SPA and image storage
 
 ```sh
 docker compose up --build
@@ -52,7 +96,7 @@ docker compose up --build
 
 The SPA calls the API through the Vite dev server proxy (`/api`), so no CORS setup is needed locally.
 
-## Running without Docker
+## Running the API and the SPA without an orchestrator
 
 - API: `dotnet run --project api/src/Catalog.Api` with the same settings as the `api` service in
   `docker-compose.yml` (as environment variables or user secrets).
@@ -61,7 +105,7 @@ The SPA calls the API through the Vite dev server proxy (`/api`), so no CORS set
 
 ## End-to-end test
 
-With everything above running, and a Platform Admin whose email and password you know:
+With the docker compose path running (the E2E job in CI uses it too), and a Platform Admin whose email and password you know:
 
 ```sh
 cd web
