@@ -59,6 +59,10 @@ workflow only replaces the code, so they survive every deploy.
 
 App Service tells the API which port to listen on; no port setting is needed.
 
+The API trusts `X-Forwarded-For` and `X-Forwarded-Proto` from any proxy (the host's front ends have no
+fixed addresses), so it sees the Visitor's IP for the Inquiry rate limit. Optional settings:
+`RateLimits__Inquiries__PermitLimit` (default 5) and `RateLimits__Inquiries__WindowSeconds` (default 600).
+
 ## SPA (Cloudflare Pages)
 
 ### GitHub secrets

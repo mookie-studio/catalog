@@ -33,4 +33,7 @@ public sealed class Tenant
 
     /// <summary>Image storage key of the Logo, if any.</summary>
     public string? LogoKey { get; set; }
+
+    /// <summary>Whether Visitors may send Inquiries. Off by default.</summary>
+    public bool InquiriesEnabled { get; set; }
 }

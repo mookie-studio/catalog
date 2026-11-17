@@ -253,6 +253,60 @@
         }
       }
     },
+    "/api/public/{tenantSlug}/products/{productSlug}/inquiries": {
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "operationId": "CreateInquiry",
+        "parameters": [
+          {
+            "name": "productSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInquiryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/admin/tenant": {
       "get": {
         "tags": [
@@ -392,6 +446,132 @@
           "Admin"
         ],
         "operationId": "RemoveTenantLogo",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/admin/inquiries": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "ListInquiries",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/NullableOfInquiryStatus"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfInquiryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/inquiries/{id}/status": {
+      "put": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "ChangeInquiryStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeInquiryStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InquiryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/admin/inquiries/{id}": {
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "DeleteInquiry",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
         "responses": {
           "204": {
             "description": "No Content"
@@ -1929,6 +2109,20 @@
           }
         }
       },
+      "ChangeInquiryStatusRequest": {
+        "required": [
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "ChangeProductStatusRequest": {
         "required": [
           "status"
@@ -2013,6 +2207,41 @@
               "string"
             ],
             "format": "uuid"
+          }
+        }
+      },
+      "CreateInquiryRequest": {
+        "required": [
+          "name",
+          "email",
+          "message",
+          "website"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "message": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "website": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -2192,7 +2421,8 @@
           "address",
           "websiteUrl",
           "brandColor",
-          "logoUrl"
+          "logoUrl",
+          "inquiriesEnabled"
         ],
         "type": "object",
         "properties": {
@@ -2243,6 +2473,9 @@
               "null",
               "string"
             ]
+          },
+          "inquiriesEnabled": {
+            "type": "boolean"
           }
         }
       },
@@ -2294,6 +2527,69 @@
       "IFormFile": {
         "type": "string",
         "format": "binary"
+      },
+      "InquiryProduct": {
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        }
+      },
+      "InquiryResponse": {
+        "required": [
+          "id",
+          "name",
+          "email",
+          "message",
+          "status",
+          "createdAt",
+          "product"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/InquiryStatus"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "product": {
+            "$ref": "#/components/schemas/InquiryProduct"
+          }
+        }
+      },
+      "InquiryStatus": {
+        "enum": [
+          "Open",
+          "Handled"
+        ]
       },
       "InviteAdminRequest": {
         "required": [
@@ -2459,6 +2755,13 @@
           null
         ]
       },
+      "NullableOfInquiryStatus": {
+        "enum": [
+          "Open",
+          "Handled",
+          null
+        ]
+      },
       "NullableOfProductStatus": {
         "enum": [
           "Draft",
@@ -2466,6 +2769,35 @@
           "Archived",
           null
         ]
+      },
+      "PagedResponseOfInquiryResponse": {
+        "required": [
+          "items",
+          "page",
+          "pageSize",
+          "totalCount"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InquiryResponse"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "PagedResponseOfListProductsItem": {
         "required": [
@@ -2831,6 +3163,12 @@
               "null",
               "string"
             ]
+          },
+          "inquiriesEnabled": {
+            "type": [
+              "null",
+              "boolean"
+            ]
           }
         }
       },
@@ -2844,7 +3182,8 @@
           "address",
           "websiteUrl",
           "brandColor",
-          "logoUrl"
+          "logoUrl",
+          "inquiriesEnabled"
         ],
         "type": "object",
         "properties": {
@@ -2895,6 +3234,9 @@
               "null",
               "string"
             ]
+          },
+          "inquiriesEnabled": {
+            "type": "boolean"
           }
         }
       },

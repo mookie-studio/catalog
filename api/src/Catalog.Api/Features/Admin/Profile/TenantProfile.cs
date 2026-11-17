@@ -8,11 +8,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.Api.Features.Admin.Profile;
 
-/// <summary>Reads and replaces the current Tenant's Tenant profile (see GLOSSARY.md).</summary>
+/// <summary>
+/// Reads and replaces the current Tenant's Tenant profile (see GLOSSARY.md).
+/// <c>inquiriesEnabled</c> is optional on PUT: when omitted it keeps its value.
+/// </summary>
 public static partial class TenantProfile
 {
     public sealed record Request(
-        string? Description, string? ContactEmail, string? Phone, string? Address, string? WebsiteUrl, string? BrandColor);
+        string? Description,
+        string? ContactEmail,
+        string? Phone,
+        string? Address,
+        string? WebsiteUrl,
+        string? BrandColor,
+        bool? InquiriesEnabled = null);
 
     public sealed record Response(
         string Name,
@@ -23,7 +32,8 @@ public static partial class TenantProfile
         string? Address,
         string? WebsiteUrl,
         string? BrandColor,
-        string? LogoUrl);
+        string? LogoUrl,
+        bool InquiriesEnabled);
 
     [GeneratedRegex("^#[0-9a-fA-F]{6}$")]
     private static partial Regex BrandColorPattern();
@@ -88,6 +98,11 @@ public static partial class TenantProfile
         tenant.Address = address;
         tenant.WebsiteUrl = websiteUrl;
         tenant.BrandColor = brandColor?.ToUpperInvariant();
+        if (request.InquiriesEnabled is { } inquiriesEnabled)
+        {
+            tenant.InquiriesEnabled = inquiriesEnabled;
+        }
+
         await db.SaveChangesAsync(ct);
         return TypedResults.Ok(ToResponse(tenant, storage));
     }
@@ -95,7 +110,7 @@ public static partial class TenantProfile
     private static Response ToResponse(Tenant t, IImageStorage storage) =>
         new(
             t.Name, t.Slug, t.Description, t.ContactEmail, t.Phone, t.Address, t.WebsiteUrl, t.BrandColor,
-            LogoUrl(t.LogoKey, storage));
+            LogoUrl(t.LogoKey, storage), t.InquiriesEnabled);
 
     /// <summary>The public URL of a Logo, or null when the tenant has none.</summary>
     public static string? LogoUrl(string? logoKey, IImageStorage storage) =>

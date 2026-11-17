@@ -24,6 +24,7 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
     public DbSet<ProductImage> ProductImages => Set<ProductImage>();
+    public DbSet<Inquiry> Inquiries => Set<Inquiry>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -40,6 +41,7 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
             tenant.Property(t => t.WebsiteUrl).HasMaxLength(Tenant.WebsiteUrlMaxLength);
             tenant.Property(t => t.BrandColor).HasMaxLength(Tenant.BrandColorLength);
             tenant.Property(t => t.LogoKey).HasMaxLength(Tenant.LogoKeyMaxLength);
+            tenant.Property(t => t.InquiriesEnabled).HasDefaultValue(false);
         });
 
         modelBuilder.Entity<AdminMembership>(membership =>
@@ -110,6 +112,17 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
             image.Property(i => i.ContentType).HasMaxLength(50).IsRequired();
             image.HasOne<Product>().WithMany().HasForeignKey(i => i.ProductId).OnDelete(DeleteBehavior.Cascade);
             image.HasIndex(i => new { i.ProductId, i.Position });
+        });
+
+        modelBuilder.Entity<Inquiry>(inquiry =>
+        {
+            inquiry.Property(i => i.Name).HasMaxLength(Inquiry.NameMaxLength).IsRequired();
+            inquiry.Property(i => i.Email).HasMaxLength(Inquiry.EmailMaxLength).IsRequired();
+            inquiry.Property(i => i.Message).HasMaxLength(Inquiry.MessageMaxLength).IsRequired();
+            inquiry.Property(i => i.Status).HasConversion<string>().HasMaxLength(20);
+            inquiry.HasOne<Tenant>().WithMany().HasForeignKey(i => i.TenantId).OnDelete(DeleteBehavior.Restrict);
+            inquiry.HasOne<Product>().WithMany().HasForeignKey(i => i.ProductId).OnDelete(DeleteBehavior.Restrict);
+            inquiry.HasIndex(i => new { i.TenantId, i.Status, i.CreatedAt });
         });
 
         modelBuilder.HasDbFunction(typeof(CatalogDbContext).GetMethod(nameof(JsonbExtractPathText))!)
