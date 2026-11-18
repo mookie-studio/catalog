@@ -18,6 +18,7 @@ services:
       Supabase__Url: http://host.docker.internal:54321
       Supabase__ServiceRoleKey: ${SUPABASE_SERVICE_ROLE_KEY}
       Supabase__InviteRedirectUrl: http://localhost:5173/accept-invite
+      PublicSite__BaseUrl: http://localhost:5173
       Storage__ServiceUrl: http://storage:9090
       Storage__Bucket: catalog-images
       Storage__AccessKey: local

@@ -33,7 +33,9 @@ public static class RouteGroups
             .MapListPublicCategories()
             .MapGetPublicProduct()
             .MapCreateInquiry()
-            .MapRecordProductView();
+            .MapRecordProductView()
+            .MapListRelatedProducts()
+            .MapGetSitemap();
 
         app.MapGroup(Admin).WithTags("Admin")
             .RequireAuthorization(AuthServiceCollectionExtensions.AdminPolicy)
@@ -82,6 +84,8 @@ public static class RouteGroups
             .MapChangeTenantSlug()
             .MapInviteFirstAdmin()
             .MapListTenantAdmins();
+
+        app.MapGetSitemapIndex();
 
         return app;
     }

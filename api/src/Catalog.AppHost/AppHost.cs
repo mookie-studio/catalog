@@ -59,6 +59,7 @@ var web = builder.AddViteApp("web", Path.Combine(repositoryRoot, "web"))
     .WithEnvironment("VITE_SUPABASE_URL", supabaseUrl)
     .WithEnvironment("VITE_SUPABASE_ANON_KEY", supabaseAnonKey);
 
+api.WithEnvironment("PublicSite__BaseUrl", web.GetEndpoint("http"));
 api.WithEnvironment("Supabase__InviteRedirectUrl", ReferenceExpression.Create($"{web.GetEndpoint("http")}/accept-invite"));
 
 builder.Build().Run();
