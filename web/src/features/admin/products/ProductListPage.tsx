@@ -17,6 +17,7 @@ import type { BulkResult } from '@/features/admin/products/bulk-api'
 import { useSelection } from '@/features/admin/products/use-selection'
 import { downloadProductsCsv } from '@/features/admin/products/product-csv'
 import { ProductStatusBadge } from '@/features/admin/products/ProductStatusBadge'
+import { StatusBadge } from '@/components/StatusBadge'
 
 const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' })
 
@@ -193,9 +194,7 @@ export function ProductListPage() {
                         {product.name}
                       </Link>
                       {product.isFeatured && (
-                        <span aria-label="Featured" title="Featured" className="ml-2 text-warning">
-                          ★
-                        </span>
+                        <StatusBadge status="Featured" className="ml-2" />
                       )}
                     </td>
                     <td className="px-3 py-2 font-mono text-xs">{product.sku}</td>

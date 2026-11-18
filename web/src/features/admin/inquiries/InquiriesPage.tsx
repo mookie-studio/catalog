@@ -7,6 +7,7 @@ import { ConfirmPanel } from '@/components/ConfirmPanel'
 import { Pagination } from '@/components/Pagination'
 import { Button } from '@/components/ui/button'
 import { Select } from '@/components/ui/select'
+import { StatusBadge } from '@/components/StatusBadge'
 import { type Inquiry, type InquiryStatus, inquiriesQueryKey, useInquiries } from '@/features/admin/inquiries/inquiries-api'
 
 const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' })
@@ -109,7 +110,7 @@ function InquiryRow({ inquiry }: { inquiry: Inquiry }) {
         <Link to={`/admin/products/${inquiry.product.id}`} className="font-medium underline-offset-4 hover:underline">
           {inquiry.product.name}
         </Link>
-        {handled && <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs">Handled</span>}
+        <StatusBadge status={inquiry.status} className="ml-2" />
       </p>
       <p className="whitespace-pre-line text-sm text-muted-foreground">{inquiry.message}</p>
       {confirming ? (
