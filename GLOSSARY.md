@@ -142,3 +142,20 @@ _Avoid_: Similar products, recommendations, you may also like
 
 **Sitemap**:
 The XML list of a tenant's public addresses (the catalog home and every Published product) that search engines read to find them.
+
+### Demo
+
+**Demo dataset**:
+The committed description, in `demo/`, of the Demo tenants: their accounts, catalogs, Images and Demo activity.
+_Avoid_: Fixtures, seed data, sample data
+
+**Demo tenant**:
+A Tenant listed in the Demo dataset. The Demo seeder may change it; it never changes any other Tenant.
+_Avoid_: Test tenant, sandbox
+
+**Demo seeder**:
+The command-line tool that makes an environment's Demo tenants match the Demo dataset: it creates what is missing, updates what differs and archives what is extra. Running it again resets the demo.
+_Avoid_: Seeding script, loader
+
+**Demo activity**:
+The back-dated Inquiries and Product views the Demo seeder writes, so the Dashboard, the Inquiry inbox and the statistics of a Demo tenant are not empty.

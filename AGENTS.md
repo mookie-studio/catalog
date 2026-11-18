@@ -17,8 +17,10 @@ api/
   src/Catalog.Api/            # the API (the only deployed project)
   src/Catalog.ServiceDefaults/ # Aspire telemetry and health checks (ADR 0010)
   src/Catalog.AppHost/        # Aspire AppHost, local development only (ADR 0010)
+  tools/Catalog.DemoSeeder/   # Demo seeder, never deployed (ADR 0014)
   tests/Catalog.Api.Tests/    # HTTP-level integration tests
 web/                          # React SPA (Vite + TypeScript)
+demo/                         # Demo dataset: JSON, images and their credits (ADR 0014)
 docs/functional/              # functional documentation of every feature (keep it current)
 docker-compose.yml            # local environment (docs/local-development.md)
 supabase/                     # local Supabase configuration
