@@ -35,6 +35,16 @@ describe('tenant branding', () => {
     const root = home.closest('header')!.parentElement!
     expect(root.style.getPropertyValue('--brand')).toBe('#000080')
     expect(root.style.getPropertyValue('--brand-foreground')).toBe('#FFFFFF')
+    expect(root.style.getPropertyValue('--ring')).toBe('#000080')
+  })
+
+  it('ends every page with a Made with Just Looking link to the landing page', async () => {
+    catalog({})
+
+    renderApp('/acme')
+
+    const link = await screen.findByRole('link', { name: 'Made with Just Looking' })
+    expect(link).toHaveAttribute('href', '/')
   })
 
   it('keeps the default look without a profile', async () => {

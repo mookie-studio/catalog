@@ -20,8 +20,10 @@ export function foregroundFor(color: string): '#000000' | '#FFFFFF' {
 }
 
 /**
- * CSS custom properties for the public layout: the Brand color drives the header (`--brand`) and the
- * primary buttons (`--primary`). Without a Brand color the default theme is kept.
+ * CSS custom properties for the public layout: the Brand color drives the header (`--brand`), the
+ * primary buttons (`--primary`) and the focus ring (`--ring`). The ring only takes the Brand color
+ * when it has at least 3:1 contrast on white (WCAG non-text contrast); a light Brand color would make
+ * focus invisible, so the default ring is kept. Without a Brand color the default theme is kept.
  */
 export function brandStyle(brandColor: string | null | undefined): CSSProperties | undefined {
   if (!brandColor || !/^#[0-9a-fA-F]{6}$/.test(brandColor)) return undefined
@@ -31,5 +33,6 @@ export function brandStyle(brandColor: string | null | undefined): CSSProperties
     '--brand-foreground': foreground,
     '--primary': brandColor,
     '--primary-foreground': foreground,
+    ...(contrast(relativeLuminance(brandColor), 1) >= 3 ? { '--ring': brandColor } : {}),
   } as CSSProperties
 }
