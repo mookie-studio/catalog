@@ -135,3 +135,7 @@ Once the stack runs (see above) and a Tenant with an Admin exists, the functiona
 AppHost, so the Sitemaps work locally. Product views and Inquiries are rate limited per IP
 (see [Rules and limits](./functional/rules-and-limits.md)); the limits are generous enough not to
 get in the way while testing by hand.
+
+## Fonts
+
+The SPA loads its two typefaces, Archivo and Martian Mono, from Google Fonts at run time (`web/index.html`); nothing needs to be installed. Offline, the browser falls back to system fonts and the layout still works. To check the dark theme locally, switch your operating system (or the browser devtools setting for `prefers-color-scheme`) to dark.

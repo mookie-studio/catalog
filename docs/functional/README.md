@@ -40,4 +40,5 @@ Platform Admin ──creates──▶ Tenant ◀──manages── Admin(s)
 - **Everything is paginated.** Lists take `page` (1-based) and `pageSize` (default 20, at most 50) and answer `{ items, page, pageSize, totalCount }`. The only exceptions are the Category trees and the public filters, which are returned whole because a tree cannot be split into pages.
 - **Errors.** Invalid input is a 400 with a field-by-field list of problems, a missing or foreign resource is 404, a uniqueness clash is 409 (the response names the field in conflict), too many requests is 429 with a `Retry-After` header.
 - **Dates** are UTC. **Ids** are GUIDs.
+- **Appearance.** The interface follows the device's light or dark setting and switches live when it changes. Colours, type and components follow the design system in [DESIGN.md](../../DESIGN.md). The browser tab shows "Just Looking" and its app icon.
 - **Interface language.** The interface and all documentation are in English. Public full-text search uses the Spanish dictionary ([ADR 0006](../adr/0006-attributes-in-jsonb-and-native-search.md)).

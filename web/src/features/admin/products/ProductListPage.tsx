@@ -193,7 +193,7 @@ export function ProductListPage() {
                         {product.name}
                       </Link>
                       {product.isFeatured && (
-                        <span aria-label="Featured" title="Featured" className="ml-2 text-amber-500">
+                        <span aria-label="Featured" title="Featured" className="ml-2 text-warning">
                           ★
                         </span>
                       )}
