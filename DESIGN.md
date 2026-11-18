@@ -166,9 +166,19 @@ The wordmark is Archivo at weight 900, semi-expanded, with the two "o" of "Looki
 - Always an `<img>` of these files with `alt="Just Looking"`; never retype the wordmark in a font or recolour it.
 - Minimum height 20px (wordmark), 16px (symbol). Clear space on every side: the height of one eye.
 
+## mookie studio credit
+
+Just Looking is a product by mookie studio. The maker's credit sits in the landing footer, on the right of its `plum-900` band (stacked below the rest on phones): the label "A product by" (Spanish "Un producto de"), 12px 600 uppercase, 0.06em, `landing-ink-muted`, above the mookie studio wordmark.
+
+- Component `MookieStudioCredit` in `web/src/components/brand/`; files in `web/public/brand/mookie-studio/` (see its README), copied unchanged from mookie studio's logo pack.
+- `wordmark-on-dark.svg` on plum and dark grounds, `wordmark-on-light.svg` (prop `onLight`) on light grounds. Never recoloured, redrawn or cropped; its own colours (red `#E0202F`) are the only place that red appears.
+- Shown 64px high (the file includes its clear space, so the red mark is about 52px). Keep at least 24px between the credit and any other footer item.
+- The wordmark links to mookie studio on GitHub (`https://github.com/mookie-studio`), in a new tab, with the accessible name "mookie studio on GitHub" and a visible focus outline.
+- One credit per page, only in a footer. It never replaces the Just Looking logo.
+
 ## Components
 
-Shared components live in `web/src/components/` (`ui/` for shadcn primitives, `brand/` for Logo, HangTag and Stamp). They never import admin, platform or Supabase code.
+Shared components live in `web/src/components/` (`ui/` for shadcn primitives, `brand/` for Logo, HangTag, Stamp and MookieStudioCredit). They never import admin, platform or Supabase code.
 
 ### Button
 
