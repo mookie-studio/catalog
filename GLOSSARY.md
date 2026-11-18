@@ -119,3 +119,26 @@ _Avoid_: Clone, copy
 **Publish**:
 To move a product to Published. Requires name, SKU and description; a draft only requires name and SKU.
 _Avoid_: Activate, go live
+
+### Admin tools
+
+**Dashboard**:
+The admin area's start page: how many products the tenant has in each Product status, how many Inquiries are Open, which Published products need attention (no Image, no Category) and the most viewed products.
+_Avoid_: Home, overview, control panel
+
+**Bulk action**:
+One change (publish, archive, move to Draft, mark or unmark as Featured, add to or remove from a Category) applied to several selected products at once. Each product succeeds or fails on its own with the same rules as the single-product change.
+_Avoid_: Batch edit, mass update
+
+### Discovery
+
+**Product view**:
+One opening of a Published product's public page by a Visitor. Views are only counted per product and per day; nothing about the Visitor is stored.
+_Avoid_: Visit, hit, impression, page view
+
+**Related products**:
+Other Published products of the same tenant that share at least one Category with the product a Visitor is looking at, shown on its public page.
+_Avoid_: Similar products, recommendations, you may also like
+
+**Sitemap**:
+The XML list of a tenant's public addresses (the catalog home and every Published product) that search engines read to find them.
