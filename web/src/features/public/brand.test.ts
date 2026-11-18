@@ -24,6 +24,11 @@ describe('brand color', () => {
       '--brand-foreground': '#FFFFFF',
       '--primary': '#000080',
       '--primary-foreground': '#FFFFFF',
+      '--ring': '#000080',
     })
+  })
+
+  it('keeps the default focus ring for a light Brand color', () => {
+    expect(brandStyle('#FFFF00')).not.toHaveProperty('--ring')
   })
 })

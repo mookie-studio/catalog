@@ -8,6 +8,7 @@ import { ProductPage } from '@/features/public/ProductPage'
 import { brandStyle } from '@/features/public/brand'
 import { NotFoundError, type PublicTenant, publicTenantKey, usePublicTenant } from '@/features/public/public-api'
 import { TenantContact } from '@/features/public/TenantContact'
+import { MadeWithJustLooking } from '@/features/public/MadeWithJustLooking'
 
 // Public catalog of one tenant, browsed by visitors.
 export function PublicLayout() {
@@ -43,6 +44,7 @@ export function PublicLayout() {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <TenantContact tenant={tenant.data} />
+      <MadeWithJustLooking />
     </div>
   )
 }

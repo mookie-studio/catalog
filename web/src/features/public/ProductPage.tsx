@@ -50,7 +50,7 @@ export function ProductPage({ tenantSlug }: { tenantSlug: string }) {
       <main className="mx-auto grid max-w-5xl gap-8 px-4 py-6 sm:px-6 md:grid-cols-2">
         <Gallery key={productSlug} name={name} images={images} />
         <div className="flex flex-col gap-6">
-          <h1 className="text-2xl font-semibold tracking-tight">{name}</h1>
+          <h1 className="font-display text-[28px] leading-none font-extrabold tracking-[-0.02em] [font-stretch:110%] sm:text-4xl">{name}</h1>
           {description && <p className="whitespace-pre-line text-muted-foreground">{description}</p>}
           {attributes.length > 0 && (
             <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
