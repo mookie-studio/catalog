@@ -78,6 +78,14 @@ describe('creating a product', () => {
     expect(await lastBody('/api/admin/products', 'POST')).toEqual({ name: 'Hammer drill', sku: 'HD-1', description: 'A powerful drill.' })
   })
 
+  it('sets the SKU in the monospaced data style', async () => {
+    mockApi({ ...adminSession })
+    renderApp('/admin/products/new')
+
+    expect(await screen.findByLabelText('SKU')).toHaveAttribute('data-mono')
+    expect(screen.getByLabelText('Name')).not.toHaveAttribute('data-mono')
+  })
+
   it('shows a taken SKU next to the SKU field', async () => {
     mockApi({ ...adminSession, 'POST /api/admin/products': () => problem(409, { sku: ['The SKU is already in use in this Tenant.'] }) })
     renderApp('/admin/products/new')

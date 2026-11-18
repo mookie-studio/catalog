@@ -8,15 +8,17 @@ export function Field({ label, error, hint, children }: FieldProps) {
   const id = useId()
   const messageId = `${id}-message`
   return (
-    <div className="space-y-2">
-      <Label htmlFor={id}>{label}</Label>
+    <div className="grid gap-1.5">
+      <Label htmlFor={id} className="text-sm font-semibold text-ink">
+        {label}
+      </Label>
       {cloneElement(children, { id, 'aria-invalid': error ? true : undefined, 'aria-describedby': error || hint ? messageId : undefined })}
       {error ? (
-        <p id={messageId} className="text-sm text-destructive">
+        <p id={messageId} className="text-sm font-semibold text-danger">
           {error}
         </p>
       ) : hint ? (
-        <p id={messageId} className="text-sm text-muted-foreground">
+        <p id={messageId} className="text-sm text-ink-muted">
           {hint}
         </p>
       ) : null}

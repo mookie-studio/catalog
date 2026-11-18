@@ -105,7 +105,7 @@ function ChangeSlugForm({ tenant }: { tenant: Tenant }) {
             error={error}
             hint={slug !== tenant.slug ? `Existing public links to /${tenant.slug} will stop working.` : undefined}
           >
-            <Input value={slug} onChange={(e) => setSlug(e.target.value)} required />
+            <Input mono value={slug} onChange={(e) => setSlug(e.target.value)} required />
           </Field>
         </div>
         <Button type="submit" size="sm" className="mt-6" disabled={slug === tenant.slug || change.isPending}>
