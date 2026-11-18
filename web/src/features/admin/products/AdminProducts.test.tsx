@@ -210,7 +210,7 @@ describe('editing a product', () => {
     const router = renderApp('/admin/products')
 
     const row = (await screen.findByRole('link', { name: 'Hammer drill' })).closest('tr')!
-    expect(within(row).getByLabelText('Featured')).toBeInTheDocument()
+    expect(within(row).getByText('Featured')).toBeInTheDocument()
     await userEvent.click(screen.getByRole('checkbox', { name: 'Featured only' }))
 
     await vi.waitFor(() => expect(router.state.location.search).toBe('?featured=true'))
