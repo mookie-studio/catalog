@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Catalog.Api\Catalog.Api.csproj" />
+    <ProjectReference Include="..\..\tools\Catalog.DemoSeeder\Catalog.DemoSeeder.csproj" />
   </ItemGroup>
 
 </Project>
