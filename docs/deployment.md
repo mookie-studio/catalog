@@ -56,6 +56,7 @@ workflow only replaces the code, so they survive every deploy.
 | `Storage__PublicBaseUrl` | Public URL of the bucket (custom domain or `r2.dev`). |
 | `Storage__Region` | `auto` |
 | `Cors__AllowedOrigins__0` | `https://<spa-domain>` |
+| `PublicSite__BaseUrl` | `https://<spa-domain>` (Sitemap addresses; without it the Sitemap endpoints answer 404) |
 
 App Service tells the API which port to listen on; no port setting is needed.
 

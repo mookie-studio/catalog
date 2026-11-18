@@ -31,6 +31,7 @@ builder.Services.AddCatalogIdentityProvider();
 builder.Services.AddCatalogImageStorage(builder.Configuration);
 builder.Services.AddCatalogCors(builder.Configuration);
 builder.Services.AddCatalogRateLimiting(builder.Configuration);
+builder.Services.Configure<PublicSiteOptions>(builder.Configuration.GetSection(PublicSiteOptions.SectionName));
 
 var app = builder.Build();
 

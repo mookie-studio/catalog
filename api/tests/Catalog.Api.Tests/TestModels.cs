@@ -54,3 +54,5 @@ public sealed record BulkFailureBody(Guid ProductId, Dictionary<string, string[]
 public sealed record BulkResultBody(List<Guid> Succeeded, List<BulkFailureBody> Failed);
 
 public sealed record ProductStatBody(Guid ProductId, string Name, string Slug, string Status, int Views, int Inquiries);
+
+public sealed record PublicProductPage(List<PublicProductItem> Items, int Page, int PageSize, int TotalCount);
