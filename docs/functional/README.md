@@ -13,7 +13,7 @@ What Catalog does, feature by feature, written for the people who use, test, dem
 | [Rules and limits](./rules-and-limits.md) | Everyone | Every size, length and count limit in one place |
 | [API reference](./api-reference.md) | Developers | Every endpoint, its parameters and its error codes |
 
-Infrastructure: [local development](../local-development.md), [deployment](../deployment.md) and the step-by-step [infrastructure setup](../infra-setup.md). Decisions and their reasons: [ADRs](../adr).
+Infrastructure: [local development](../local-development.md), [deployment](../deployment.md) and the step-by-step [infrastructure setup](../infra-setup.md). Demo: [loading and resetting the demo data](../demo.md) and the [demo script](../demo-script.md). Decisions and their reasons: [ADRs](../adr).
 
 ## What Catalog is
 

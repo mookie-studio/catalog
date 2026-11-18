@@ -26,6 +26,32 @@ public sealed class DemoSeederSetupTests : IDisposable
         Assert.Equal(["Tools", "Tools/Drills", "Tools/Saws", "Paint"], dataset.Tenants[0].Catalog.CategoryPaths());
     }
 
+    [Fact]
+    public void The_committed_Demo_dataset_is_valid()
+    {
+        var root = DatasetLoader.FindDefault(AppContext.BaseDirectory);
+        Assert.NotNull(root);
+
+        var dataset = DatasetLoader.Load(root);
+
+        Assert.Equal(["forja-hardware", "lino-apparel", "folio-books", "tallo-garden"], dataset.Tenants.Select(t => t.Slug));
+        Assert.False(dataset.Tenants.Single(t => t.Slug == "tallo-garden").Tenant.IsActive);
+        foreach (var tenant in dataset.Tenants.Where(t => t.Tenant.IsActive))
+        {
+            var published = tenant.Products.Where(p => p.Status == "Published").ToList();
+            Assert.Equal(30, tenant.Products.Count);
+            Assert.Equal(22, published.Count);
+            Assert.Equal(5, tenant.Products.Count(p => p.Status == "Draft"));
+            Assert.Equal(3, tenant.Products.Count(p => p.Status == "Archived"));
+            Assert.Equal(5, published.Count(p => p.Featured));
+            Assert.True(published.Count(p => p.ImageList.Count == 0) >= 3, tenant.Slug);
+            Assert.True(published.Count(p => p.CategoryList.Count == 0) >= 2, tenant.Slug);
+            Assert.Contains(tenant.Products, p => p.AttributeMap.Count == tenant.Catalog.AttributeList.Count);
+            Assert.Equal(8, tenant.Activity.InquiryList.Count);
+            Assert.NotNull(tenant.Profile?.Logo);
+        }
+    }
+
     public static TheoryData<string, object, string> InvalidProducts => new()
     {
         { "duplicate SKU", new object[] { Product("A"), Product("A") }, "products.json $[1].sku: duplicate SKU 'A'" },

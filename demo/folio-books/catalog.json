@@ -1,0 +1,93 @@
+{
+  "categories": [
+    {
+      "name": "Fiction",
+      "children": [
+        {
+          "name": "Novels"
+        },
+        {
+          "name": "Short stories"
+        },
+        {
+          "name": "Crime"
+        }
+      ]
+    },
+    {
+      "name": "Non-fiction",
+      "children": [
+        {
+          "name": "History"
+        },
+        {
+          "name": "Science"
+        },
+        {
+          "name": "Cooking"
+        }
+      ]
+    },
+    {
+      "name": "Children",
+      "children": [
+        {
+          "name": "Picture books"
+        },
+        {
+          "name": "Young adult"
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "Author",
+      "type": "Text",
+      "isFilterable": false,
+      "allowsMultiple": false
+    },
+    {
+      "name": "Pages",
+      "type": "Number",
+      "isFilterable": false,
+      "allowsMultiple": false
+    },
+    {
+      "name": "Publication date",
+      "type": "Date",
+      "isFilterable": false,
+      "allowsMultiple": false
+    },
+    {
+      "name": "Language",
+      "type": "OptionList",
+      "isFilterable": true,
+      "allowsMultiple": false,
+      "options": [
+        "English",
+        "Spanish",
+        "French",
+        "German"
+      ]
+    },
+    {
+      "name": "Hardcover",
+      "type": "Boolean",
+      "isFilterable": true,
+      "allowsMultiple": false
+    },
+    {
+      "name": "Formats",
+      "type": "OptionList",
+      "isFilterable": false,
+      "allowsMultiple": true,
+      "options": [
+        "Paperback",
+        "Hardcover",
+        "E-book",
+        "Audiobook"
+      ]
+    }
+  ]
+}

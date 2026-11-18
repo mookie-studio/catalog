@@ -12,6 +12,8 @@ on:
       - "docker-compose.yml"
       - "supabase/**"
       - ".github/workflows/e2e.yml"
+      - "demo/**"
+      - "api/tools/**"
 
 permissions:
   contents: read
@@ -47,6 +49,7 @@ jobs:
           } >> .env
           echo "::add-mask::$SERVICE_ROLE_KEY"
           echo "SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY" >> "$GITHUB_ENV"
+          echo "ANON_KEY=$ANON_KEY" >> "$GITHUB_ENV"
 
       - uses: actions/setup-dotnet@v4
         with:
@@ -91,6 +94,26 @@ jobs:
       - name: Run the end-to-end flow
         working-directory: web
         run: npm run e2e
+
+      # The Demo seeder (ADR 0014) against the same stack: a first run loads the Demo dataset, a second run
+      # must change nothing, and a few public answers prove the result.
+      - name: Demo seeder
+        env:
+          Demo__ApiUrl: http://localhost:8080
+          Demo__SupabaseUrl: http://127.0.0.1:54321
+          Demo__DatabaseConnectionString: Host=localhost;Port=54322;Database=postgres;Username=postgres;Password=postgres
+          Demo__PlatformAdminEmail: ${{ env.E2E_PLATFORM_ADMIN_EMAIL }}
+          Demo__PlatformAdminPassword: ${{ env.E2E_PLATFORM_ADMIN_PASSWORD }}
+          Demo__AdminPassword: e2e-demo-admin-password
+        run: |
+          export Demo__SupabaseAnonKey="$ANON_KEY" Demo__SupabaseServiceRoleKey="$SERVICE_ROLE_KEY"
+          dotnet run --project api/tools/Catalog.DemoSeeder -- seed | tee demo-first.log
+          dotnet run --project api/tools/Catalog.DemoSeeder -- seed | tee demo-second.log
+          grep -q "^Total changes: 0$" demo-second.log || { echo "The second Demo seeder run changed something."; exit 1; }
+          total=$(curl -sSf http://localhost:8080/api/public/forja-hardware/products | jq .totalCount)
+          [ "$total" = "22" ] || { echo "forja-hardware has $total Published products, expected 22."; exit 1; }
+          status=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/api/public/tallo-garden)
+          [ "$status" = "404" ] || { echo "tallo-garden answered $status, expected 404 (deactivated)."; exit 1; }
 
       - name: Service logs
         if: failure()

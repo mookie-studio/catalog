@@ -13,3 +13,4 @@ A general-purpose, multi-tenant product catalog platform: each business (tenant)
 - [docs/local-development.md](./docs/local-development.md): running Catalog locally, with .NET Aspire (recommended, [ADR 0010](./docs/adr/0010-aspire-for-local-orchestration.md)) or docker compose.
 - [docs/infra-setup.md](./docs/infra-setup.md): step-by-step production infrastructure setup, portal only, ending in a checklist to verify it.
 - [docs/deployment.md](./docs/deployment.md): how CI deploys the API and the SPA.
+- [docs/demo.md](./docs/demo.md): loading and resetting the demo data with the Demo seeder, and the [demo script](./docs/demo-script.md).

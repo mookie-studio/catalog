@@ -1,0 +1,73 @@
+{
+  "inquiries": [
+    {
+      "sku": "LA-0001",
+      "name": "Claire Martin",
+      "email": "claire.martin@example.com",
+      "message": "I am 1.65 m and usually wear a 38. Would you recommend S or M?",
+      "status": "Open",
+      "daysAgo": 0
+    },
+    {
+      "sku": "LA-0006",
+      "name": "Nuria Vidal",
+      "email": "nuria.vidal@example.com",
+      "message": "Will the coat be available in navy this winter?",
+      "status": "Open",
+      "daysAgo": 2
+    },
+    {
+      "sku": "LA-0012",
+      "name": "David Chen",
+      "email": "david.chen@example.com",
+      "message": "How long are the sleeves on size L?",
+      "status": "Open",
+      "daysAgo": 4
+    },
+    {
+      "sku": "LA-0020",
+      "name": "Hugo Ferreira",
+      "email": "hugo.ferreira@example.com",
+      "message": "Do these boots run true to size?",
+      "status": "Open",
+      "daysAgo": 7
+    },
+    {
+      "sku": "LA-0002",
+      "name": "Emma Wilson",
+      "email": "emma.wilson@example.com",
+      "message": "Is the T-shirt pre-shrunk?",
+      "status": "Handled",
+      "daysAgo": 11
+    },
+    {
+      "sku": "LA-0014",
+      "name": "Irene Sanz",
+      "email": "irene.sanz@example.com",
+      "message": "Can I order 20 totes with a printed logo for an event?",
+      "status": "Handled",
+      "daysAgo": 15
+    },
+    {
+      "sku": "LA-0008",
+      "name": "Leo Rossi",
+      "email": "leo.rossi@example.com",
+      "message": "Is the collar fused or soft?",
+      "status": "Handled",
+      "daysAgo": 20
+    },
+    {
+      "sku": "LA-0018",
+      "name": "Mia Jensen",
+      "email": "mia.jensen@example.com",
+      "message": "Are the sneakers vegan?",
+      "status": "Handled",
+      "daysAgo": 27
+    }
+  ],
+  "views": {
+    "days": 30,
+    "minPerDay": 1,
+    "maxPerDay": 15
+  }
+}

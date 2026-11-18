@@ -1,0 +1,73 @@
+{
+  "inquiries": [
+    {
+      "sku": "FH-0001",
+      "name": "Marta Gil",
+      "email": "marta.gil@example.com",
+      "message": "Does the drill come with a case for the batteries and the charger?",
+      "status": "Open",
+      "daysAgo": 0
+    },
+    {
+      "sku": "FH-0004",
+      "name": "Tom Baker",
+      "email": "tom.baker@example.com",
+      "message": "Can I use this saw with a guide rail? I need long straight cuts in 18 mm plywood.",
+      "status": "Open",
+      "daysAgo": 1
+    },
+    {
+      "sku": "FH-0014",
+      "name": "Lucía Ramos",
+      "email": "lucia.ramos@example.com",
+      "message": "Which sizes are in the box exactly? I am mounting a kitchen.",
+      "status": "Open",
+      "daysAgo": 3
+    },
+    {
+      "sku": "FH-0010",
+      "name": "Peter Novak",
+      "email": "peter.novak@example.com",
+      "message": "Is the case wall-mountable with screws included?",
+      "status": "Open",
+      "daysAgo": 6
+    },
+    {
+      "sku": "FH-0020",
+      "name": "Ana Costa",
+      "email": "ana.costa@example.com",
+      "message": "Is the extension pole compatible with other roller frames?",
+      "status": "Open",
+      "daysAgo": 9
+    },
+    {
+      "sku": "FH-0002",
+      "name": "Jordi Puig",
+      "email": "jordi.puig@example.com",
+      "message": "Do you have spare side handles for this model?",
+      "status": "Handled",
+      "daysAgo": 13
+    },
+    {
+      "sku": "FH-0008",
+      "name": "Sara Lind",
+      "email": "sara.lind@example.com",
+      "message": "Is there a lighter version for kids learning woodwork?",
+      "status": "Handled",
+      "daysAgo": 18
+    },
+    {
+      "sku": "FH-0018",
+      "name": "Omar Haddad",
+      "email": "omar.haddad@example.com",
+      "message": "Are these brushes good for oil-based varnish too?",
+      "status": "Handled",
+      "daysAgo": 25
+    }
+  ],
+  "views": {
+    "days": 30,
+    "minPerDay": 0,
+    "maxPerDay": 12
+  }
+}

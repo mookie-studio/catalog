@@ -1,0 +1,97 @@
+{
+  "categories": [
+    {
+      "name": "Power tools",
+      "children": [
+        {
+          "name": "Drills"
+        },
+        {
+          "name": "Saws"
+        },
+        {
+          "name": "Sanders"
+        }
+      ]
+    },
+    {
+      "name": "Hand tools",
+      "children": [
+        {
+          "name": "Hammers"
+        },
+        {
+          "name": "Screwdrivers"
+        },
+        {
+          "name": "Wrenches"
+        }
+      ]
+    },
+    {
+      "name": "Fixings",
+      "children": [
+        {
+          "name": "Screws"
+        },
+        {
+          "name": "Anchors"
+        }
+      ]
+    },
+    {
+      "name": "Painting",
+      "children": [
+        {
+          "name": "Brushes"
+        },
+        {
+          "name": "Rollers"
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "Power",
+      "type": "Number",
+      "isFilterable": false,
+      "allowsMultiple": false
+    },
+    {
+      "name": "Voltage",
+      "type": "OptionList",
+      "isFilterable": true,
+      "allowsMultiple": false,
+      "options": [
+        "12 V",
+        "18 V",
+        "230 V"
+      ]
+    },
+    {
+      "name": "Cordless",
+      "type": "Boolean",
+      "isFilterable": true,
+      "allowsMultiple": false
+    },
+    {
+      "name": "Weight",
+      "type": "Number",
+      "isFilterable": false,
+      "allowsMultiple": false
+    },
+    {
+      "name": "Material",
+      "type": "Text",
+      "isFilterable": false,
+      "allowsMultiple": false
+    },
+    {
+      "name": "In stock since",
+      "type": "Date",
+      "isFilterable": false,
+      "allowsMultiple": false
+    }
+  ]
+}

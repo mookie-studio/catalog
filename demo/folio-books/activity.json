@@ -1,0 +1,73 @@
+{
+  "inquiries": [
+    {
+      "sku": "FB-0001",
+      "name": "Grace Kim",
+      "email": "grace.kim@example.com",
+      "message": "Do you have a signed copy of the hardcover?",
+      "status": "Open",
+      "daysAgo": 0
+    },
+    {
+      "sku": "FB-0007",
+      "name": "Pablo Navarro",
+      "email": "pablo.navarro@example.com",
+      "message": "Is this the first book with Inspector Vance?",
+      "status": "Open",
+      "daysAgo": 1
+    },
+    {
+      "sku": "FB-0014",
+      "name": "Julia Becker",
+      "email": "julia.becker@example.com",
+      "message": "Is there an English edition of Bread, Slowly?",
+      "status": "Open",
+      "daysAgo": 3
+    },
+    {
+      "sku": "FB-0016",
+      "name": "Sam Taylor",
+      "email": "sam.taylor@example.com",
+      "message": "What age is this picture book for?",
+      "status": "Open",
+      "daysAgo": 5
+    },
+    {
+      "sku": "FB-0012",
+      "name": "Noor Aziz",
+      "email": "noor.aziz@example.com",
+      "message": "Does it include star charts for the southern hemisphere?",
+      "status": "Open",
+      "daysAgo": 8
+    },
+    {
+      "sku": "FB-0003",
+      "name": "Elise Moreau",
+      "email": "elise.moreau@example.com",
+      "message": "Can you order ten copies for our book club?",
+      "status": "Open",
+      "daysAgo": 12
+    },
+    {
+      "sku": "FB-0010",
+      "name": "Ben Carter",
+      "email": "ben.carter@example.com",
+      "message": "Is the hardcover illustrated?",
+      "status": "Handled",
+      "daysAgo": 17
+    },
+    {
+      "sku": "FB-0018",
+      "name": "Lara Silva",
+      "email": "lara.silva@example.com",
+      "message": "Is there a sequel?",
+      "status": "Handled",
+      "daysAgo": 24
+    }
+  ],
+  "views": {
+    "days": 30,
+    "minPerDay": 0,
+    "maxPerDay": 10
+  }
+}

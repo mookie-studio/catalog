@@ -90,6 +90,12 @@ The build has no top-level `404.html`, so Cloudflare Pages serves `index.html` f
 not a file, and React Router handles deep links such as `/<tenantSlug>/p/<productSlug>` and
 `/admin/products`. The workflow fails if a `404.html` ever appears in the build.
 
+## Demo data
+
+The pipeline never loads or resets demo data. The Demo seeder (`api/tools/Catalog.DemoSeeder`) is built and
+tested by the API CI and run twice by the end-to-end job against the local stack, but it is only run against
+production by a person, from their computer ([demo data](demo.md)). It is not part of the deployed API.
+
 ## Supabase
 
 - Disable public sign-ups (Authentication → Providers → Email → "Allow new users to sign up" off).

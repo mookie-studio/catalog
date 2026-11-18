@@ -1,0 +1,44 @@
+[
+  {
+    "sku": "TG-0001",
+    "name": "Olive tree in a terracotta pot",
+    "description": "A young olive tree, about 80 cm tall, in a 30 cm terracotta pot. Loves sun and little water.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Plants"
+    ],
+    "attributes": {},
+    "images": [
+      "plant-1.jpg"
+    ]
+  },
+  {
+    "sku": "TG-0002",
+    "name": "Glazed balcony planter",
+    "description": "A 60 cm glazed planter for herbs and flowers, with drainage holes and a saucer.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Pots"
+    ],
+    "attributes": {},
+    "images": [
+      "pot-1.jpg"
+    ]
+  },
+  {
+    "sku": "TG-0003",
+    "name": "Lavender, set of three",
+    "description": "Three lavender plants in 12 cm pots. Fragrant, hardy and loved by bees.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Plants"
+    ],
+    "attributes": {},
+    "images": [
+      "plant-2.jpg"
+    ]
+  }
+]
