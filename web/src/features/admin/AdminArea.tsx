@@ -5,6 +5,7 @@ import { AttributesPage } from '@/features/admin/attributes/AttributesPage'
 import { CategoriesPage } from '@/features/admin/categories/CategoriesPage'
 import { ImportProductsPage } from '@/features/admin/products/ImportProductsPage'
 import { NewProductPage } from '@/features/admin/products/NewProductPage'
+import { DashboardPage } from '@/features/admin/dashboard/DashboardPage'
 import { InquiriesPage } from '@/features/admin/inquiries/InquiriesPage'
 import { useOpenInquiryCount } from '@/features/admin/inquiries/inquiries-api'
 import { ProductEditPage } from '@/features/admin/products/ProductEditPage'
@@ -16,6 +17,7 @@ import { SignOutButton } from '@/features/auth/SignOutButton'
 import { cn } from '@/lib/utils'
 
 const sections = [
+  { to: 'dashboard', label: 'Dashboard' },
   { to: 'products', label: 'Products' },
   { to: 'attributes', label: 'Attributes' },
   { to: 'categories', label: 'Categories' },
@@ -67,7 +69,8 @@ function AdminLayout() {
       </header>
       <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
         <Routes>
-          <Route index element={<Navigate to="products" replace />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<DashboardPage />} />
           <Route path="products" element={<ProductListPage />} />
           <Route path="products/new" element={<NewProductPage />} />
           <Route path="products/import" element={<ImportProductsPage />} />

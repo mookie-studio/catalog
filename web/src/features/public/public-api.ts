@@ -102,3 +102,17 @@ export function usePublicProduct(tenantSlug: string, productSlug: string) {
     retry: retryUnlessNotFound,
   })
 }
+
+/** Related products of a product (they share a Category), a first page of `limit`. */
+export function useRelatedProducts(tenantSlug: string, productSlug: string, limit = 4) {
+  return useQuery({
+    queryKey: ['public', tenantSlug, 'product', productSlug, 'related', limit],
+    queryFn: async () => {
+      const { data, response } = await api.GET('/api/public/{tenantSlug}/products/{productSlug}/related', {
+        params: { path: { tenantSlug, productSlug }, query: { pageSize: limit } },
+      })
+      return unwrap(data, response)
+    },
+    retry: retryUnlessNotFound,
+  })
+}

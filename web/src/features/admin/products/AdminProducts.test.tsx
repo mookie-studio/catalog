@@ -30,7 +30,7 @@ describe('admin product list', () => {
     expect(within(row).getByText('HD-1')).toBeInTheDocument()
     expect(within(row).getByText('Published')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Hammer drill' })).toHaveAttribute('href', '/admin/products/p1')
-    expect(screen.getByRole('navigation', { name: 'Admin' })).toHaveTextContent('ProductsAttributesCategoriesInquiriesTeamProfile')
+    expect(screen.getByRole('navigation', { name: 'Admin' })).toHaveTextContent('DashboardProductsAttributesCategoriesInquiriesTeamProfile')
   })
 
   it('reflects search, status, category and page in the URL and the API calls', async () => {
@@ -210,6 +210,25 @@ describe('editing a product', () => {
   })
 })
 
+describe('admin product list quality filters', () => {
+  it('opens already filtered from the URL, sends the filters to the API and drops them on "Any"', async () => {
+    listApi([{ id: 'p1', name: 'Hammer drill', sku: 'HD-1', slug: 'hammer-drill', status: 'Published', updatedAt: '2026-11-16T10:00:00Z' }])
+    const router = renderApp('/admin/products?status=Published&hasImages=false&hasCategories=true')
+
+    await screen.findByRole('link', { name: 'Hammer drill' })
+    expect(screen.getByRole('combobox', { name: 'Images' })).toHaveValue('false')
+    expect(screen.getByRole('combobox', { name: 'Has categories' })).toHaveValue('true')
+    expect(Object.fromEntries(lastListRequest().searchParams)).toEqual({
+      page: '1', status: 'Published', hasImages: 'false', hasCategories: 'true',
+    })
+
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Images' }), '')
+
+    await vi.waitFor(() => expect(router.state.location.search).toBe('?status=Published&hasCategories=true'))
+    await vi.waitFor(() => expect(lastListRequest().searchParams.has('hasImages')).toBe(false))
+  })
+})
+
 describe('duplicating a product', () => {
   it('creates a copy and opens its edit page', async () => {
     const copy = product({ id: 'p2', name: 'Hammer drill (copy)', sku: 'HD-1-COPY', slug: 'hammer-drill-copy', status: 'Draft' })
@@ -228,5 +247,71 @@ describe('duplicating a product', () => {
     expect(screen.getByText('Copy created as Draft')).toBeInTheDocument()
     expect(screen.getByLabelText('SKU')).toHaveValue('HD-1-COPY')
     expect(requestsTo('/api/admin/products/p1/duplicate', 'POST')).toHaveLength(1)
+  })
+})
+
+describe('bulk actions', () => {
+  const items = [
+    { id: 'p1', name: 'Hammer drill', sku: 'HD-1', slug: 'hammer-drill', status: 'Draft', updatedAt: '2026-11-16T10:00:00Z' },
+    { id: 'p2', name: 'Circular saw', sku: 'CS-1', slug: 'circular-saw', status: 'Draft', updatedAt: '2026-11-16T10:00:00Z' },
+  ]
+
+  function bulkApi(result: unknown) {
+    mockApi({
+      ...adminSession,
+      '/api/admin/categories': categories,
+      'GET /api/admin/products': () => json({ items, page: 1, pageSize: 20, totalCount: 2 }),
+      'POST /api/admin/products/bulk': () => json(result),
+    })
+  }
+
+  it('publishes the selected products and names the ones that failed', async () => {
+    bulkApi({ succeeded: ['p1'], failed: [{ productId: 'p2', errors: { description: ['The description is required to publish.'] } }] })
+    renderApp('/admin/products')
+    await screen.findByRole('link', { name: 'Hammer drill' })
+
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Select all on this page' }))
+    expect(screen.getByText('2 selected')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Publish' }))
+
+    expect(await lastBody('/api/admin/products/bulk', 'POST')).toEqual({ productIds: ['p1', 'p2'], action: 'Publish', categoryId: null })
+    const summary = await screen.findByRole('status')
+    expect(summary).toHaveTextContent('1 updated, 1 failed')
+    expect(summary).toHaveTextContent('Circular saw: The description is required to publish.')
+    expect(screen.queryByText(/selected$/)).not.toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'Select Hammer drill' })).not.toBeChecked()
+  })
+
+  it('adds the selected products to a chosen Category and marks them as Featured', async () => {
+    bulkApi({ succeeded: ['p1'], failed: [] })
+    renderApp('/admin/products')
+    await userEvent.click(await screen.findByRole('checkbox', { name: 'Select Hammer drill' }))
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add to category…' }))
+    const add = screen.getByRole('button', { name: 'Add' })
+    expect(add).toBeDisabled()
+    await userEvent.selectOptions(await screen.findByRole('combobox', { name: 'Category to apply' }), 'c2')
+    await userEvent.click(add)
+
+    expect(await lastBody('/api/admin/products/bulk', 'POST')).toEqual({ productIds: ['p1'], action: 'AddToCategory', categoryId: 'c2' })
+
+    await userEvent.click(await screen.findByRole('checkbox', { name: 'Select Hammer drill' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Mark as Featured' }))
+    expect(await lastBody('/api/admin/products/bulk', 'POST')).toEqual({ productIds: ['p1'], action: 'Feature', categoryId: null })
+  })
+
+  it('hides the Category actions when the tenant has no Categories and clears the selection on request', async () => {
+    mockApi({
+      ...adminSession,
+      '/api/admin/categories': [],
+      'GET /api/admin/products': () => json({ items, page: 1, pageSize: 20, totalCount: 2 }),
+    })
+    renderApp('/admin/products')
+    await userEvent.click(await screen.findByRole('checkbox', { name: 'Select Hammer drill' }))
+
+    expect(screen.queryByRole('button', { name: 'Add to category…' })).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Clear selection' }))
+
+    expect(screen.queryByRole('region', { name: 'Bulk actions' })).not.toBeInTheDocument()
   })
 })

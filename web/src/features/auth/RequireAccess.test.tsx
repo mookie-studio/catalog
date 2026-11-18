@@ -106,7 +106,7 @@ describe('route guards', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Sign in' }))
 
     expect(await screen.findByRole('button', { name: 'Sign out' })).toBeInTheDocument()
-    expect(router.state.location.pathname).toBe('/admin/products')
+    expect(router.state.location.pathname).toBe('/admin/dashboard')
   })
 
   it('signs out and returns to the sign-in page', async () => {

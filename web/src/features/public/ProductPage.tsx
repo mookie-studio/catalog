@@ -5,6 +5,9 @@ import { NotFoundPage } from '@/components/NotFoundPage'
 import { cn } from '@/lib/utils'
 import { ProductImage } from '@/features/public/ProductImage'
 import { formatAttribute } from '@/features/public/format-attribute'
+import { RelatedProducts } from '@/features/public/RelatedProducts'
+import { toMetaDescription } from '@/features/public/meta'
+import { useRecordProductView } from '@/features/public/use-record-product-view'
 import { InquiryForm } from '@/features/public/InquiryForm'
 import { NotFoundError, publicProductKey, usePublicProduct, usePublicTenant } from '@/features/public/public-api'
 
@@ -12,6 +15,7 @@ export function ProductPage({ tenantSlug }: { tenantSlug: string }) {
   const productSlug = useParams().productSlug ?? ''
   const product = usePublicProduct(tenantSlug, productSlug)
   const tenant = usePublicTenant(tenantSlug)
+  useRecordProductView(tenantSlug, product.data?.slug)
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const { search } = useLocation()
@@ -31,25 +35,38 @@ export function ProductPage({ tenantSlug }: { tenantSlug: string }) {
   if (product.isPending) return <p role="status" className="p-6 text-muted-foreground">Loading…</p>
 
   const { name, description, images, attributes } = product.data
+  const metaDescription = toMetaDescription(description) ?? toMetaDescription(tenant.data?.description)
+  const mainImage = images[0]?.url
+  const title = tenant.data ? `${name} · ${tenant.data.name}` : name
   return (
-    <main className="mx-auto grid max-w-5xl gap-8 px-4 py-6 sm:px-6 md:grid-cols-2">
-      <Gallery key={productSlug} name={name} images={images} />
-      <div className="flex flex-col gap-6">
-        <h1 className="text-2xl font-semibold tracking-tight">{name}</h1>
-        {description && <p className="whitespace-pre-line text-muted-foreground">{description}</p>}
-        {attributes.length > 0 && (
-          <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
-            {attributes.map((attribute) => (
-              <div key={attribute.name} className="contents">
-                <dt className="font-medium">{attribute.name}</dt>
-                <dd className="text-muted-foreground">{formatAttribute(attribute)}</dd>
-              </div>
-            ))}
-          </dl>
-        )}
-        {tenant.data?.inquiriesEnabled && <InquiryForm key={productSlug} tenantSlug={tenantSlug} productSlug={productSlug} productName={name} />}
-      </div>
-    </main>
+    <>
+      <title>{title}</title>
+      {metaDescription && <meta name="description" content={metaDescription} />}
+      <meta property="og:title" content={title} />
+      {metaDescription && <meta property="og:description" content={metaDescription} />}
+      <meta property="og:type" content="product" />
+      {mainImage && <meta property="og:image" content={mainImage} />}
+      <link rel="canonical" href={`${window.location.origin}/${tenantSlug}/p/${product.data.slug}`} />
+      <main className="mx-auto grid max-w-5xl gap-8 px-4 py-6 sm:px-6 md:grid-cols-2">
+        <Gallery key={productSlug} name={name} images={images} />
+        <div className="flex flex-col gap-6">
+          <h1 className="text-2xl font-semibold tracking-tight">{name}</h1>
+          {description && <p className="whitespace-pre-line text-muted-foreground">{description}</p>}
+          {attributes.length > 0 && (
+            <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
+              {attributes.map((attribute) => (
+                <div key={attribute.name} className="contents">
+                  <dt className="font-medium">{attribute.name}</dt>
+                  <dd className="text-muted-foreground">{formatAttribute(attribute)}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+          {tenant.data?.inquiriesEnabled && <InquiryForm key={productSlug} tenantSlug={tenantSlug} productSlug={productSlug} productName={name} />}
+        </div>
+      </main>
+      <RelatedProducts tenantSlug={tenantSlug} productSlug={product.data.slug} />
+    </>
   )
 }
 
