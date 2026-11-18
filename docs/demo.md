@@ -35,7 +35,7 @@ One demo **Admin** per Demo tenant, `admin@<slug>.example.com`, plus one demo **
 | `demo/<slug>/activity.json` | `inquiries` (`sku`, `name`, `email`, `message`, `status`, `daysAgo`) and `views` (`days`, `minPerDay`, `maxPerDay`) |
 | `demo/images/<slug>/` | Photos, Logos and book covers (JPEG/PNG, at most 2 MB each, at most 5 per product) |
 | `demo/images/CREDITS.md` | Source, author and licence of every image |
-| `demo/tools/download_images.py` | Downloads the public-domain/CC0 photos from Wikimedia Commons, with their credits |
+| `demo/tools/download-images.mjs` | Downloads the public-domain/CC0 photos from Wikimedia Commons, with their credits |
 | `demo/tools/generate_images.py` | Generates the Logos and the book covers (invented titles), released as CC0 |
 
 ## 2. Settings
@@ -151,7 +151,7 @@ The log prints one line per change (`<slug>: product created: FH-0001`, `categor
 ## 7. Changing the dataset
 
 - **Add a product**: add an entry to `demo/<slug>/products.json` with a new SKU; reference existing Category paths, Definition names and Option texts; put its images in `demo/images/<slug>/` and add a line to `CREDITS.md`.
-- **Add or replace a photo**: only public-domain or CC0 images (no brands, logos or faces); at most 2 MB; run with `--force-images` if you replaced a file with the same name. `python3 demo/tools/download_images.py --out demo-images` downloads a fresh set with credits.
+- **Add or replace a photo**: only public-domain or CC0 images (no brands, logos or faces); at most 2 MB; run with `--force-images` if you replaced a file with the same name. `node demo/tools/download-images.mjs --out demo-images` downloads a fresh set with credits.
 - **Regenerate Logos or book covers**: `python3 demo/tools/generate_images.py` (needs Pillow).
 - **Add a Demo tenant**: add it to `tenants.json` and create its folder; the slug must follow the Tenant slug rules ([Platform Admin](functional/platform-admin.md)).
 - CI checks the committed dataset (`The_committed_Demo_dataset_is_valid`) and runs the seeder twice in the end-to-end job, so a broken file fails the pull request.
