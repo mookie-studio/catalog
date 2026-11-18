@@ -321,6 +321,40 @@
         }
       }
     },
+    "/api/public/{tenantSlug}/products/{productSlug}/views": {
+      "post": {
+        "tags": [
+          "Public"
+        ],
+        "operationId": "RecordProductView",
+        "parameters": [
+          {
+            "name": "productSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tenantSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/api/admin/tenant": {
       "get": {
         "tags": [
@@ -357,6 +391,68 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GetDashboardResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/stats/products": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "ListProductStats",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResponseOfListProductStatsItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
                 }
               }
             }
@@ -3187,6 +3283,40 @@
           }
         }
       },
+      "ListProductStatsItem": {
+        "required": [
+          "productId",
+          "name",
+          "slug",
+          "status",
+          "views",
+          "inquiries"
+        ],
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProductStatus"
+          },
+          "views": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "inquiries": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "ListPublicFiltersFilter": {
         "required": [
           "definitionId",
@@ -3420,6 +3550,35 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ListProductsItem"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PagedResponseOfListProductStatsItem": {
+        "required": [
+          "items",
+          "page",
+          "pageSize",
+          "totalCount"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListProductStatsItem"
             }
           },
           "page": {

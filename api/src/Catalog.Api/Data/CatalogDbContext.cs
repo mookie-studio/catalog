@@ -27,6 +27,7 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
     public DbSet<OldProductSlug> OldProductSlugs => Set<OldProductSlug>();
     public DbSet<OldTenantSlug> OldTenantSlugs => Set<OldTenantSlug>();
     public DbSet<Inquiry> Inquiries => Set<Inquiry>();
+    public DbSet<ProductViewCount> ProductViewCounts => Set<ProductViewCount>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -127,6 +128,12 @@ public sealed class CatalogDbContext(DbContextOptions<CatalogDbContext> options,
             inquiry.HasOne<Tenant>().WithMany().HasForeignKey(i => i.TenantId).OnDelete(DeleteBehavior.Restrict);
             inquiry.HasOne<Product>().WithMany().HasForeignKey(i => i.ProductId).OnDelete(DeleteBehavior.Restrict);
             inquiry.HasIndex(i => new { i.TenantId, i.Status, i.CreatedAt });
+        });
+
+        modelBuilder.Entity<ProductViewCount>(view =>
+        {
+            view.HasOne<Product>().WithMany().HasForeignKey(v => v.ProductId).OnDelete(DeleteBehavior.Cascade);
+            view.HasIndex(v => new { v.ProductId, v.Day }).IsUnique();
         });
 
         modelBuilder.Entity<OldProductSlug>(old =>

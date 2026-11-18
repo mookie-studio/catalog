@@ -15,6 +15,15 @@ public sealed class InquiryRateLimitOptions
     public int WindowSeconds { get; set; } = 600;
 }
 
+/// <summary>Fixed-window limit per client IP for Product views, bound from "RateLimits:ProductViews".</summary>
+public sealed class ProductViewRateLimitOptions
+{
+    public const string SectionName = "RateLimits:ProductViews";
+
+    public int PermitLimit { get; set; } = 30;
+    public int WindowSeconds { get; set; } = 60;
+}
+
 public static class RateLimitingServiceCollectionExtensions
 {
     public static IServiceCollection AddCatalogRateLimiting(this IServiceCollection services, IConfiguration configuration)
@@ -31,6 +40,9 @@ public static class RateLimitingServiceCollectionExtensions
         var inquiries = configuration.GetSection(InquiryRateLimitOptions.SectionName).Get<InquiryRateLimitOptions>()
             ?? new InquiryRateLimitOptions();
 
+        var views = configuration.GetSection(ProductViewRateLimitOptions.SectionName).Get<ProductViewRateLimitOptions>()
+            ?? new ProductViewRateLimitOptions();
+
         services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -45,7 +57,7 @@ public static class RateLimitingServiceCollectionExtensions
                 {
                     Status = StatusCodes.Status429TooManyRequests,
                     Title = "Too many requests",
-                    Detail = "Too many messages were sent from your address. Try again later.",
+                    Detail = "Too many requests were sent from your address. Try again later.",
                 }).ExecuteAsync(context.HttpContext);
             };
 
@@ -55,6 +67,15 @@ public static class RateLimitingServiceCollectionExtensions
                 {
                     PermitLimit = inquiries.PermitLimit,
                     Window = TimeSpan.FromSeconds(inquiries.WindowSeconds),
+                    QueueLimit = 0,
+                }));
+
+            options.AddPolicy(RecordProductView.RateLimitPolicy, http => RateLimitPartition.GetFixedWindowLimiter(
+                http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = views.PermitLimit,
+                    Window = TimeSpan.FromSeconds(views.WindowSeconds),
                     QueueLimit = 0,
                 }));
         });

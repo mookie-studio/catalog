@@ -5,6 +5,7 @@ using Catalog.Api.Features.Admin.Categories;
 using Catalog.Api.Features.Admin.Inquiries;
 using Catalog.Api.Features.Admin.Products;
 using Catalog.Api.Features.Admin.Profile;
+using Catalog.Api.Features.Admin.Stats;
 using Catalog.Api.Features.Platform.Admins;
 using Catalog.Api.Features.Public;
 using Catalog.Api.Features.Platform.Tenants;
@@ -31,12 +32,14 @@ public static class RouteGroups
             .MapListPublicFilters()
             .MapListPublicCategories()
             .MapGetPublicProduct()
-            .MapCreateInquiry();
+            .MapCreateInquiry()
+            .MapRecordProductView();
 
         app.MapGroup(Admin).WithTags("Admin")
             .RequireAuthorization(AuthServiceCollectionExtensions.AdminPolicy)
             .MapGetCurrentTenant()
             .MapGetDashboard()
+            .MapListProductStats()
             .MapTenantProfile()
             .MapTenantLogo()
             .MapListInquiries()

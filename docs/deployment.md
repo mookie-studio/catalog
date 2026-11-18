@@ -61,7 +61,9 @@ App Service tells the API which port to listen on; no port setting is needed.
 
 The API trusts `X-Forwarded-For` and `X-Forwarded-Proto` from any proxy (the host's front ends have no
 fixed addresses), so it sees the Visitor's IP for the Inquiry rate limit. Optional settings:
-`RateLimits__Inquiries__PermitLimit` (default 5) and `RateLimits__Inquiries__WindowSeconds` (default 600).
+`RateLimits__Inquiries__PermitLimit` (default 5) and `RateLimits__Inquiries__WindowSeconds` (default 600) for Inquiries,
+and `RateLimits__ProductViews__PermitLimit` (default 30) and `RateLimits__ProductViews__WindowSeconds` (default 60)
+for Product views.
 
 ## SPA (Cloudflare Pages)
 
