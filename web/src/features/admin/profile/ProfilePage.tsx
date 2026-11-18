@@ -36,7 +36,7 @@ export function ProfilePage() {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Profile</h1>
+        <h1 className="display-m">Profile</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {profile.data.name} · <span className="font-mono">/{profile.data.slug}</span>. Only a Platform Admin can change the name and the
           Tenant slug.

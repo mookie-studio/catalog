@@ -1,3 +1,4 @@
+import { AppLogo } from '@/components/AppLogo'
 import { Navigate, NavLink, Route, Routes } from 'react-router'
 import { NotFoundPage } from '@/components/NotFoundPage'
 import { useCurrentTenant } from '@/features/admin/admin-api'
@@ -42,7 +43,11 @@ function AdminLayout() {
     <div className="min-h-svh">
       <header className="border-b">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <span className="font-semibold">{tenant.data?.name ?? 'Admin'}</span>
+          <span className="flex items-center gap-3">
+            <AppLogo />
+            <span aria-hidden="true" className="h-5 w-px bg-border-strong/60" />
+            <span className="font-semibold">{tenant.data?.name ?? 'Admin'}</span>
+          </span>
           <SignOutButton />
         </div>
         <nav aria-label="Admin" className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-2 sm:px-4">

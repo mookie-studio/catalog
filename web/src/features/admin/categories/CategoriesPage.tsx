@@ -1,3 +1,4 @@
+import { EmptyState } from '@/components/EmptyState'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { type FormEvent, useState } from 'react'
 import { api } from '@/api/client'
@@ -23,7 +24,7 @@ export function CategoriesPage() {
 
   return (
     <main className="flex max-w-3xl flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Categories</h1>
+      <h1 className="display-m">Categories</h1>
       <p className="text-sm text-muted-foreground">Categories are optional. Products can belong to several Categories or none.</p>
       <CreateCategoryForm parentId={null} label="New top-level Category" />
       {categories.isPending ? (
@@ -31,7 +32,9 @@ export function CategoriesPage() {
       ) : categories.isError ? (
         <p role="alert">The Categories could not be loaded.</p>
       ) : categories.data.length === 0 ? (
-        <p className="text-muted-foreground">No Categories yet.</p>
+        <EmptyState title="No Categories yet.">
+          Your Category tree will appear here. Add the first top-level Category with the form above.
+        </EmptyState>
       ) : (
         <ul aria-label="Category tree" className="flex flex-col gap-1">
           {categories.data.map((node, index) => (

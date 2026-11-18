@@ -123,7 +123,7 @@ function ProductEditor({ product }: { product: Product }) {
           ← Products
         </Link>
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight">{product.name}</h1>
+          <h1 className="display-m">{product.name}</h1>
           <ProductStatusBadge status={product.status} />
           <Button variant="outline" size="sm" className="ml-auto" disabled={duplicate.isPending} onClick={() => duplicate.mutate()}>
             Duplicate

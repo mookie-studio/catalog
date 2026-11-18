@@ -1,3 +1,4 @@
+import { EmptyState } from '@/components/EmptyState'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { type FormEvent, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router'
@@ -36,7 +37,7 @@ export function AttributesPage() {
 
   return (
     <main className="flex max-w-3xl flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Attributes</h1>
+      <h1 className="display-m">Attributes</h1>
       <p className="text-sm text-muted-foreground">
         Attribute Definitions describe what matters in your business. Any product can fill in the ones that apply.
       </p>
@@ -46,7 +47,9 @@ export function AttributesPage() {
       ) : definitions.isError ? (
         <p role="alert">The Attribute Definitions could not be loaded.</p>
       ) : definitions.data.totalCount === 0 ? (
-        <p className="text-muted-foreground">No Attribute Definitions yet.</p>
+        <EmptyState title="No Attribute Definitions yet.">
+          Your Attribute Definitions will appear here. Add the first one with the form above.
+        </EmptyState>
       ) : (
         <>
           <ul className="flex flex-col gap-4">

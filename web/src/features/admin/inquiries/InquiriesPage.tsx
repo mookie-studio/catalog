@@ -1,3 +1,4 @@
+import { EmptyState } from '@/components/EmptyState'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
@@ -35,7 +36,7 @@ export function InquiriesPage() {
   return (
     <main className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">Inquiries</h1>
+        <h1 className="display-m">Inquiries</h1>
         <Select
           aria-label="Show"
           className="w-40"
@@ -52,13 +53,13 @@ export function InquiriesPage() {
       ) : inquiries.isError ? (
         <p role="alert">The inquiries could not be loaded.</p>
       ) : inquiries.data.items.length === 0 ? (
-        <p className="text-muted-foreground">
-          No inquiries. Visitors can send them from a product page when Inquiries are enabled in your{' '}
+        <EmptyState title="No inquiries.">
+          Visitors can send them from a product page when Inquiries are enabled in your{' '}
           <Link to="/admin/profile" className="underline">
             profile
           </Link>
           .
-        </p>
+        </EmptyState>
       ) : (
         <>
           <ul aria-label="Inquiries" className="flex flex-col gap-3">
