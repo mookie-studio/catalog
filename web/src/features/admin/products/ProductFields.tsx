@@ -22,12 +22,12 @@ export function ProductFields({ values, errors, showSlug, onChange }: Props) {
         <Input value={values.name} onChange={set('name')} required />
       </Field>
       <Field label="SKU" error={errors.sku}>
-        <Input value={values.sku} onChange={set('sku')} required />
+        <Input mono value={values.sku} onChange={set('sku')} required />
       </Field>
       {showSlug && (
         <div className="md:col-span-2">
           <Field label="Product slug" error={errors.slug} hint="Part of the product's public address. Changing it breaks existing links.">
-            <Input value={values.slug} onChange={set('slug')} required />
+            <Input mono value={values.slug} onChange={set('slug')} required />
           </Field>
         </div>
       )}

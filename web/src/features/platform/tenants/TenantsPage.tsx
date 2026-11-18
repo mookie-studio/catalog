@@ -82,7 +82,7 @@ function CreateTenantForm() {
         <Input value={values.name} onChange={(e) => setValues({ ...values, name: e.target.value })} required />
       </Field>
       <Field label="Tenant slug" error={fields.slug}>
-        <Input value={values.slug} onChange={(e) => setValues({ ...values, slug: e.target.value })} placeholder="acme-hardware" required />
+        <Input mono value={values.slug} onChange={(e) => setValues({ ...values, slug: e.target.value })} placeholder="acme-hardware" required />
       </Field>
       <Button type="submit" className="sm:mt-6" disabled={create.isPending}>
         Create tenant
