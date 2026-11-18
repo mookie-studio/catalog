@@ -344,6 +344,26 @@
         }
       }
     },
+    "/api/admin/dashboard": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "GetDashboard",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDashboardResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/admin/tenant/profile": {
       "get": {
         "tags": [
@@ -818,6 +838,20 @@
             "schema": {
               "type": "boolean"
             }
+          },
+          {
+            "name": "hasImages",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "hasCategories",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -1027,6 +1061,46 @@
           },
           "404": {
             "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/admin/products/bulk": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "BulkProductAction",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkProductActionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkProductActionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
+                }
+              }
+            }
           }
         }
       }
@@ -2312,6 +2386,87 @@
           "OptionList"
         ]
       },
+      "BulkProductActionFailure": {
+        "required": [
+          "productId",
+          "errors"
+        ],
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "BulkProductActionRequest": {
+        "required": [
+          "productIds",
+          "action",
+          "categoryId"
+        ],
+        "type": "object",
+        "properties": {
+          "productIds": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "action": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/NullableOfBulkAction"
+              }
+            ]
+          },
+          "categoryId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          }
+        }
+      },
+      "BulkProductActionResponse": {
+        "required": [
+          "succeeded",
+          "failed"
+        ],
+        "type": "object",
+        "properties": {
+          "succeeded": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "failed": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BulkProductActionFailure"
+            }
+          }
+        }
+      },
       "CategoryNode": {
         "required": [
           "id",
@@ -2537,6 +2692,52 @@
           },
           "slug": {
             "type": "string"
+          }
+        }
+      },
+      "GetDashboardResponse": {
+        "required": [
+          "draftCount",
+          "publishedCount",
+          "archivedCount",
+          "featuredCount",
+          "openInquiryCount",
+          "publishedWithoutImagesCount",
+          "publishedWithoutCategoriesCount",
+          "hasCategories"
+        ],
+        "type": "object",
+        "properties": {
+          "draftCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "publishedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "archivedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "featuredCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "openInquiryCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "publishedWithoutImagesCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "publishedWithoutCategoriesCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasCategories": {
+            "type": "boolean"
           }
         }
       },
@@ -3089,6 +3290,18 @@
           "Boolean",
           "Date",
           "OptionList",
+          null
+        ]
+      },
+      "NullableOfBulkAction": {
+        "enum": [
+          "Publish",
+          "Archive",
+          "MoveToDraft",
+          "Feature",
+          "Unfeature",
+          "AddToCategory",
+          "RemoveFromCategory",
           null
         ]
       },

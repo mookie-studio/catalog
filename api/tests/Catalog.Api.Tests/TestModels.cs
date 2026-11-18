@@ -44,3 +44,11 @@ public sealed record PublicProductBody(string Slug, string Name, string? Descrip
 public sealed record PublicFilterOption(Guid Id, string Value);
 
 public sealed record PublicFilterBody(Guid DefinitionId, string Name, string Type, bool AllowsMultiple, List<PublicFilterOption>? Options);
+
+public sealed record DashboardBody(
+    int DraftCount, int PublishedCount, int ArchivedCount, int FeaturedCount, int OpenInquiryCount,
+    int PublishedWithoutImagesCount, int PublishedWithoutCategoriesCount, bool HasCategories);
+
+public sealed record BulkFailureBody(Guid ProductId, Dictionary<string, string[]> Errors);
+
+public sealed record BulkResultBody(List<Guid> Succeeded, List<BulkFailureBody> Failed);
