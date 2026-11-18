@@ -4,6 +4,9 @@
     <Project Path="src/Catalog.AppHost/Catalog.AppHost.csproj" />
     <Project Path="src/Catalog.ServiceDefaults/Catalog.ServiceDefaults.csproj" />
   </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/Catalog.DemoSeeder/Catalog.DemoSeeder.csproj" />
+  </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Catalog.Api.Tests/Catalog.Api.Tests.csproj" />
   </Folder>
