@@ -40,7 +40,7 @@ export function TenantsPage() {
                   <div className="flex flex-wrap items-center gap-3">
                     <span className="font-medium">{tenant.name}</span>
                     <span className="font-mono text-sm text-muted-foreground">/{tenant.slug}</span>
-                    <Badge className={tenant.isActive ? 'border-emerald-600/30 text-emerald-700 dark:text-emerald-300' : 'text-muted-foreground'}>
+                    <Badge className={tenant.isActive ? 'border-success/30 bg-success-soft text-success' : 'text-muted-foreground'}>
                       {tenant.isActive ? 'Active' : 'Deactivated'}
                     </Badge>
                   </div>
