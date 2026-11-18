@@ -7,7 +7,9 @@ A general-purpose, multi-tenant product catalog platform: each business (tenant)
 
 ## Documentation
 
+- [docs/functional](./docs/functional/README.md): what every feature does, with all rules and limits, for Platform Admins, Admins and Visitors; plus an API reference.
 - [GLOSSARY.md](./GLOSSARY.md): the domain language. Use it in code and conversation.
 - [docs/adr](./docs/adr): architecture decisions.
 - [docs/local-development.md](./docs/local-development.md): running Catalog locally, with .NET Aspire (recommended, [ADR 0010](./docs/adr/0010-aspire-for-local-orchestration.md)) or docker compose.
+- [docs/infra-setup.md](./docs/infra-setup.md): step-by-step production infrastructure setup, portal only, ending in a checklist to verify it.
 - [docs/deployment.md](./docs/deployment.md): how CI deploys the API and the SPA.

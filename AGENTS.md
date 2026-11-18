@@ -19,6 +19,7 @@ api/
   src/Catalog.AppHost/        # Aspire AppHost, local development only (ADR 0010)
   tests/Catalog.Api.Tests/    # HTTP-level integration tests
 web/                          # React SPA (Vite + TypeScript)
+docs/functional/              # functional documentation of every feature (keep it current)
 docker-compose.yml            # local environment (docs/local-development.md)
 supabase/                     # local Supabase configuration
 .github/workflows/            # CI/CD (deployment: docs/deployment.md)
@@ -54,4 +55,5 @@ supabase/                     # local Supabase configuration
 
 - `dotnet build` and `dotnet test` pass in `api/`; `npm run build`, `npm run lint` and `npm test` pass in `web/` (for the parts that exist).
 - The issue's acceptance criteria are covered by tests.
+- Documentation is updated in the same PR, in full detail: the functional behaviour, rules and limits of any feature you add or change go in `docs/functional/` (and its API reference), and any new or changed setting, secret or infrastructure step goes in `docs/infra-setup.md` (step by step), `docs/deployment.md` and `docs/local-development.md`.
 - The PR description references the issue (`Closes #N`).

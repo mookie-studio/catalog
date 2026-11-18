@@ -261,6 +261,7 @@ then retry.
 | `Storage__PublicBaseUrl` | `R2_PUBLIC_URL` |
 | `Storage__Region` | `auto` |
 | `Cors__AllowedOrigins__0` | `SPA_URL` (no trailing slash) |
+| `PublicSite__BaseUrl` | `SPA_URL` (no trailing slash). Sitemap addresses are built from it; without it the Sitemap endpoints answer 404 |
 
 App settings are encrypted at rest and never shown to the browser. The deploy workflow only replaces
 the code, so these settings survive every deploy.
@@ -378,7 +379,19 @@ Work through this list in order; each step depends on the previous one.
 7. **Visitors see the catalog.** Open `SPA_URL/<tenant-slug>` in a private window: the published Product
    is listed and its page shows the image.
 
-When all seven pass, the infrastructure is done. Later deploys need no clicks: merge to `main`.
+8. **Admin tools work.** Sign in as the Admin: the first page is the **Dashboard**. Publish two products
+   in the same Category and open one in the private window; the other appears under **Related
+   products**. After a minute, reload the Dashboard: the opened product appears under **Most viewed
+   products** with 1 view.
+9. **Search engines can read the catalog.** Open `VITE_API_URL/api/public-sitemap.xml`: it lists
+   `VITE_API_URL/api/public/<tenant-slug>/sitemap.xml`, and opening that lists the catalog and each
+   published product with addresses that start with `SPA_URL`. A 404 means `PublicSite__BaseUrl` is
+   missing (step 4.4). Open `SPA_URL/robots.txt`: it disallows `/admin` and ends with the
+   `Sitemap:` line pointing to the sitemap index; if that line is missing, `VITE_API_URL` was empty
+   when the SPA was built (step 5.2). Optionally submit the sitemap index address in Google Search
+   Console.
+
+When all nine pass, the infrastructure is done. Later deploys need no clicks: merge to `main`.
 
 ## Costs and limits to keep in mind
 

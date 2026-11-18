@@ -113,7 +113,25 @@ npx playwright install chromium
 E2E_PLATFORM_ADMIN_EMAIL=... E2E_PLATFORM_ADMIN_PASSWORD=... npm run e2e
 ```
 
-The flow (`web/e2e/catalog.e2e.ts`) creates a Tenant and invites its Admin (reading the invitation from
+There are three flows. `web/e2e/catalog.e2e.ts` creates a Tenant and invites its Admin (reading the invitation from
 the email testing inbox), publishes a Product with a filterable Attribute, finds it as a Visitor, then
-archives it and checks the Visitor no longer sees it. CI runs it in `.github/workflows/e2e.yml` (by hand,
+archives it and checks the Visitor no longer sees it. `web/e2e/branding.e2e.ts` sets the Tenant profile, enables Inquiries, sends one as a Visitor and handles it in the inbox. `web/e2e/discovery.e2e.ts` bulk-publishes two Drafts and files them under a Category, checks the Related product as a Visitor and the Product view on the Dashboard. CI runs them in `.github/workflows/e2e.yml` (by hand,
 on pushes to `main`, and on pull requests that change the end-to-end setup).
+
+## Trying the features by hand
+
+Once the stack runs (see above) and a Tenant with an Admin exists, the functional guides in
+[docs/functional](./functional/README.md) describe what to try. Local addresses:
+
+| What | Address |
+| --- | --- |
+| Public catalog | http://localhost:5173/{tenantSlug} |
+| Admin area (starts on the Dashboard) | http://localhost:5173/admin |
+| Platform area | http://localhost:5173/platform |
+| Tenant Sitemap | http://localhost:8080/api/public/{tenantSlug}/sitemap.xml (docker compose; with Aspire use the API endpoint shown in the dashboard) |
+| Sitemap index | http://localhost:8080/api/public-sitemap.xml |
+
+`PublicSite__BaseUrl` is already set to `http://localhost:5173` by docker compose and by the Aspire
+AppHost, so the Sitemaps work locally. Product views and Inquiries are rate limited per IP
+(see [Rules and limits](./functional/rules-and-limits.md)); the limits are generous enough not to
+get in the way while testing by hand.
