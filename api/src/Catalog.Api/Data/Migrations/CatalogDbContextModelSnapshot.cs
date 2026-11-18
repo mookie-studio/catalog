@@ -406,6 +406,34 @@ namespace Catalog.Api.Data.Migrations
                     b.ToTable("ProductImages");
                 });
 
+            modelBuilder.Entity("Catalog.Api.Data.ProductViewCount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Count")
+                        .HasColumnType("integer");
+
+                    b.Property<DateOnly>("Day")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("ProductId", "Day")
+                        .IsUnique();
+
+                    b.ToTable("ProductViewCounts");
+                });
+
             modelBuilder.Entity("Catalog.Api.Data.Tenant", b =>
                 {
                     b.Property<Guid>("Id")
@@ -570,6 +598,15 @@ namespace Catalog.Api.Data.Migrations
                 });
 
             modelBuilder.Entity("Catalog.Api.Data.ProductImage", b =>
+                {
+                    b.HasOne("Catalog.Api.Data.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Catalog.Api.Data.ProductViewCount", b =>
                 {
                     b.HasOne("Catalog.Api.Data.Product", null)
                         .WithMany()

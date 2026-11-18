@@ -52,3 +52,5 @@ public sealed record DashboardBody(
 public sealed record BulkFailureBody(Guid ProductId, Dictionary<string, string[]> Errors);
 
 public sealed record BulkResultBody(List<Guid> Succeeded, List<BulkFailureBody> Failed);
+
+public sealed record ProductStatBody(Guid ProductId, string Name, string Slug, string Status, int Views, int Inquiries);

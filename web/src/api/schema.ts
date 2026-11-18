@@ -132,6 +132,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/public/{tenantSlug}/products/{productSlug}/views": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RecordProductView"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/tenant": {
         parameters: {
             query?: never;
@@ -156,6 +172,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["GetDashboard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/stats/products": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListProductStats"];
         put?: never;
         post?: never;
         delete?: never;
@@ -903,6 +935,17 @@ export interface components {
             updatedAt: string;
             isFeatured: boolean;
         };
+        ListProductStatsItem: {
+            /** Format: uuid */
+            productId: string;
+            name: string;
+            slug: string;
+            status: components["schemas"]["ProductStatus"];
+            /** Format: int32 */
+            views: number;
+            /** Format: int32 */
+            inquiries: number;
+        };
         ListPublicFiltersFilter: {
             /** Format: uuid */
             definitionId: string;
@@ -965,6 +1008,15 @@ export interface components {
         };
         PagedResponseOfListProductsItem: {
             items: components["schemas"]["ListProductsItem"][];
+            /** Format: int32 */
+            page: number;
+            /** Format: int32 */
+            pageSize: number;
+            /** Format: int32 */
+            totalCount: number;
+        };
+        PagedResponseOfListProductStatsItem: {
+            items: components["schemas"]["ListProductStatsItem"][];
             /** Format: int32 */
             page: number;
             /** Format: int32 */
@@ -1318,6 +1370,34 @@ export interface operations {
             };
         };
     };
+    RecordProductView: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productSlug: string;
+                tenantSlug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Accepted */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     GetCurrentTenant: {
         parameters: {
             query?: never;
@@ -1361,6 +1441,40 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GetDashboardResponse"];
+                };
+            };
+        };
+    };
+    ListProductStats: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PagedResponseOfListProductStatsItem"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["HttpValidationProblemDetails"];
                 };
             };
         };
