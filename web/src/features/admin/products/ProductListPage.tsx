@@ -12,6 +12,9 @@ import {
   useProducts,
   writeProductListQuery,
 } from '@/features/admin/products/products-api'
+import { BulkActionBar, BulkSummary } from '@/features/admin/products/BulkActionBar'
+import type { BulkResult } from '@/features/admin/products/bulk-api'
+import { useSelection } from '@/features/admin/products/use-selection'
 import { downloadProductsCsv } from '@/features/admin/products/product-csv'
 import { ProductStatusBadge } from '@/features/admin/products/ProductStatusBadge'
 
@@ -22,6 +25,8 @@ export function ProductListPage() {
   const query = useMemo(() => readProductListQuery(searchParams), [searchParams])
   const products = useProducts(query)
   const categories = useCategories()
+  const selection = useSelection(searchParams.toString())
+  const [result, setResult] = useState<BulkResult | null>(null)
   const [exporting, setExporting] = useState(false)
   const [exportError, setExportError] = useState<string | null>(null)
 
@@ -37,7 +42,13 @@ export function ProductListPage() {
     }
   }
 
-  const filtered = query.q !== '' || query.status !== null || query.categoryId !== null || query.featured
+  const pageItems = products.data?.items ?? []
+  const pageIds = pageItems.map((product) => product.id)
+  const pageState = selection.stateOf(pageIds)
+  const names = Object.fromEntries(pageItems.map((product) => [product.id, product.name]))
+
+  const filtered = query.q !== '' || query.status !== null || query.categoryId !== null || query.featured ||
+    query.hasImages !== null || query.hasCategories !== null
 
   // Changing the search or a filter goes back to the first page.
   const refine = (change: Partial<ProductListQuery>) => setSearchParams(writeProductListQuery({ ...query, ...change, page: 1 }))
@@ -97,11 +108,35 @@ export function ProductListPage() {
             </option>
           ))}
         </Select>
+        <Select
+          aria-label="Images"
+          className="md:w-40"
+          value={query.hasImages === null ? '' : String(query.hasImages)}
+          onChange={(event) => refine({ hasImages: event.target.value === '' ? null : event.target.value === 'true' })}
+        >
+          <option value="">Any images</option>
+          <option value="true">With images</option>
+          <option value="false">Without images</option>
+        </Select>
+        <Select
+          aria-label="Has categories"
+          className="md:w-44"
+          value={query.hasCategories === null ? '' : String(query.hasCategories)}
+          onChange={(event) => refine({ hasCategories: event.target.value === '' ? null : event.target.value === 'true' })}
+        >
+          <option value="">Any categories</option>
+          <option value="true">With categories</option>
+          <option value="false">Without categories</option>
+        </Select>
         <label className="flex items-center gap-2 whitespace-nowrap text-sm">
           <input type="checkbox" className="size-4" checked={query.featured} onChange={(event) => refine({ featured: event.target.checked })} />
           Featured only
         </label>
       </div>
+      {selection.selected.size > 0 && (
+        <BulkActionBar selectedIds={[...selection.selected]} onClear={selection.clear} onResult={(r) => setResult({ ...r })} />
+      )}
+      {result && <BulkSummary result={result} names={names} onDismiss={() => setResult(null)} />}
       {products.isPending ? (
         <p role="status" className="text-muted-foreground">Loading…</p>
       ) : products.isError ? (
@@ -123,6 +158,18 @@ export function ProductListPage() {
             <table className="w-full text-sm">
               <thead className="bg-muted/50 text-left text-muted-foreground">
                 <tr>
+                  <th className="w-10 px-3 py-2">
+                    <input
+                      type="checkbox"
+                      className="size-4"
+                      aria-label="Select all on this page"
+                      checked={pageState === 'all'}
+                      ref={(input) => {
+                        if (input) input.indeterminate = pageState === 'some'
+                      }}
+                      onChange={() => selection.togglePage(pageIds)}
+                    />
+                  </th>
                   <th className="px-3 py-2 font-medium">Name</th>
                   <th className="px-3 py-2 font-medium">SKU</th>
                   <th className="px-3 py-2 font-medium">Status</th>
@@ -132,6 +179,15 @@ export function ProductListPage() {
               <tbody>
                 {products.data.items.map((product) => (
                   <tr key={product.id} className="border-t">
+                    <td className="px-3 py-2">
+                      <input
+                        type="checkbox"
+                        className="size-4"
+                        aria-label={`Select ${product.name}`}
+                        checked={selection.isSelected(product.id)}
+                        onChange={() => selection.toggle(product.id)}
+                      />
+                    </td>
                     <td className="px-3 py-2">
                       <Link to={`/admin/products/${product.id}`} className="font-medium hover:underline">
                         {product.name}

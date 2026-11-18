@@ -20,7 +20,8 @@ import { FeaturedStrip } from '@/features/public/FeaturedStrip'
 import { FeaturedBadge, ProductCard } from '@/features/public/ProductCard'
 import { FilterPanel } from '@/features/public/FilterPanel'
 import { ProductImage } from '@/features/public/ProductImage'
-import { usePublicProducts } from '@/features/public/public-api'
+import { toMetaDescription } from '@/features/public/meta'
+import { usePublicProducts, usePublicTenant } from '@/features/public/public-api'
 import { rememberedView, rememberView } from '@/features/public/view-preference'
 import { cn } from '@/lib/utils'
 
@@ -28,6 +29,8 @@ export function CatalogPage({ tenantSlug }: { tenantSlug: string }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const query = useMemo(() => readCatalogQuery(searchParams), [searchParams])
   const products = usePublicProducts(tenantSlug, query)
+  const tenant = usePublicTenant(tenantSlug)
+  const metaDescription = toMetaDescription(tenant.data?.description)
   const [showRefinements, setShowRefinements] = useState(false)
   const view: CatalogView = query.view ?? rememberedView() ?? 'grid'
   const browsingHome = !query.q && !query.categoryId && Object.keys(query.attributes).length === 0 && query.page === 1
@@ -49,6 +52,14 @@ export function CatalogPage({ tenantSlug }: { tenantSlug: string }) {
 
   return (
     <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 md:flex-row">
+      {tenant.data && (
+        <>
+          <title>{tenant.data.name}</title>
+          <meta property="og:title" content={tenant.data.name} />
+          {metaDescription && <meta name="description" content={metaDescription} />}
+          {metaDescription && <meta property="og:description" content={metaDescription} />}
+        </>
+      )}
       <aside className="shrink-0 md:w-60">
         {/* Categories and filters are a sidebar on wide screens and collapsed on small ones. */}
         <Button

@@ -44,7 +44,7 @@ export async function createTenantWithAdmin(browser: Browser, tenant: { name: st
   await admin.getByLabel('Password', { exact: true }).fill(password)
   await admin.getByLabel('Repeat password').fill(password)
   await admin.getByRole('button', { name: 'Save password' }).click()
-  await expect(admin).toHaveURL(/\/admin\/products/)
+  await expect(admin).toHaveURL(/\/admin\/dashboard/)
   return admin
 }
 

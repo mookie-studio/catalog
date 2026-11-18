@@ -217,3 +217,21 @@ describe('featured strip, sort and view', () => {
     window.localStorage.removeItem('catalog.view')
   })
 })
+
+describe('catalog home metadata', () => {
+  it('uses the tenant name as the title and its description as the page description', async () => {
+    mockApi({
+      '/api/public/acme': { ...tenant, description: 'Tools\n   for every job.' },
+      '/api/public/acme/products': { items: [drill], page: 1, pageSize: 20, totalCount: 1 },
+      '/api/public/acme/filters': [],
+      '/api/public/acme/categories': [],
+    })
+
+    renderApp('/acme')
+
+    await screen.findByRole('list', { name: 'Products' })
+    await vi.waitFor(() => expect(document.title).toBe('Acme Hardware'))
+    expect(document.head.querySelector('meta[name="description"]')).toHaveAttribute('content', 'Tools for every job.')
+    expect(document.head.querySelector('meta[property="og:title"]')).toHaveAttribute('content', 'Acme Hardware')
+  })
+})

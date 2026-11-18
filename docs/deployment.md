@@ -80,7 +80,7 @@ for Product views.
 | Variable | What it is |
 | --- | --- |
 | `CLOUDFLARE_PAGES_PROJECT` | Name of the Pages project (create it once with "Direct Upload"). |
-| `VITE_API_URL` | Public URL of the API, for example `https://catalog-api.azurewebsites.net`. |
+| `VITE_API_URL` | Public URL of the API, for example `https://catalog-api.azurewebsites.net`. The build also writes it into `robots.txt` as the address of the sitemap index (`<API>/api/public-sitemap.xml`); submitting that address to Google Search Console is optional. |
 | `VITE_SUPABASE_URL` | `https://<project>.supabase.co` |
 | `VITE_SUPABASE_ANON_KEY` | Supabase publishable key (`sb_publishable_...`) or legacy anon key. It is public by design. |
 

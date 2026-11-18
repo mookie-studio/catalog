@@ -6,7 +6,19 @@ export type Product = components['schemas']['ProductResponse']
 export type ProductStatus = components['schemas']['ProductStatus']
 export type ProductListItem = components['schemas']['ListProductsItem']
 
-export type ProductListQuery = { q: string; status: ProductStatus | null; categoryId: string | null; featured: boolean; page: number }
+export type ProductListQuery = {
+  q: string
+  status: ProductStatus | null
+  categoryId: string | null
+  featured: boolean
+  hasImages: boolean | null
+  hasCategories: boolean | null
+  page: number
+}
+
+function readBoolean(value: string | null): boolean | null {
+  return value === 'true' ? true : value === 'false' ? false : null
+}
 
 const statuses: ProductStatus[] = ['Draft', 'Published', 'Archived']
 
@@ -18,6 +30,8 @@ export function readProductListQuery(params: URLSearchParams): ProductListQuery 
     status: status && statuses.includes(status) ? status : null,
     categoryId: params.get('categoryId') || null,
     featured: params.get('featured') === 'true',
+    hasImages: readBoolean(params.get('hasImages')),
+    hasCategories: readBoolean(params.get('hasCategories')),
     page: Number.isFinite(page) && page > 0 ? page : 1,
   }
 }
@@ -28,6 +42,8 @@ export function writeProductListQuery(query: ProductListQuery): URLSearchParams 
   if (query.status) params.set('status', query.status)
   if (query.categoryId) params.set('categoryId', query.categoryId)
   if (query.featured) params.set('featured', 'true')
+  if (query.hasImages !== null) params.set('hasImages', String(query.hasImages))
+  if (query.hasCategories !== null) params.set('hasCategories', String(query.hasCategories))
   if (query.page > 1) params.set('page', String(query.page))
   return params
 }
@@ -45,6 +61,8 @@ export function useProducts(query: ProductListQuery) {
               status: query.status ?? undefined,
               categoryId: query.categoryId ?? undefined,
               featured: query.featured ? true : undefined,
+              hasImages: query.hasImages ?? undefined,
+              hasCategories: query.hasCategories ?? undefined,
             },
           },
         }),
