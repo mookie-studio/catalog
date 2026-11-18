@@ -58,7 +58,7 @@ test('bulk publish, a Related product for a Visitor and a view on the Dashboard'
 
   // Dashboard: two Published products and one view of the Drill.
   await admin.getByRole('navigation', { name: 'Admin' }).getByRole('link', { name: 'Dashboard' }).click()
-  await expect(admin.getByRole('link', { name: '2 Published' })).toBeVisible()
+  await expect(admin.getByRole('link', { name: '2 Published', exact: true })).toBeVisible()
   const mostViewed = admin.getByRole('region', { name: 'Most viewed products' })
   await expect(async () => {
     await admin.reload()
