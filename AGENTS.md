@@ -7,7 +7,8 @@ Read this before working on any issue. Issues are small (size S) and meant to be
 1. Read `GLOSSARY.md`. Use its terms in code, tests, issues and PRs. Do not invent synonyms.
 2. Read the ADRs in `docs/adr` that the issue mentions.
 3. Check the issue's "Blocked by" list. Every blocking issue must be closed first.
-4. All text in this repository (code, comments, docs, commits, issues, PRs) is in English.
+4. For any UI work, read `DESIGN.md` (the design system, ADR 0015) and use its tokens and components.
+5. All text in this repository (code, comments, docs, commits, issues, PRs) is in English.
 
 ## Repository layout
 
@@ -19,7 +20,9 @@ api/
   src/Catalog.AppHost/        # Aspire AppHost, local development only (ADR 0010)
   tools/Catalog.DemoSeeder/   # Demo seeder, never deployed (ADR 0014)
   tests/Catalog.Api.Tests/    # HTTP-level integration tests
-web/                          # React SPA (Vite + TypeScript)
+web/                          # React SPA (Vite + TypeScript); logo files in web/public/brand/
+DESIGN.md                     # the Just Looking design system (ADR 0015)
+PRODUCT.md                    # product context: users, purpose, positioning
 demo/                         # Demo dataset: JSON, images and their credits (ADR 0014)
 docs/functional/              # functional documentation of every feature (keep it current)
 docker-compose.yml            # local environment (docs/local-development.md)

@@ -6,6 +6,14 @@ A general-purpose, multi-tenant product catalog platform: each business manages 
 
 ### Platform
 
+**Just Looking**:
+The product's public name, shown on the Landing page, the logo and the browser tab. "Catalog" remains the code name in the repository (ADR 0015).
+_Avoid_: Catalog (in user-facing text)
+
+**Landing page**:
+The page at `/` that presents Just Looking to businesses and opens the demo. It is not a Tenant's catalog home.
+_Avoid_: Home page, marketing site
+
 **Tenant**:
 An isolated business inside the platform, with its own catalog, products and admins. No data of a tenant is visible from another tenant.
 _Avoid_: Customer, client, company, account
