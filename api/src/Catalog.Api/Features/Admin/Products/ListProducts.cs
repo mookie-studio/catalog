@@ -16,7 +16,8 @@ public static class ListProducts
     }
 
     private static async Task<Ok<PagedResponse<Item>>> Handle(
-        int? page, int? pageSize, string? q, ProductStatus? status, Guid? categoryId, bool? featured, CatalogDbContext db,
+        int? page, int? pageSize, string? q, ProductStatus? status, Guid? categoryId, bool? featured, bool? hasImages, bool? hasCategories,
+        CatalogDbContext db,
         CancellationToken ct)
     {
         var paging = Paging.From(page, pageSize);
@@ -41,6 +42,16 @@ public static class ListProducts
         if (featured is { } f)
         {
             query = query.Where(p => p.IsFeatured == f);
+        }
+
+        if (hasImages is { } withImages)
+        {
+            query = query.Where(p => db.ProductImages.Any(i => i.ProductId == p.Id) == withImages);
+        }
+
+        if (hasCategories is { } withCategories)
+        {
+            query = query.Where(p => db.ProductCategories.Any(l => l.ProductId == p.Id) == withCategories);
         }
 
         var totalCount = await query.CountAsync(ct);

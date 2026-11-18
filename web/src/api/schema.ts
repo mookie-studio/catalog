@@ -148,6 +148,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/dashboard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetDashboard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/tenant/profile": {
         parameters: {
             query?: never;
@@ -318,6 +334,22 @@ export interface paths {
         get?: never;
         put: operations["SetProductFeatured"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/products/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["BulkProductAction"];
         delete?: never;
         options?: never;
         head?: never;
@@ -678,6 +710,23 @@ export interface components {
         };
         /** @enum {unknown} */
         AttributeType: "Text" | "Number" | "Boolean" | "Date" | "OptionList";
+        BulkProductActionFailure: {
+            /** Format: uuid */
+            productId: string;
+            errors: {
+                [key: string]: string[];
+            };
+        };
+        BulkProductActionRequest: {
+            productIds: null | string[];
+            action: null | components["schemas"]["NullableOfBulkAction"];
+            /** Format: uuid */
+            categoryId: null | string;
+        };
+        BulkProductActionResponse: {
+            succeeded: string[];
+            failed: components["schemas"]["BulkProductActionFailure"][];
+        };
         CategoryNode: {
             /** Format: uuid */
             id: string;
@@ -724,6 +773,23 @@ export interface components {
             id: string;
             name: string;
             slug: string;
+        };
+        GetDashboardResponse: {
+            /** Format: int32 */
+            draftCount: number;
+            /** Format: int32 */
+            publishedCount: number;
+            /** Format: int32 */
+            archivedCount: number;
+            /** Format: int32 */
+            featuredCount: number;
+            /** Format: int32 */
+            openInquiryCount: number;
+            /** Format: int32 */
+            publishedWithoutImagesCount: number;
+            /** Format: int32 */
+            publishedWithoutCategoriesCount: number;
+            hasCategories: boolean;
         };
         GetHealthResponse: {
             status: string;
@@ -864,6 +930,8 @@ export interface components {
         };
         /** @enum {unknown} */
         NullableOfAttributeType: "Text" | "Number" | "Boolean" | "Date" | "OptionList" | null;
+        /** @enum {unknown} */
+        NullableOfBulkAction: "Publish" | "Archive" | "MoveToDraft" | "Feature" | "Unfeature" | "AddToCategory" | "RemoveFromCategory" | null;
         /** @enum {unknown} */
         NullableOfInquiryStatus: "Open" | "Handled" | null;
         /** @enum {unknown} */
@@ -1277,6 +1345,26 @@ export interface operations {
             };
         };
     };
+    GetDashboard: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetDashboardResponse"];
+                };
+            };
+        };
+    };
     GetTenantProfile: {
         parameters: {
             query?: never;
@@ -1614,6 +1702,8 @@ export interface operations {
                 status?: components["schemas"]["NullableOfProductStatus"];
                 categoryId?: string;
                 featured?: boolean;
+                hasImages?: boolean;
+                hasCategories?: boolean;
             };
             header?: never;
             path?: never;
@@ -1833,6 +1923,39 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    BulkProductAction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BulkProductActionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BulkProductActionResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["HttpValidationProblemDetails"];
+                };
             };
         };
     };
