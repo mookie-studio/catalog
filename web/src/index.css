@@ -161,6 +161,20 @@
   color-scheme: dark;
 }
 
+/* DESIGN.md Type: display-m, page titles in the app and the product name on the product page. */
+@utility display-m {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 110%;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  @media (width >= 40rem) {
+    font-size: 36px;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

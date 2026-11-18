@@ -24,7 +24,7 @@ export function TeamPage() {
 
   return (
     <main className="flex max-w-3xl flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Team</h1>
+      <h1 className="display-m">Team</h1>
       <p className="text-sm text-muted-foreground">Admins manage this Tenant's catalog and its other Admins.</p>
       <InviteForm />
       {admins.isPending ? (

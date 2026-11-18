@@ -1,3 +1,4 @@
+import { AppLogo } from '@/components/AppLogo'
 import { Navigate, NavLink, Route, Routes } from 'react-router'
 import { NotFoundPage } from '@/components/NotFoundPage'
 import { RequireAccess } from '@/features/auth/RequireAccess'
@@ -11,7 +12,11 @@ export function PlatformArea() {
       <div className="min-h-svh">
         <header className="border-b">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-            <span className="font-semibold">Platform</span>
+            <span className="flex items-center gap-3">
+              <AppLogo />
+              <span aria-hidden="true" className="h-5 w-px bg-border-strong/60" />
+              <span className="font-semibold">Platform</span>
+            </span>
             <SignOutButton />
           </div>
           <nav aria-label="Platform" className="mx-auto flex max-w-6xl gap-1 px-2 sm:px-4">

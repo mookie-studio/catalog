@@ -1,3 +1,4 @@
+import { EmptyState } from '@/components/EmptyState'
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { type FormEvent, useState } from 'react'
 import { useSearchParams } from 'react-router'
@@ -23,14 +24,14 @@ export function TenantsPage() {
 
   return (
     <main className="flex max-w-4xl flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Tenants</h1>
+      <h1 className="display-m">Tenants</h1>
       <CreateTenantForm />
       {tenants.isPending ? (
         <p role="status" className="text-muted-foreground">Loading…</p>
       ) : tenants.isError ? (
         <p role="alert">The Tenants could not be loaded.</p>
       ) : tenants.data.items.length === 0 ? (
-        <p className="text-muted-foreground">No Tenants yet.</p>
+        <EmptyState title="No Tenants yet.">Tenants will appear here. Create the first one with the form above.</EmptyState>
       ) : (
         <>
           <ul aria-label="Tenants" className="flex flex-col gap-2">
