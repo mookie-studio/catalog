@@ -23,7 +23,7 @@ You need:
 - A Supabase account (https://supabase.com/dashboard).
 - A Cloudflare account (https://dash.cloudflare.com). R2 asks for a payment method even on the free tier.
 - An Azure subscription (https://portal.azure.com), for example "Azure free account" or "Pay-As-You-Go".
-- Admin rights on the `mookie-studio/catalog` GitHub repository and on the `mookie-studio` organization.
+- Admin rights on the `mookie-studio/just-looking` GitHub repository and on the `mookie-studio` organization.
 
 Keep a private note open (a password manager is best) and copy each value into it as you go. Every
 value you need later is marked like this: **Save as `NAME`**. Never paste these values into an issue,
@@ -278,9 +278,13 @@ GitHub signs in to Azure with a federated credential, so no Azure password is st
    - **Directory (tenant) ID**: **Save as `AZURE_TENANT_ID`**.
 3. Go to **Certificates & secrets** → **Federated credentials** tab → **Add credential**.
    - **Federated credential scenario**: GitHub Actions deploying Azure resources.
-   - **Organization**: `mookie-studio`. **Repository**: `catalog`.
+   - **Organization**: `mookie-studio`. **Repository**: `just-looking`.
    - **Entity type**: Environment. **GitHub environment name**: `production`.
    - **Name**: `catalog-production`. Click **Add**.
+   - The credential's subject is `repo:mookie-studio/just-looking:environment:production`. GitHub
+     puts the repository name in the token it sends to Azure, so if the repository is ever renamed
+     (it was called `catalog` until 2026-11-19), edit this credential and change **Repository** to
+     the new name, or deployments fail with `AADSTS70021: No matching federated identity record found`.
 4. Give it access to the web app only: go to **App Services** → `catalog-api` → **Access control
    (IAM)** → **Add** → **Add role assignment**.
    - **Role**: search for **Website Contributor**, select it, **Next**.
@@ -299,7 +303,7 @@ GitHub signs in to Azure with a federated credential, so no Azure password is st
 
 ### 5.1 Environment `production` and its secrets
 
-1. Open https://github.com/mookie-studio/catalog → **Settings** → **Environments** → **New
+1. Open https://github.com/mookie-studio/just-looking → **Settings** → **Environments** → **New
    environment** → name `production` → **Configure environment**.
 2. Optional: under **Deployment branches and tags**, choose **Selected branches and tags** and add
    `main`, so only `main` can deploy.

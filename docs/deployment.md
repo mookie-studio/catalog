@@ -25,7 +25,7 @@ environment variables are only visible to jobs that already run in that environm
 
 | Secret | What it is |
 | --- | --- |
-| `AZURE_CLIENT_ID` | Client id of the Entra ID app (or managed identity) with a federated credential for this repository's `production` environment (OIDC, no password). It needs the Website Contributor role on the web app. |
+| `AZURE_CLIENT_ID` | Client id of the Entra ID app (or managed identity) with a federated credential for this repository's `production` environment (OIDC, no password; subject `repo:mookie-studio/just-looking:environment:production`, which must change if the repository is renamed). It needs the Website Contributor role on the web app. |
 | `AZURE_TENANT_ID` | Entra ID tenant id. |
 | `AZURE_SUBSCRIPTION_ID` | Azure subscription id. |
 | `DATABASE_CONNECTION_STRING` | Npgsql connection string of the Supabase database, used to apply migrations through the session pooler, because GitHub runners have no IPv6 (for example `Host=aws-0-<region>.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.<project>;Password=...;SSL Mode=Require`). |
