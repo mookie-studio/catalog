@@ -11,7 +11,7 @@ the SPA, PostgreSQL for the catalog and S3-compatible image storage run in one o
 
 - Docker
 - [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started)
-- .NET 10 SDK with `dotnet-ef` (`dotnet tool install --global dotnet-ef`)
+- .NET 10 SDK (pinned in `api/global.json`, any 10.0 feature band) with `dotnet-ef` (`dotnet tool install --global dotnet-ef`)
 - Node.js 22 (Aspire path only; compose runs Node in a container)
 
 ## Start Supabase

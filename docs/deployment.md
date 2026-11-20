@@ -12,6 +12,12 @@ Merging to `main` deploys (ADR 0005, ADR 0011):
 - `web/**` changes run `.github/workflows/deploy-web.yml`: build the SPA with the production `VITE_*`
   variables and deploy it with `wrangler pages deploy`.
 
+The API workflows use the .NET SDK pinned in `api/global.json` (10.0, latest feature band). GitHub
+runners also ship newer SDKs (for example 11.0), and without the pin `dotnet` would pick the newest one.
+Before building the migrations bundle, the `migrate` job runs `dotnet restore -r linux-x64` on the API
+project, because `dotnet ef` reads the project metadata (which needs `obj/project.assets.json`) before it
+builds; without it the job fails with `NETSDK1004`.
+
 Both workflows can also be started by hand (`workflow_dispatch`). They use the GitHub environment
 `production`; add the secrets and variables below to that environment. No secret is stored in the repository.
 Until `AZURE_WEBAPP_NAME` (API) or `CLOUDFLARE_PAGES_PROJECT` (SPA) is set, the workflows are skipped.
