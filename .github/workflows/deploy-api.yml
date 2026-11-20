@@ -91,15 +91,18 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - uses: azure/webapps-deploy@v3
+      - id: webapp
+        uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ vars.AZURE_WEBAPP_NAME }}
           package: publish
 
       # The Free plan unloads idle apps, so the first request can take a while.
       - name: Wait for /api/health
+        # Use the URL App Service reports: new apps get a unique default domain
+        # (<name>-<hash>.<region>.azurewebsites.net), not <name>.azurewebsites.net.
         env:
-          HEALTH_URL: https://${{ vars.AZURE_WEBAPP_NAME }}.azurewebsites.net/api/health
+          HEALTH_URL: ${{ steps.webapp.outputs.webapp-url }}/api/health
         run: |
           for attempt in $(seq 1 20); do
             if curl --silent --fail --max-time 30 "$HEALTH_URL"; then

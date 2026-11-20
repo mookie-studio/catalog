@@ -40,7 +40,7 @@ environment variables are only visible to jobs that already run in that environm
 
 | Variable | What it is |
 | --- | --- |
-| `AZURE_WEBAPP_NAME` | Name of the App Service web app (for example `catalog-api`). The API URL is `https://<name>.azurewebsites.net`. |
+| `AZURE_WEBAPP_NAME` | Name of the App Service web app (for example `catalog-api`). The API URL is the web app's **Default domain** (Overview in the portal). Apps created with a unique default hostname get `https://<name>-<hash>.<region>-01.azurewebsites.net`, not `https://<name>.azurewebsites.net`; the workflow checks `/api/health` on the URL that `azure/webapps-deploy` reports, so it works with both. |
 
 ### Web app settings
 
@@ -86,7 +86,7 @@ for Product views.
 | Variable | What it is |
 | --- | --- |
 | `CLOUDFLARE_PAGES_PROJECT` | Name of the Pages project (create it once with "Direct Upload"). |
-| `VITE_API_URL` | Public URL of the API, for example `https://catalog-api.azurewebsites.net`. The build also writes it into `robots.txt` as the address of the sitemap index (`<API>/api/public-sitemap.xml`); submitting that address to Google Search Console is optional. |
+| `VITE_API_URL` | Public URL of the API, for example `https://catalog-api-abc123.westeurope-01.azurewebsites.net` (the web app's **Default domain**). The build also writes it into `robots.txt` as the address of the sitemap index (`<API>/api/public-sitemap.xml`); submitting that address to Google Search Console is optional. |
 | `VITE_SUPABASE_URL` | `https://<project>.supabase.co` |
 | `VITE_SUPABASE_ANON_KEY` | Supabase publishable key (`sb_publishable_...`) or legacy anon key. It is public by design. |
 
