@@ -3,10 +3,10 @@ import { HangTag } from '@/components/brand/HangTag'
 import { Logo } from '@/components/brand/Logo'
 import { cn } from '@/lib/utils'
 import { LanguageSwitcher } from './LanguageSwitcher'
+import { LandingFooter, LandingSections, TryDemoButton } from './LandingSections'
 import { useLandingLanguage } from './landing-language'
 
-/** The demo tenant that "Try the demo" opens (#176). */
-export const DEMO_HREF = '/forja-hardware'
+export { DEMO_HREF } from './LandingSections'
 
 // Each tag hangs from the rail at its own drop (DESIGN.md: HangTag, 24 to 120px), alternating tones.
 const tagLayout = [
@@ -44,58 +44,56 @@ export function LandingPage() {
         </div>
       </header>
 
-      <main className="mx-auto grid max-w-6xl items-center gap-10 px-4 pt-6 pb-16 sm:px-8 min-[860px]:grid-cols-[1.1fr_1fr] min-[860px]:gap-8 min-[860px]:pt-12">
-        <div className="flex flex-col items-start gap-6">
-          <h1 className="display-xl">
-            {copy.hero.headlineBefore}
-            <span className="text-mustard-400">{copy.hero.headlineHighlight}</span>
-            {copy.hero.headlineAfter}
-          </h1>
-          <p className="lede text-landing-ink-muted">{copy.hero.lede}</p>
-          <div className="flex flex-col items-start gap-3">
-            <Link
-              to={DEMO_HREF}
-              className="inline-flex items-center gap-3 rounded-[6px] bg-highlight py-3 pr-6 pl-4 font-display text-lg font-extrabold text-on-highlight shadow-tag transition-transform [font-stretch:108%] hover:-translate-y-0.5 hover:-rotate-[1.5deg] focus-visible:outline-lilac-50 motion-reduce:transition-none"
-            >
-              <span aria-hidden="true" className="size-3 rounded-full bg-landing-ground" />
-              {copy.hero.tryDemo}
-            </Link>
-            <p className="font-mono text-xs text-landing-ink-muted">{copy.hero.demoNote}</p>
+      <main>
+        <section className="mx-auto grid max-w-6xl items-center gap-10 px-4 pt-6 pb-16 sm:px-8 min-[860px]:grid-cols-[1.1fr_1fr] min-[860px]:gap-8 min-[860px]:pt-12">
+          <div className="flex flex-col items-start gap-6">
+            <h1 className="display-xl">
+              {copy.hero.headlineBefore}
+              <span className="text-mustard-400">{copy.hero.headlineHighlight}</span>
+              {copy.hero.headlineAfter}
+            </h1>
+            <p className="lede text-landing-ink-muted">{copy.hero.lede}</p>
+            <div className="flex flex-col items-start gap-3">
+              <TryDemoButton label={copy.hero.tryDemo} />
+              <p className="font-mono text-xs text-landing-ink-muted">{copy.hero.demoNote}</p>
+            </div>
           </div>
-        </div>
 
-        {/* The rail: a 2px string the three tags hang from. When the rail is narrower than the three
-            tags side by side, they shrink and overlap (container sizes below) so none is clipped. */}
-        <div className="@container relative mx-auto w-full max-w-[720px] pb-4">
-          <div aria-hidden="true" className="h-0.5 w-full bg-plum-900" />
-          <ul className="m-0 flex list-none justify-center gap-4 p-0 @max-[700px]:gap-0">
-            {copy.demoTags.map((tag, index) => (
-              <li
-                key={tag.slug}
-                className={cn(
-                  'w-[220px] shrink-0 origin-top @max-[700px]:-mx-[30px] @max-[700px]:scale-[0.8] @max-[500px]:-mx-[52px] @max-[500px]:scale-[0.62] @max-[370px]:-mx-[60px] @max-[370px]:scale-[0.56]',
-                  index === 1 && 'relative z-10',
-                )}
-              >
-                <HangTag
-                  tone={tagLayout[index]?.tone ?? 'mustard'}
-                  drop={tagLayout[index]?.drop ?? 40}
-                  sway
-                  tenantLine={tag.tenantLine}
-                  name={tag.name}
-                  attributes={tag.attributes}
-                  href={`/${tag.slug}`}
-                  linkLabel={copy.tag.openDemo}
-                  linkName={copy.tag.openDemoName.replace('{tenant}', tag.tenantLine)}
-                  priceLabel={copy.tag.price}
-                  stampText={copy.tag.stamp}
-                  className={index === 1 ? '[animation-delay:-2s]' : index === 2 ? '[animation-delay:-4s]' : undefined}
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
+          {/* The rail: a 2px string the three tags hang from. When the rail is narrower than the three
+              tags side by side, they shrink and overlap (container sizes below) so none is clipped. */}
+          <div className="@container relative mx-auto w-full max-w-[720px] pb-4">
+            <div aria-hidden="true" className="h-0.5 w-full bg-plum-900" />
+            <ul className="m-0 flex list-none justify-center gap-4 p-0 @max-[700px]:gap-0">
+              {copy.demoTags.map((tag, index) => (
+                <li
+                  key={tag.slug}
+                  className={cn(
+                    'w-[220px] shrink-0 origin-top @max-[700px]:-mx-[30px] @max-[700px]:scale-[0.8] @max-[500px]:-mx-[52px] @max-[500px]:scale-[0.62] @max-[370px]:-mx-[60px] @max-[370px]:scale-[0.56]',
+                    index === 1 && 'relative z-10',
+                  )}
+                >
+                  <HangTag
+                    tone={tagLayout[index]?.tone ?? 'mustard'}
+                    drop={tagLayout[index]?.drop ?? 40}
+                    sway
+                    tenantLine={tag.tenantLine}
+                    name={tag.name}
+                    attributes={tag.attributes}
+                    href={`/${tag.slug}`}
+                    linkLabel={copy.tag.openDemo}
+                    linkName={copy.tag.openDemoName.replace('{tenant}', tag.tenantLine)}
+                    priceLabel={copy.tag.price}
+                    stampText={copy.tag.stamp}
+                    className={index === 1 ? '[animation-delay:-2s]' : index === 2 ? '[animation-delay:-4s]' : undefined}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+        <LandingSections copy={copy} />
       </main>
+      <LandingFooter copy={copy} />
     </div>
   )
 }

@@ -186,6 +186,17 @@
   text-wrap: balance;
 }
 
+/* DESIGN.md Type: display-l, landing section headings (about 34px on phones, 56px on desktop). */
+@utility display-l {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-stretch: 120%;
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
 /* DESIGN.md Type: lede, landing intro paragraphs. */
 @utility lede {
   font-family: var(--font-display);

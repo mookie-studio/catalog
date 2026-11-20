@@ -91,6 +91,9 @@ const en = {
     forja: 'Power, voltage and weight for every tool.',
     lino: 'Sizes, colors and season for every garment.',
     folio: 'Author, pages and formats for every book.',
+    openCatalog: 'See its catalog',
+    // Accessible name of a shop tag link; {tenant} is replaced by the tenant line.
+    openCatalogName: 'See the {tenant} catalog',
   },
   notDo: {
     heading: 'What it does not do',
@@ -185,6 +188,8 @@ const es: LandingCopy = {
     forja: 'Potencia, voltaje y peso de cada herramienta.',
     lino: 'Tallas, colores y temporada de cada prenda.',
     folio: 'Autor, páginas y formatos de cada libro.',
+    openCatalog: 'Ver su catálogo',
+    openCatalogName: 'Ver el catálogo de {tenant}',
   },
   notDo: {
     heading: 'Lo que no hace',
