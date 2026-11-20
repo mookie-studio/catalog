@@ -18,7 +18,7 @@ Use a private browser window for the Visitor and a normal one for the Admin, so 
 1. Open `/forja-hardware`. Point out the Brand color in the header and buttons, the Logo and the description: each Tenant brands its own catalog.
 2. Featured products come first. Switch between **grid** and **list** view.
 3. Search for `drill`. Then filter by **Cordless = yes** and **Voltage = 18 V** (filterable Attributes, defined by the Admin, not by the platform).
-4. Open **Cordless drill driver 18 V**: several Images, Attributes of every type (Power, Voltage, Cordless, Weight, Material, In stock since), and **Related products** at the bottom (products that share its Category).
+4. Open **Screwdriver set, 12 pieces**: several Images and the Thumbnails. Then open **Cordless drill driver 18 V**: Attributes of every type (Power, Voltage, Cordless, Weight, Material, In stock since), and **Related products** at the bottom (products that share its Category).
 5. Open `/lino-apparel`: same platform, a clothing shop. Filter by **Sizes** (multi-select) and **Color**.
 6. Open `/folio-books`: a bookshop, with Author, Pages, Publication date and Language. Same product model, no "product types": everything is Attributes (ADR 0002).
 

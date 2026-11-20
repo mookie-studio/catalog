@@ -16,11 +16,7 @@
       "Material": "Glass-fibre reinforced plastic",
       "In stock since": "2025-02-10"
     },
-    "images": [
-      "drill-1.jpg",
-      "drill-2.jpg",
-      "drill-3.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0002",
@@ -37,10 +33,7 @@
       "Cordless": false,
       "Weight": 2.6
     },
-    "images": [
-      "drill-4.jpg",
-      "drill-5.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0003",
@@ -57,9 +50,7 @@
       "Cordless": true,
       "Weight": 0.9
     },
-    "images": [
-      "drill-6.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0004",
@@ -77,8 +68,7 @@
       "Weight": 3.8
     },
     "images": [
-      "saw-1.jpg",
-      "saw-2.jpg"
+      "saw-1.jpg"
     ]
   },
   {
@@ -95,9 +85,7 @@
       "Cordless": true,
       "Weight": 2.1
     },
-    "images": [
-      "saw-3.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0006",
@@ -114,10 +102,7 @@
       "Cordless": false,
       "Weight": 1.6
     },
-    "images": [
-      "sander-1.jpg",
-      "sander-2.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0007",
@@ -134,9 +119,7 @@
       "Cordless": false,
       "Weight": 1.0
     },
-    "images": [
-      "sander-3.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0008",
@@ -152,8 +135,7 @@
       "Material": "Forged steel and fibreglass"
     },
     "images": [
-      "hammer-1.jpg",
-      "hammer-2.jpg"
+      "hammer-1.jpg"
     ]
   },
   {
@@ -169,9 +151,7 @@
       "Weight": 0.68,
       "Material": "Rubber head, wooden handle"
     },
-    "images": [
-      "hammer-3.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0010",
@@ -203,9 +183,7 @@
     "attributes": {
       "Weight": 0.2
     },
-    "images": [
-      "screwdriver-3.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0012",
@@ -220,10 +198,7 @@
       "Weight": 2.3,
       "Material": "Chrome vanadium steel"
     },
-    "images": [
-      "wrench-1.jpg",
-      "wrench-2.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0013",
@@ -237,9 +212,7 @@
     "attributes": {
       "Weight": 0.4
     },
-    "images": [
-      "wrench-3.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0014",
@@ -255,8 +228,7 @@
       "Material": "Zinc-plated steel"
     },
     "images": [
-      "screws-1.jpg",
-      "screws-2.jpg"
+      "screws-1.jpg"
     ]
   },
   {
@@ -272,9 +244,7 @@
       "Weight": 1.0,
       "Material": "A2 stainless steel"
     },
-    "images": [
-      "screws-3.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0016",
@@ -348,10 +318,7 @@
     "attributes": {
       "Weight": 1.2
     },
-    "images": [
-      "roller-1.jpg",
-      "roller-2.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0021",
@@ -363,9 +330,7 @@
     "attributes": {
       "Weight": 0.25
     },
-    "images": [
-      "tape-1.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0022",
@@ -390,9 +355,7 @@
       "Voltage": "18 V",
       "Cordless": true
     },
-    "images": [
-      "drill-7.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0024",
@@ -416,9 +379,7 @@
       "Power tools/Sanders"
     ],
     "attributes": {},
-    "images": [
-      "sander-4.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0026",
@@ -442,9 +403,7 @@
       "Painting/Rollers"
     ],
     "attributes": {},
-    "images": [
-      "roller-3.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0028",
@@ -460,9 +419,7 @@
       "Voltage": "230 V",
       "Cordless": false
     },
-    "images": [
-      "drill-8.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0029",
@@ -474,9 +431,7 @@
       "Power tools/Saws"
     ],
     "attributes": {},
-    "images": [
-      "saw-4.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "FH-0030",

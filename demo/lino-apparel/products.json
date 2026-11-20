@@ -50,10 +50,7 @@
       "Season": "All year",
       "Organic": true
     },
-    "images": [
-      "tshirt-1.jpg",
-      "tshirt-2.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0003",
@@ -75,9 +72,7 @@
       "Season": "All year",
       "Organic": true
     },
-    "images": [
-      "tshirt-3.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0004",
@@ -99,10 +94,7 @@
       "Material": "Linen",
       "Season": "Spring-Summer"
     },
-    "images": [
-      "trousers-1.jpg",
-      "trousers-2.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0005",
@@ -123,9 +115,7 @@
       "Material": "Merino wool",
       "Season": "Autumn-Winter"
     },
-    "images": [
-      "trousers-3.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0006",
@@ -147,8 +137,8 @@
       "Season": "Autumn-Winter"
     },
     "images": [
-      "coat-1.jpg",
-      "coat-2.jpg"
+      "coat-4.jpg",
+      "coat-1.jpg"
     ]
   },
   {
@@ -173,9 +163,7 @@
       "Season": "Autumn-Winter",
       "Organic": true
     },
-    "images": [
-      "coat-3.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0008",
@@ -198,10 +186,7 @@
       "Season": "All year",
       "Organic": true
     },
-    "images": [
-      "shirt-1.jpg",
-      "shirt-2.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0009",
@@ -246,10 +231,7 @@
       "Material": "Cotton twill with 2% elastane",
       "Season": "All year"
     },
-    "images": [
-      "trousers-4.jpg",
-      "trousers-5.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0011",
@@ -269,9 +251,7 @@
       "Material": "Cotton corduroy",
       "Season": "Autumn-Winter"
     },
-    "images": [
-      "trousers-6.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0012",
@@ -294,10 +274,7 @@
       "Material": "Extra-fine merino wool",
       "Season": "Autumn-Winter"
     },
-    "images": [
-      "sweater-1.jpg",
-      "sweater-2.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0013",
@@ -318,9 +295,7 @@
       "Material": "Wool and alpaca",
       "Season": "Autumn-Winter"
     },
-    "images": [
-      "sweater-3.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0014",
@@ -337,10 +312,7 @@
       "Season": "All year",
       "Organic": true
     },
-    "images": [
-      "bag-1.jpg",
-      "bag-2.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0015",
@@ -356,9 +328,7 @@
       "Material": "Vegetable-tanned leather",
       "Season": "All year"
     },
-    "images": [
-      "bag-3.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0016",
@@ -374,9 +344,7 @@
       "Material": "Lambswool",
       "Season": "Autumn-Winter"
     },
-    "images": [
-      "scarf-1.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0017",
@@ -410,7 +378,6 @@
       "Organic": true
     },
     "images": [
-      "sneaker-1.jpg",
       "sneaker-2.jpg"
     ]
   },
@@ -445,8 +412,7 @@
       "Season": "Autumn-Winter"
     },
     "images": [
-      "boot-1.jpg",
-      "boot-2.jpg"
+      "boot-3.jpg"
     ]
   },
   {
@@ -503,9 +469,7 @@
       "Accessories/Scarves"
     ],
     "attributes": {},
-    "images": [
-      "scarf-2.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0025",
@@ -531,7 +495,9 @@
       "Shoes/Boots"
     ],
     "attributes": {},
-    "images": []
+    "images": [
+      "boot-2.jpg"
+    ]
   },
   {
     "sku": "LA-0027",
@@ -543,9 +509,7 @@
       "Women/Tops"
     ],
     "attributes": {},
-    "images": [
-      "shirt-4.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0028",
@@ -557,9 +521,7 @@
       "Men/Knitwear"
     ],
     "attributes": {},
-    "images": [
-      "sweater-4.jpg"
-    ]
+    "images": []
   },
   {
     "sku": "LA-0029",
@@ -583,8 +545,6 @@
       "Shoes/Boots"
     ],
     "attributes": {},
-    "images": [
-      "boot-3.jpg"
-    ]
+    "images": []
   }
 ]

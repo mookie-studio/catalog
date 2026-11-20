@@ -151,7 +151,7 @@ The log prints one line per change (`<slug>: product created: FH-0001`, `categor
 ## 7. Changing the dataset
 
 - **Add a product**: add an entry to `demo/<slug>/products.json` with a new SKU; reference existing Category paths, Definition names and Option texts; put its images in `demo/images/<slug>/` and add a line to `CREDITS.md`.
-- **Add or replace a photo**: only public-domain or CC0 images (no brands, logos or faces); at most 2 MB; run with `--force-images` if you replaced a file with the same name. `node demo/tools/download-images.mjs --out demo-images` downloads a fresh set with credits.
+- **Add or replace a photo**: only public-domain or CC0 images (no brands, logos or faces); at most 2 MB; run with `--force-images` if you replaced a file with the same name. `node demo/tools/download-images.mjs --out demo-images` downloads a fresh set with credits. The script only searches; review every downloaded photo by hand before committing it, and discard any that shows people, a brand or logo, or is a document or artwork rather than the product. A product without a suitable photo keeps an empty `images` list (it then also feeds the "Published without Images" Dashboard warning).
 - **Regenerate Logos or book covers**: `python3 demo/tools/generate_images.py` (needs Pillow).
 - **Add a Demo tenant**: add it to `tenants.json` and create its folder; the slug must follow the Tenant slug rules ([Platform Admin](functional/platform-admin.md)).
 - CI checks the committed dataset (`The_committed_Demo_dataset_is_valid`) and runs the seeder twice in the end-to-end job, so a broken file fails the pull request.
