@@ -127,6 +127,19 @@ The Platform Admin is a Supabase user whose id is listed in the API settings.
 1. Go to **Authentication** → **Users** → **Add user** → **Create new user**.
 2. Enter your email and a password, keep **Auto Confirm User** checked, and click **Create user**.
 3. Click the new user and copy its **User UID**. **Save as `PLATFORM_ADMIN_USER_ID`**.
+4. Keep the password in a password manager. Supabase never shows it again, and the dashboard cannot
+   set a new one on an existing user (its **Send password recovery** only helps if the email can
+   receive mail). If you lose it, reset it in **SQL Editor** without changing the User UID (replace
+   both values, then **Run**):
+
+   ```sql
+   update auth.users
+   set encrypted_password = extensions.crypt('<new password>', extensions.gen_salt('bf'))
+   where email = '<your email>';
+   ```
+
+   Do not delete the user and create it again: the new user gets a new User UID, and
+   `Auth__PlatformAdminUserIds__0` (step 4.4) would have to change too.
 
 Free Supabase projects pause after a week without activity. If the API's health check returns 503
 after a quiet week, open the project in the dashboard and click **Restore project**.
@@ -371,7 +384,11 @@ Work through this list in order; each step depends on the previous one.
 3. **SPA loads.** Open `SPA_URL`. Then open a deep link such as `SPA_URL/login` directly: it must load
    the app, not a 404.
 4. **Platform Admin signs in.** Sign in at `SPA_URL/login` with the user from step 1.7, then open
-   `SPA_URL/platform`. If sign-in works but the API answers 401, compare `Auth__Issuer` and
+   `SPA_URL/platform`. If the sign-in form says **Invalid login credentials**, Supabase rejected the
+   email and password: the user exists but the password is different (or the email is misspelled).
+   Check the user in **Authentication** → **Users**, and reset the password as in step 1.7 step 4.
+   If you get in but `SPA_URL/platform` says you have no access, the User UID is not the value of
+   `Auth__PlatformAdminUserIds__0`. If sign-in works but the API answers 401, compare `Auth__Issuer` and
    `Auth__JwksUrl` with the project ref. If the browser console shows a CORS error, check
    `Cors__AllowedOrigins__0` is exactly `SPA_URL`.
 5. **Invitation works.** Create a Tenant with an Admin email you can read (see step 1.6). The invitation
@@ -394,6 +411,11 @@ Work through this list in order; each step depends on the previous one.
    `Sitemap:` line pointing to the sitemap index; if that line is missing, `VITE_API_URL` was empty
    when the SPA was built (step 5.2). Optionally submit the sitemap index address in Google Search
    Console.
+
+The demo catalogs (`forja-hardware`, `lino-apparel`, `folio-books`) and their demo Admins are not
+created by the deploy. They are loaded by the Demo seeder, run by hand from your computer
+([ADR 0014](adr/0014-demo-data-seeded-through-the-api.md)). Until it has run, those pages show
+the "not found" page and the only account is the Platform Admin of step 1.7.
 
 When all nine pass, the infrastructure is done. Later deploys need no clicks: merge to `main`.
 
