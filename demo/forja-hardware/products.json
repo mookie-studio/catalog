@@ -1,0 +1,448 @@
+[
+  {
+    "sku": "FH-0001",
+    "name": "Cordless drill driver 18 V",
+    "description": "A compact drill driver for everyday jobs around the house: shelves, cabinets and flat-pack furniture. Two speeds, 21 torque settings and an LED work light. Comes with two batteries and a charger.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Power tools/Drills"
+    ],
+    "attributes": {
+      "Power": 450,
+      "Voltage": "18 V",
+      "Cordless": true,
+      "Weight": 1.4,
+      "Material": "Glass-fibre reinforced plastic",
+      "In stock since": "2025-02-10"
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0002",
+    "name": "Hammer drill 850 W",
+    "description": "A corded hammer drill that goes through brick and concrete without effort. Side handle, depth stop and a keyless 13 mm chuck.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Power tools/Drills"
+    ],
+    "attributes": {
+      "Power": 850,
+      "Voltage": "230 V",
+      "Cordless": false,
+      "Weight": 2.6
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0003",
+    "name": "Compact drill 12 V",
+    "description": "Small and light for tight spaces and overhead work. Ideal for screws up to 6 mm and drilling in wood and plastic.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Power tools/Drills"
+    ],
+    "attributes": {
+      "Power": 250,
+      "Voltage": "12 V",
+      "Cordless": true,
+      "Weight": 0.9
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0004",
+    "name": "Circular saw 1200 W",
+    "description": "Straight, clean cuts in boards up to 55 mm thick. Bevel cuts up to 45 degrees, a parallel guide and a dust port for your vacuum.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Power tools/Saws"
+    ],
+    "attributes": {
+      "Power": 1200,
+      "Voltage": "230 V",
+      "Cordless": false,
+      "Weight": 3.8
+    },
+    "images": [
+      "saw-1.jpg"
+    ]
+  },
+  {
+    "sku": "FH-0005",
+    "name": "Cordless jigsaw 18 V",
+    "description": "Curves, cut-outs and shapes in wood, plastic and thin metal. Tool-free blade change and four pendulum settings.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Power tools/Saws"
+    ],
+    "attributes": {
+      "Voltage": "18 V",
+      "Cordless": true,
+      "Weight": 2.1
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0006",
+    "name": "Random orbit sander 300 W",
+    "description": "Leaves a smooth, swirl-free finish on furniture and doors. Hook-and-loop pads and a built-in dust box.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Power tools/Sanders"
+    ],
+    "attributes": {
+      "Power": 300,
+      "Voltage": "230 V",
+      "Cordless": false,
+      "Weight": 1.6
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0007",
+    "name": "Detail sander",
+    "description": "A triangular pad that reaches into corners and along edges. Perfect for window frames and chair legs.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Power tools/Sanders"
+    ],
+    "attributes": {
+      "Power": 130,
+      "Voltage": "230 V",
+      "Cordless": false,
+      "Weight": 1.0
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0008",
+    "name": "Claw hammer 450 g",
+    "description": "A balanced steel claw hammer with a fibreglass handle that absorbs shocks. The curved claw pulls nails cleanly.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Hand tools/Hammers"
+    ],
+    "attributes": {
+      "Weight": 0.45,
+      "Material": "Forged steel and fibreglass"
+    },
+    "images": [
+      "hammer-1.jpg"
+    ]
+  },
+  {
+    "sku": "FH-0009",
+    "name": "Rubber mallet",
+    "description": "Taps tiles, paving and furniture joints into place without marking them.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Hand tools/Hammers"
+    ],
+    "attributes": {
+      "Weight": 0.68,
+      "Material": "Rubber head, wooden handle"
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0010",
+    "name": "Screwdriver set, 12 pieces",
+    "description": "Flat, Phillips and Pozidriv screwdrivers with magnetic tips and soft-grip handles, in a wall-mountable case.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Hand tools/Screwdrivers"
+    ],
+    "attributes": {
+      "Weight": 1.1,
+      "Material": "Chrome vanadium steel"
+    },
+    "images": [
+      "screwdriver-1.jpg",
+      "screwdriver-2.jpg"
+    ]
+  },
+  {
+    "sku": "FH-0011",
+    "name": "Precision screwdriver kit",
+    "description": "Thirty-two small bits for electronics, glasses and toys, with a swivel-top handle.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Hand tools/Screwdrivers"
+    ],
+    "attributes": {
+      "Weight": 0.2
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0012",
+    "name": "Combination wrench set, 8 to 19 mm",
+    "description": "Twelve wrenches with an open end and a ring end, polished and marked for quick reading.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Hand tools/Wrenches"
+    ],
+    "attributes": {
+      "Weight": 2.3,
+      "Material": "Chrome vanadium steel"
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0013",
+    "name": "Adjustable wrench 250 mm",
+    "description": "One wrench for nuts up to 30 mm, with a precise worm gear and a scale on the jaw.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Hand tools/Wrenches"
+    ],
+    "attributes": {
+      "Weight": 0.4
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0014",
+    "name": "Wood screws, assorted box",
+    "description": "Six hundred zinc-plated wood screws in the sizes you use the most, sorted in a box with a clear lid.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Fixings/Screws"
+    ],
+    "attributes": {
+      "Weight": 1.8,
+      "Material": "Zinc-plated steel"
+    },
+    "images": [
+      "screws-1.jpg"
+    ]
+  },
+  {
+    "sku": "FH-0015",
+    "name": "Stainless deck screws, 200 pieces",
+    "description": "Rust-free screws for terraces and garden furniture, with a self-drilling tip.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Fixings/Screws"
+    ],
+    "attributes": {
+      "Weight": 1.0,
+      "Material": "A2 stainless steel"
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0016",
+    "name": "Wall plugs, mixed sizes",
+    "description": "Two hundred nylon plugs for brick, concrete and stone, from 5 to 10 mm.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Fixings/Anchors"
+    ],
+    "attributes": {
+      "Weight": 0.3,
+      "Material": "Nylon"
+    },
+    "images": [
+      "anchors-1.jpg"
+    ]
+  },
+  {
+    "sku": "FH-0017",
+    "name": "Plasterboard anchors",
+    "description": "Self-drilling anchors that hold shelves and frames on plasterboard walls, up to 25 kg each.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Fixings/Anchors"
+    ],
+    "attributes": {
+      "Weight": 0.2
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0018",
+    "name": "Paint brush set, 5 pieces",
+    "description": "Synthetic brushes from 20 to 70 mm for water-based paints and varnishes. Easy to clean and they do not shed.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Painting/Brushes"
+    ],
+    "attributes": {
+      "Material": "Synthetic bristles, beech handles"
+    },
+    "images": [
+      "brush-1.jpg",
+      "brush-2.jpg"
+    ]
+  },
+  {
+    "sku": "FH-0019",
+    "name": "Angled sash brush",
+    "description": "An angled tip for sharp lines along window frames and skirting boards.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Painting/Brushes"
+    ],
+    "attributes": {},
+    "images": []
+  },
+  {
+    "sku": "FH-0020",
+    "name": "Paint roller kit 23 cm",
+    "description": "A roller, two covers, a tray and an extension pole for walls and ceilings.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Painting/Rollers"
+    ],
+    "attributes": {
+      "Weight": 1.2
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0021",
+    "name": "Tape measure 5 m",
+    "description": "A clear, two-sided tape with an automatic lock and a belt clip.",
+    "status": "Published",
+    "featured": false,
+    "categories": [],
+    "attributes": {
+      "Weight": 0.25
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0022",
+    "name": "Tool box with organiser",
+    "description": "A sturdy 48 cm box with a removable tray and two lids for small parts.",
+    "status": "Published",
+    "featured": false,
+    "categories": [],
+    "attributes": {},
+    "images": []
+  },
+  {
+    "sku": "FH-0023",
+    "name": "Cordless impact driver 18 V",
+    "description": "Draft: specifications to be confirmed with the supplier.",
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Power tools/Drills"
+    ],
+    "attributes": {
+      "Voltage": "18 V",
+      "Cordless": true
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0024",
+    "name": "Mitre saw 1600 W",
+    "description": null,
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Power tools/Saws"
+    ],
+    "attributes": {},
+    "images": []
+  },
+  {
+    "sku": "FH-0025",
+    "name": "Belt sander",
+    "description": "Coming next month.",
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Power tools/Sanders"
+    ],
+    "attributes": {},
+    "images": []
+  },
+  {
+    "sku": "FH-0026",
+    "name": "Masonry drill bits, 7 pieces",
+    "description": "Draft description.",
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Power tools/Drills"
+    ],
+    "attributes": {},
+    "images": []
+  },
+  {
+    "sku": "FH-0027",
+    "name": "Foam mini roller",
+    "description": null,
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Painting/Rollers"
+    ],
+    "attributes": {},
+    "images": []
+  },
+  {
+    "sku": "FH-0028",
+    "name": "Corded drill 500 W (old model)",
+    "description": "Replaced by the hammer drill 850 W.",
+    "status": "Archived",
+    "featured": false,
+    "categories": [
+      "Power tools/Drills"
+    ],
+    "attributes": {
+      "Power": 500,
+      "Voltage": "230 V",
+      "Cordless": false
+    },
+    "images": []
+  },
+  {
+    "sku": "FH-0029",
+    "name": "Hand saw 500 mm",
+    "description": "No longer stocked.",
+    "status": "Archived",
+    "featured": false,
+    "categories": [
+      "Power tools/Saws"
+    ],
+    "attributes": {},
+    "images": []
+  },
+  {
+    "sku": "FH-0030",
+    "name": "Pine wood stain, 750 ml",
+    "description": "Discontinued by the manufacturer.",
+    "status": "Archived",
+    "featured": false,
+    "categories": [
+      "Painting/Brushes"
+    ],
+    "attributes": {},
+    "images": []
+  }
+]

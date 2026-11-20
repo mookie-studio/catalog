@@ -1,0 +1,26 @@
+[
+  {
+    "slug": "forja-hardware",
+    "name": "Forja Hardware",
+    "isActive": true,
+    "adminEmail": "admin@forja-hardware.example.com"
+  },
+  {
+    "slug": "lino-apparel",
+    "name": "Lino Apparel",
+    "isActive": true,
+    "adminEmail": "admin@lino-apparel.example.com"
+  },
+  {
+    "slug": "folio-books",
+    "name": "Folio Books",
+    "isActive": true,
+    "adminEmail": "admin@folio-books.example.com"
+  },
+  {
+    "slug": "tallo-garden",
+    "name": "Tallo Garden",
+    "isActive": false,
+    "adminEmail": "admin@tallo-garden.example.com"
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "description": "Lino Apparel makes simple, durable clothes in natural fabrics: linen, organic cotton and merino wool. Every piece is designed to be worn for years, not for one season.\n\nAsk us about sizes, fabrics or care from any product page; we reply within a working day.",
+  "contactEmail": "hello@lino-apparel.example.com",
+  "phone": "+34 930 000 202",
+  "address": "48 Loom Avenue, 08002 Barcelona, Spain",
+  "websiteUrl": "https://lino-apparel.example.com",
+  "brandColor": "#0F766E",
+  "inquiriesEnabled": true,
+  "logo": "logo.png"
+}

@@ -1,0 +1,550 @@
+[
+  {
+    "sku": "LA-0001",
+    "name": "Linen shirt dress",
+    "description": "A relaxed shirt dress in washed linen that gets softer with every wear. Mother-of-pearl buttons, side pockets and a removable belt.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Women/Tops"
+    ],
+    "attributes": {
+      "Sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "Color": "Sand",
+      "Material": "100% European linen",
+      "Season": "Spring-Summer",
+      "Organic": true,
+      "Collection date": "2026-03-01"
+    },
+    "images": [
+      "dress-1.jpg",
+      "dress-2.jpg",
+      "dress-3.jpg"
+    ]
+  },
+  {
+    "sku": "LA-0002",
+    "name": "Organic cotton T-shirt",
+    "description": "Our everyday tee in heavy organic cotton jersey. A straight fit that keeps its shape wash after wash.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Women/Tops"
+    ],
+    "attributes": {
+      "Sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "Color": "White",
+      "Material": "Organic cotton jersey, 180 g",
+      "Season": "All year",
+      "Organic": true
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0003",
+    "name": "Striped Breton top",
+    "description": "A long-sleeved top with a boat neck and navy stripes. Thick, soft and made to last.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Women/Tops"
+    ],
+    "attributes": {
+      "Sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "Color": "Navy",
+      "Material": "Organic cotton",
+      "Season": "All year",
+      "Organic": true
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0004",
+    "name": "Wide-leg linen trousers",
+    "description": "High-waisted trousers with an elastic back and deep pockets. Cool on hot days, smart enough for the office.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Women/Trousers"
+    ],
+    "attributes": {
+      "Sizes": [
+        "XS",
+        "S",
+        "M",
+        "L"
+      ],
+      "Color": "Olive",
+      "Material": "Linen",
+      "Season": "Spring-Summer"
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0005",
+    "name": "Tailored wool trousers",
+    "description": "Straight trousers with a pressed crease, in a fine wool that does not wrinkle in your bag.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Women/Trousers"
+    ],
+    "attributes": {
+      "Sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "Color": "Black",
+      "Material": "Merino wool",
+      "Season": "Autumn-Winter"
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0006",
+    "name": "Wool wrap coat",
+    "description": "A soft double-faced wool coat with a shawl collar and a tie belt. Warm without the weight.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Women/Coats"
+    ],
+    "attributes": {
+      "Sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "Color": "Sand",
+      "Material": "Wool and recycled polyamide",
+      "Season": "Autumn-Winter"
+    },
+    "images": [
+      "coat-4.jpg",
+      "coat-1.jpg"
+    ]
+  },
+  {
+    "sku": "LA-0007",
+    "name": "Waxed cotton rain jacket",
+    "description": "A hooded jacket in waxed organic cotton that keeps the rain out and can be re-waxed at home.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Women/Coats"
+    ],
+    "attributes": {
+      "Sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "Color": "Olive",
+      "Material": "Waxed organic cotton",
+      "Season": "Autumn-Winter",
+      "Organic": true
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0008",
+    "name": "Oxford button-down shirt",
+    "description": "A classic Oxford weave shirt with a button-down collar. Wear it tucked or loose.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Men/Shirts"
+    ],
+    "attributes": {
+      "Sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "Color": "White",
+      "Material": "Organic cotton Oxford",
+      "Season": "All year",
+      "Organic": true
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0009",
+    "name": "Linen camp-collar shirt",
+    "description": "A boxy short-sleeved shirt with an open collar, made for summer evenings.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Men/Shirts"
+    ],
+    "attributes": {
+      "Sizes": [
+        "M",
+        "L",
+        "XL"
+      ],
+      "Color": "Navy",
+      "Material": "Linen",
+      "Season": "Spring-Summer"
+    },
+    "images": [
+      "shirt-3.jpg"
+    ]
+  },
+  {
+    "sku": "LA-0010",
+    "name": "Chino trousers",
+    "description": "Slim, comfortable chinos in stretch cotton twill, with a clean flat front.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Men/Trousers"
+    ],
+    "attributes": {
+      "Sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "Color": "Sand",
+      "Material": "Cotton twill with 2% elastane",
+      "Season": "All year"
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0011",
+    "name": "Corduroy trousers",
+    "description": "Soft eight-wale corduroy with a relaxed straight leg.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Men/Trousers"
+    ],
+    "attributes": {
+      "Sizes": [
+        "M",
+        "L"
+      ],
+      "Color": "Olive",
+      "Material": "Cotton corduroy",
+      "Season": "Autumn-Winter"
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0012",
+    "name": "Merino crew-neck sweater",
+    "description": "A fine-knit merino sweater that is warm, light and does not itch. Machine washable on wool cycle.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Men/Knitwear"
+    ],
+    "attributes": {
+      "Sizes": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "Color": "Navy",
+      "Material": "Extra-fine merino wool",
+      "Season": "Autumn-Winter"
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0013",
+    "name": "Chunky cable cardigan",
+    "description": "A heavy cable-knit cardigan with horn buttons and two pockets.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Men/Knitwear"
+    ],
+    "attributes": {
+      "Sizes": [
+        "M",
+        "L",
+        "XL"
+      ],
+      "Color": "Sand",
+      "Material": "Wool and alpaca",
+      "Season": "Autumn-Winter"
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0014",
+    "name": "Canvas tote bag",
+    "description": "A roomy tote in heavy cotton canvas with leather handles and an inside pocket.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Accessories/Bags"
+    ],
+    "attributes": {
+      "Color": "Sand",
+      "Material": "Cotton canvas, 16 oz",
+      "Season": "All year",
+      "Organic": true
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0015",
+    "name": "Leather crossbody bag",
+    "description": "A small vegetable-tanned leather bag with an adjustable strap.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Accessories/Bags"
+    ],
+    "attributes": {
+      "Color": "Black",
+      "Material": "Vegetable-tanned leather",
+      "Season": "All year"
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0016",
+    "name": "Wool scarf",
+    "description": "A long, soft scarf in brushed lambswool with fringed ends.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Accessories/Scarves"
+    ],
+    "attributes": {
+      "Color": "Red",
+      "Material": "Lambswool",
+      "Season": "Autumn-Winter"
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0017",
+    "name": "Linen bandana",
+    "description": "A square linen bandana to wear on the neck, the head or a bag strap.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Accessories/Scarves"
+    ],
+    "attributes": {
+      "Color": "Olive",
+      "Material": "Linen",
+      "Season": "Spring-Summer"
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0018",
+    "name": "Canvas sneakers",
+    "description": "Low-top sneakers in organic canvas with a natural rubber sole.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Shoes/Sneakers"
+    ],
+    "attributes": {
+      "Color": "White",
+      "Material": "Organic canvas and natural rubber",
+      "Season": "All year",
+      "Organic": true
+    },
+    "images": [
+      "sneaker-2.jpg"
+    ]
+  },
+  {
+    "sku": "LA-0019",
+    "name": "Suede runners",
+    "description": "Light suede runners with a cushioned recycled sole.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Shoes/Sneakers"
+    ],
+    "attributes": {
+      "Color": "Navy",
+      "Material": "Suede, recycled EVA sole",
+      "Season": "All year"
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0020",
+    "name": "Leather Chelsea boots",
+    "description": "Elastic-sided boots in smooth leather with a stitched rubber sole that can be resoled.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Shoes/Boots"
+    ],
+    "attributes": {
+      "Color": "Black",
+      "Material": "Full-grain leather",
+      "Season": "Autumn-Winter"
+    },
+    "images": [
+      "boot-3.jpg"
+    ]
+  },
+  {
+    "sku": "LA-0021",
+    "name": "Knitted beanie",
+    "description": "A rib-knit beanie in recycled wool, warm and easy to fold.",
+    "status": "Published",
+    "featured": false,
+    "categories": [],
+    "attributes": {
+      "Color": "Red",
+      "Material": "Recycled wool",
+      "Season": "Autumn-Winter"
+    },
+    "images": [
+      "beanie-1.jpg"
+    ]
+  },
+  {
+    "sku": "LA-0022",
+    "name": "Gift card",
+    "description": "A gift card to spend in our shop, sent by email with your message.",
+    "status": "Published",
+    "featured": false,
+    "categories": [],
+    "attributes": {},
+    "images": []
+  },
+  {
+    "sku": "LA-0023",
+    "name": "Quilted vest",
+    "description": "Draft: waiting for photos.",
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Women/Coats"
+    ],
+    "attributes": {
+      "Sizes": [
+        "S",
+        "M"
+      ],
+      "Color": "Olive"
+    },
+    "images": []
+  },
+  {
+    "sku": "LA-0024",
+    "name": "Silk scarf",
+    "description": null,
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Accessories/Scarves"
+    ],
+    "attributes": {},
+    "images": []
+  },
+  {
+    "sku": "LA-0025",
+    "name": "Denim jacket",
+    "description": "Sizes to be confirmed.",
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Men/Shirts"
+    ],
+    "attributes": {},
+    "images": [
+      "coat-4.jpg"
+    ]
+  },
+  {
+    "sku": "LA-0026",
+    "name": "Hiking boots",
+    "description": null,
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Shoes/Boots"
+    ],
+    "attributes": {},
+    "images": [
+      "boot-2.jpg"
+    ]
+  },
+  {
+    "sku": "LA-0027",
+    "name": "Linen pyjama set",
+    "description": "Planned for next spring.",
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Women/Tops"
+    ],
+    "attributes": {},
+    "images": []
+  },
+  {
+    "sku": "LA-0028",
+    "name": "Fleece hoodie (old season)",
+    "description": "Replaced by the merino crew-neck.",
+    "status": "Archived",
+    "featured": false,
+    "categories": [
+      "Men/Knitwear"
+    ],
+    "attributes": {},
+    "images": []
+  },
+  {
+    "sku": "LA-0029",
+    "name": "Straw hat",
+    "description": "Sold out for the season.",
+    "status": "Archived",
+    "featured": false,
+    "categories": [
+      "Accessories/Scarves"
+    ],
+    "attributes": {},
+    "images": []
+  },
+  {
+    "sku": "LA-0030",
+    "name": "Rubber rain boots",
+    "description": "Discontinued.",
+    "status": "Archived",
+    "featured": false,
+    "categories": [
+      "Shoes/Boots"
+    ],
+    "attributes": {},
+    "images": []
+  }
+]

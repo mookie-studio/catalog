@@ -1,0 +1,10 @@
+{
+  "description": "Tallo Garden was a garden centre with plants, pots and tools for balconies and small gardens. The catalog is closed for now.",
+  "contactEmail": "hello@tallo-garden.example.com",
+  "phone": "+34 950 000 404",
+  "address": "3 Seed Road, 04001 Almería, Spain",
+  "websiteUrl": "https://tallo-garden.example.com",
+  "brandColor": "#15803D",
+  "inquiriesEnabled": true,
+  "logo": "logo.png"
+}

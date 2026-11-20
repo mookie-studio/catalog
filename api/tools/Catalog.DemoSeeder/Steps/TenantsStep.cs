@@ -34,8 +34,20 @@ public static class TenantsStep
         {
             if (state.Existing is not { } tenant)
             {
-                var created = await context.Platform.PostAsync<TenantResponse>(
-                    "/api/platform/tenants", new { name = state.Demo.Tenant.Name, slug = state.Slug }, ct);
+                TenantResponse created;
+                try
+                {
+                    created = await context.Platform.PostAsync<TenantResponse>(
+                        "/api/platform/tenants", new { name = state.Demo.Tenant.Name, slug = state.Slug }, ct);
+                }
+                catch (ApiException e) when (e.Status == System.Net.HttpStatusCode.Conflict)
+                {
+                    // The slug is an Old slug of another Tenant (ADR 0009): most likely this Demo tenant was renamed.
+                    throw new SeedException(
+                        $"The Tenant slug '{state.Slug}' is reserved by another Tenant (an Old slug). If a Demo tenant was renamed " +
+                        "during a demo, change its slug back to the dataset one in the Platform Admin area, then run the seeder again.");
+                }
+
                 state.Id = created.Id;
                 context.Log.Change(state.Slug, "tenant created", state.Demo.Tenant.Name);
                 continue;

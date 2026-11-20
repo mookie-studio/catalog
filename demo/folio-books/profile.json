@@ -1,0 +1,10 @@
+{
+  "description": "Folio Books is an independent bookshop with a taste for good stories: novels, crime, history, science, cooking and books for young readers.\n\nLooking for a title we do not show, or a signed copy? Ask us from any book page.",
+  "contactEmail": "hello@folio-books.example.com",
+  "phone": "+34 960 000 303",
+  "address": "7 Paper Lane, 46001 Valencia, Spain",
+  "websiteUrl": "https://folio-books.example.com",
+  "brandColor": "#7C2D12",
+  "inquiriesEnabled": true,
+  "logo": "logo.png"
+}

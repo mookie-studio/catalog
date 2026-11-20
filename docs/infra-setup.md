@@ -430,6 +430,14 @@ the "not found" page and the only account is the Platform Admin of step 1.7.
 
 When all nine pass, the infrastructure is done. Later deploys need no clicks: merge to `main`.
 
+## 8. Optional: load the demo data
+
+To show Catalog on realistic data, run the Demo seeder from your computer against this environment, as
+explained step by step in [demo data](demo.md#4-first-run-in-production). It needs the API URL, the
+Supabase URL, publishable and secret keys, the session pooler connection string (steps 1.2 and 1.3) and
+one more Platform Admin id in `Auth__PlatformAdminUserIds__<n>` (step 4.4). Run it again after each demo
+to reset it.
+
 ## Costs and limits to keep in mind
 
 - **Supabase Free**: 500 MB database, pauses after a week of inactivity, built-in email only to team

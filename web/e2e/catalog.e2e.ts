@@ -29,7 +29,7 @@ test('an Admin publishes a Product that a Visitor finds, and archiving hides it'
 
   // Admin: create the Product, give it a description and the Attribute, and publish it.
   await admin.getByRole('navigation', { name: 'Admin' }).getByRole('link', { name: 'Products' }).click()
-  await admin.getByRole('link', { name: 'New product' }).click()
+  await admin.getByRole('link', { name: 'New product' }).first().click()
   await admin.getByLabel('Name', { exact: true }).fill(productName)
   await admin.getByLabel('SKU', { exact: true }).fill(`HD-${run}`)
   await admin.getByLabel('Description', { exact: true }).fill('A powerful hammer drill for concrete.')

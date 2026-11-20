@@ -1,0 +1,10 @@
+{
+  "description": "Forja Hardware is a neighbourhood hardware store for people who like to fix, build and make things themselves. We stock power tools, hand tools, fixings and everything you need to paint a room.\n\nNot sure which drill bit or wall plug you need? Send us a question from any product page and one of our team will answer within a working day.",
+  "contactEmail": "hello@forja-hardware.example.com",
+  "phone": "+34 910 000 101",
+  "address": "12 Anvil Street, 28001 Madrid, Spain",
+  "websiteUrl": "https://forja-hardware.example.com",
+  "brandColor": "#B45309",
+  "inquiriesEnabled": true,
+  "logo": "logo.png"
+}

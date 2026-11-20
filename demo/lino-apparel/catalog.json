@@ -1,0 +1,112 @@
+{
+  "categories": [
+    {
+      "name": "Women",
+      "children": [
+        {
+          "name": "Tops"
+        },
+        {
+          "name": "Trousers"
+        },
+        {
+          "name": "Coats"
+        }
+      ]
+    },
+    {
+      "name": "Men",
+      "children": [
+        {
+          "name": "Shirts"
+        },
+        {
+          "name": "Trousers"
+        },
+        {
+          "name": "Knitwear"
+        }
+      ]
+    },
+    {
+      "name": "Accessories",
+      "children": [
+        {
+          "name": "Bags"
+        },
+        {
+          "name": "Scarves"
+        }
+      ]
+    },
+    {
+      "name": "Shoes",
+      "children": [
+        {
+          "name": "Sneakers"
+        },
+        {
+          "name": "Boots"
+        }
+      ]
+    }
+  ],
+  "attributes": [
+    {
+      "name": "Sizes",
+      "type": "OptionList",
+      "isFilterable": true,
+      "allowsMultiple": true,
+      "options": [
+        "XS",
+        "S",
+        "M",
+        "L",
+        "XL"
+      ]
+    },
+    {
+      "name": "Color",
+      "type": "OptionList",
+      "isFilterable": true,
+      "allowsMultiple": false,
+      "options": [
+        "Black",
+        "White",
+        "Navy",
+        "Olive",
+        "Sand",
+        "Red"
+      ]
+    },
+    {
+      "name": "Material",
+      "type": "Text",
+      "isFilterable": false,
+      "allowsMultiple": false
+    },
+    {
+      "name": "Season",
+      "type": "OptionList",
+      "isFilterable": false,
+      "allowsMultiple": false,
+      "options": [
+        "Spring-Summer",
+        "Autumn-Winter",
+        "All year"
+      ]
+    },
+    {
+      "name": "Organic",
+      "type": "Boolean",
+      "isFilterable": true,
+      "allowsMultiple": false
+    },
+    {
+      "name": "Collection date",
+      "type": "Date",
+      "isFilterable": false,
+      "allowsMultiple": false
+    }
+  ]
+}

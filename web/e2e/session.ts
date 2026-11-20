@@ -51,7 +51,7 @@ export async function createTenantWithAdmin(browser: Browser, tenant: { name: st
 /** Creates a Product with a description from the admin area and publishes it. Returns its Product slug. */
 export async function createPublishedProduct(admin: Page, name: string, sku: string, description: string) {
   await admin.getByRole('navigation', { name: 'Admin' }).getByRole('link', { name: 'Products' }).click()
-  await admin.getByRole('link', { name: 'New product' }).click()
+  await admin.getByRole('link', { name: 'New product' }).first().click()
   await admin.getByLabel('Name', { exact: true }).fill(name)
   await admin.getByLabel('SKU', { exact: true }).fill(sku)
   await admin.getByLabel('Description', { exact: true }).fill(description)

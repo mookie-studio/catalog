@@ -1,0 +1,601 @@
+[
+  {
+    "sku": "FB-0001",
+    "name": "The Lighthouse Keeper's Daughter",
+    "description": "On a storm-beaten island, a girl inherits her father's lighthouse and the secrets in its logbook. A warm, sweeping novel about family, the sea and the stories we keep.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Fiction/Novels"
+    ],
+    "attributes": {
+      "Author": "Elena Marlow",
+      "Pages": 384,
+      "Publication date": "2024-05-14",
+      "Language": "English",
+      "Hardcover": true,
+      "Formats": [
+        "Paperback",
+        "Hardcover",
+        "E-book"
+      ]
+    },
+    "images": [
+      "cover-01.jpg",
+      "spread-01.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0002",
+    "name": "Salt and Saffron",
+    "description": "Three generations of a family run a small restaurant in a port town. Funny, tender and full of food.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Fiction/Novels"
+    ],
+    "attributes": {
+      "Author": "Rafael Ortega Lune",
+      "Pages": 296,
+      "Publication date": "2023-09-02",
+      "Language": "Spanish",
+      "Hardcover": false,
+      "Formats": [
+        "Paperback",
+        "E-book"
+      ]
+    },
+    "images": [
+      "cover-02.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0003",
+    "name": "Paper Cranes Over Kyoto",
+    "description": "An art restorer finds a letter hidden in an old screen and follows it across sixty years.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Fiction/Novels"
+    ],
+    "attributes": {
+      "Author": "Hana Whitfield",
+      "Pages": 412,
+      "Publication date": "2025-01-20",
+      "Language": "English",
+      "Hardcover": true
+    },
+    "images": [
+      "cover-03.jpg",
+      "spread-03.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0004",
+    "name": "The Quiet Orchard",
+    "description": "A widower returns to his childhood village to save his father's apple orchard.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Fiction/Novels"
+    ],
+    "attributes": {
+      "Author": "Margot Fleury",
+      "Pages": 248,
+      "Publication date": "2022-03-11",
+      "Language": "French",
+      "Hardcover": false
+    },
+    "images": [
+      "cover-04.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0005",
+    "name": "Small Hours",
+    "description": "Twelve short stories about people awake at three in the morning.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Fiction/Short stories"
+    ],
+    "attributes": {
+      "Author": "Jonas Albrecht",
+      "Pages": 192,
+      "Publication date": "2024-10-08",
+      "Language": "German",
+      "Hardcover": false
+    },
+    "images": [
+      "cover-05.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0006",
+    "name": "A Map of Tiny Rooms",
+    "description": "Stories set in apartments, attics and kitchens, each one a whole life in a few pages.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Fiction/Short stories"
+    ],
+    "attributes": {
+      "Author": "Priya Castell",
+      "Pages": 220,
+      "Publication date": "2023-06-30",
+      "Language": "English",
+      "Hardcover": false
+    },
+    "images": [
+      "cover-06.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0007",
+    "name": "The Glass Alibi",
+    "description": "Inspector Nora Vance has forty-eight hours to break an alibi that seems perfect. A crime novel with a twist you will not see coming.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Fiction/Crime"
+    ],
+    "attributes": {
+      "Author": "Victor Hale",
+      "Pages": 352,
+      "Publication date": "2025-04-03",
+      "Language": "English",
+      "Hardcover": false,
+      "Formats": [
+        "Paperback",
+        "E-book",
+        "Audiobook"
+      ]
+    },
+    "images": [
+      "cover-07.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0008",
+    "name": "Murder at the Night Market",
+    "description": "A food critic becomes a detective when a stall owner is found dead at closing time.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Fiction/Crime"
+    ],
+    "attributes": {
+      "Author": "Lin Okafor",
+      "Pages": 318,
+      "Publication date": "2024-02-22",
+      "Language": "English",
+      "Hardcover": false
+    },
+    "images": [
+      "cover-08.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0009",
+    "name": "The Cold Harbour",
+    "description": "A Nordic thriller about a missing ferry captain and a town that would rather forget.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Fiction/Crime"
+    ],
+    "attributes": {
+      "Author": "Ingrid Solberg",
+      "Pages": 404,
+      "Publication date": "2023-11-17",
+      "Language": "German",
+      "Hardcover": true
+    },
+    "images": [
+      "cover-09.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0010",
+    "name": "Empires of Salt",
+    "description": "How salt built roads, cities and empires, from ancient caravans to modern kitchens.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Non-fiction/History"
+    ],
+    "attributes": {
+      "Author": "Dr. Amara Bellweather",
+      "Pages": 512,
+      "Publication date": "2022-08-25",
+      "Language": "English",
+      "Hardcover": true
+    },
+    "images": [
+      "cover-10.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0011",
+    "name": "The Year Without Summer",
+    "description": "1816: a volcano's ash cooled the world. The story of a year of hunger, invention and monsters.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Non-fiction/History"
+    ],
+    "attributes": {
+      "Author": "Thomas Greaves",
+      "Pages": 288,
+      "Publication date": "2024-06-12",
+      "Language": "English",
+      "Hardcover": false
+    },
+    "images": [
+      "cover-11.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0012",
+    "name": "Stars in Your Pocket",
+    "description": "A friendly guide to the night sky: what you can see with your eyes, binoculars and a little patience.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Non-fiction/Science"
+    ],
+    "attributes": {
+      "Author": "Dr. Sofia Lindqvist",
+      "Pages": 240,
+      "Publication date": "2025-03-15",
+      "Language": "English",
+      "Hardcover": false
+    },
+    "images": [
+      "cover-12.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0013",
+    "name": "The Secret Life of Soil",
+    "description": "Under every step there is a world of fungi, worms and bacteria. Why it matters for all of us.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Non-fiction/Science"
+    ],
+    "attributes": {
+      "Author": "Martin Okoro",
+      "Pages": 276,
+      "Publication date": "2023-04-04",
+      "Language": "English",
+      "Hardcover": false
+    },
+    "images": [
+      "cover-13.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0014",
+    "name": "Bread, Slowly",
+    "description": "Sourdough, rye and flatbreads with long, easy fermentations that fit a busy week.",
+    "status": "Published",
+    "featured": true,
+    "categories": [
+      "Non-fiction/Cooking"
+    ],
+    "attributes": {
+      "Author": "Clara Dumont",
+      "Pages": 224,
+      "Publication date": "2024-09-19",
+      "Language": "French",
+      "Hardcover": true,
+      "Formats": [
+        "Hardcover"
+      ]
+    },
+    "images": [
+      "cover-14.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0015",
+    "name": "One Pan Mediterranean",
+    "description": "Eighty recipes cooked in a single pan, from paella to roasted vegetables.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Non-fiction/Cooking"
+    ],
+    "attributes": {
+      "Author": "Lucía Ferrer",
+      "Pages": 192,
+      "Publication date": "2023-05-27",
+      "Language": "Spanish",
+      "Hardcover": true
+    },
+    "images": [
+      "cover-15.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0016",
+    "name": "The Bear Who Lost His Hum",
+    "description": "A little bear searches the forest for his missing hum. A picture book to read aloud.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Children/Picture books"
+    ],
+    "attributes": {
+      "Author": "Poppy Arden",
+      "Pages": 32,
+      "Publication date": "2024-11-01",
+      "Language": "English",
+      "Hardcover": true
+    },
+    "images": [
+      "cover-16.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0017",
+    "name": "Moon Soup",
+    "description": "On the night of the full moon, a girl and her grandmother cook a very special soup.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Children/Picture books"
+    ],
+    "attributes": {
+      "Author": "Kenji Arata",
+      "Pages": 40,
+      "Publication date": "2025-02-14",
+      "Language": "English",
+      "Hardcover": true
+    },
+    "images": [
+      "cover-17.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0018",
+    "name": "The Clockwork Sparrow",
+    "description": "A young inventor builds a mechanical bird that can carry secrets across a city at war.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Children/Young adult"
+    ],
+    "attributes": {
+      "Author": "Isla Montrose",
+      "Pages": 336,
+      "Publication date": "2024-07-07",
+      "Language": "English",
+      "Hardcover": false
+    },
+    "images": [
+      "cover-18.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0019",
+    "name": "Wildfire Season",
+    "description": "Four teenagers, one summer and a forest on fire.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Children/Young adult"
+    ],
+    "attributes": {
+      "Author": "Daniel Reyes",
+      "Pages": 300,
+      "Publication date": "2023-08-08",
+      "Language": "Spanish",
+      "Hardcover": false
+    },
+    "images": []
+  },
+  {
+    "sku": "FB-0020",
+    "name": "Letters to the Future",
+    "description": "A collection of letters written by students to themselves, opened twenty years later.",
+    "status": "Published",
+    "featured": false,
+    "categories": [
+      "Fiction/Short stories"
+    ],
+    "attributes": {
+      "Author": "Anna Petrov",
+      "Pages": 180,
+      "Publication date": "2022-12-01",
+      "Language": "English",
+      "Hardcover": false
+    },
+    "images": []
+  },
+  {
+    "sku": "FB-0021",
+    "name": "The Reading Year",
+    "description": "Our yearly guide with fifty recommendations from the people who work in the shop.",
+    "status": "Published",
+    "featured": false,
+    "categories": [],
+    "attributes": {
+      "Author": "Folio Books",
+      "Pages": 96,
+      "Publication date": "2025-01-05",
+      "Language": "English",
+      "Hardcover": false
+    },
+    "images": [
+      "cover-21.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0022",
+    "name": "Bookshop Notebook",
+    "description": "A dotted notebook with a cloth cover, for reading notes and lists.",
+    "status": "Published",
+    "featured": false,
+    "categories": [],
+    "attributes": {
+      "Author": "Folio Books",
+      "Pages": 160,
+      "Publication date": "2024-01-15",
+      "Language": "English",
+      "Hardcover": true
+    },
+    "images": []
+  },
+  {
+    "sku": "FB-0023",
+    "name": "The Last Ferry Home",
+    "description": "Coming soon: the new novel by Elena Marlow.",
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Fiction/Novels"
+    ],
+    "attributes": {
+      "Author": "Elena Marlow",
+      "Pages": 360,
+      "Publication date": "2026-02-01",
+      "Language": "English",
+      "Hardcover": true
+    },
+    "images": [
+      "cover-23.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0024",
+    "name": "Untitled crime novel",
+    "description": null,
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Fiction/Crime"
+    ],
+    "attributes": {
+      "Author": "Victor Hale",
+      "Pages": 300,
+      "Publication date": "2026-06-01",
+      "Language": "English",
+      "Hardcover": false
+    },
+    "images": []
+  },
+  {
+    "sku": "FB-0025",
+    "name": "Fermentation at Home",
+    "description": "Draft: waiting for the cover.",
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Non-fiction/Cooking"
+    ],
+    "attributes": {
+      "Author": "Clara Dumont",
+      "Pages": 210,
+      "Publication date": "2026-04-10",
+      "Language": "French",
+      "Hardcover": true
+    },
+    "images": []
+  },
+  {
+    "sku": "FB-0026",
+    "name": "The Owl Who Was Afraid of the Day",
+    "description": null,
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Children/Picture books"
+    ],
+    "attributes": {
+      "Author": "Poppy Arden",
+      "Pages": 32,
+      "Publication date": "2026-03-03",
+      "Language": "English",
+      "Hardcover": true
+    },
+    "images": [
+      "cover-26.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0027",
+    "name": "Science Quiz Book",
+    "description": "Draft.",
+    "status": "Draft",
+    "featured": false,
+    "categories": [
+      "Non-fiction/Science"
+    ],
+    "attributes": {
+      "Author": "Martin Okoro",
+      "Pages": 128,
+      "Publication date": "2026-05-05",
+      "Language": "English",
+      "Hardcover": false
+    },
+    "images": []
+  },
+  {
+    "sku": "FB-0028",
+    "name": "Travel Atlas 2019",
+    "description": "Out of print.",
+    "status": "Archived",
+    "featured": false,
+    "categories": [
+      "Non-fiction/History"
+    ],
+    "attributes": {
+      "Author": "Folio Books",
+      "Pages": 200,
+      "Publication date": "2019-01-01",
+      "Language": "English",
+      "Hardcover": true
+    },
+    "images": [
+      "cover-28.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0029",
+    "name": "The Silent Garden",
+    "description": "Replaced by the new edition.",
+    "status": "Archived",
+    "featured": false,
+    "categories": [
+      "Fiction/Novels"
+    ],
+    "attributes": {
+      "Author": "Margot Fleury",
+      "Pages": 230,
+      "Publication date": "2018-04-12",
+      "Language": "French",
+      "Hardcover": false
+    },
+    "images": [
+      "cover-29.jpg"
+    ]
+  },
+  {
+    "sku": "FB-0030",
+    "name": "Puzzle Book Volume 1",
+    "description": "Sold out.",
+    "status": "Archived",
+    "featured": false,
+    "categories": [],
+    "attributes": {
+      "Author": "Folio Books",
+      "Pages": 80,
+      "Publication date": "2017-10-10",
+      "Language": "English",
+      "Hardcover": false
+    },
+    "images": []
+  }
+]

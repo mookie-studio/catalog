@@ -94,6 +94,14 @@ docker compose up --build
 - Images: uploaded images are stored in the local S3-compatible store and served from
   http://localhost:9090/catalog-images/...
 
+Image uploads (product Images, Logos) need the `catalog-images` bucket. The compose file asks S3Mock to create it,
+but some S3Mock versions ignore that setting. If an upload answers 500 and the API log says "The specified bucket does
+not exist", create the bucket once (it is kept in the `storage-data` volume):
+
+```sh
+curl -X PUT http://localhost:9090/catalog-images
+```
+
 The SPA calls the API through the Vite dev server proxy (`/api`), so no CORS setup is needed locally.
 
 ## Running the API and the SPA without an orchestrator
@@ -117,6 +125,18 @@ There are three flows. `web/e2e/catalog.e2e.ts` creates a Tenant and invites its
 the email testing inbox), publishes a Product with a filterable Attribute, finds it as a Visitor, then
 archives it and checks the Visitor no longer sees it. `web/e2e/branding.e2e.ts` sets the Tenant profile, enables Inquiries, sends one as a Visitor and handles it in the inbox. `web/e2e/discovery.e2e.ts` bulk-publishes two Drafts and files them under a Category, checks the Related product as a Visitor and the Product view on the Dashboard. CI runs them in `.github/workflows/e2e.yml` (by hand,
 on pushes to `main`, and on pull requests that change the end-to-end setup).
+
+## Demo data
+
+To fill the local environment with the three Demo tenants (products, Images, Inquiries and Product views),
+run the Demo seeder once the stack is up and the migrations are applied:
+
+```sh
+dotnet run --project api/tools/Catalog.DemoSeeder -- seed
+```
+
+Its settings, the first-run step that adds the demo Platform Admin, and how to reset are in
+[demo data](demo.md#3-first-run-locally).
 
 ## Trying the features by hand
 
