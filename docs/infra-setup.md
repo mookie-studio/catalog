@@ -276,6 +276,15 @@ then retry.
 | `Cors__AllowedOrigins__0` | `SPA_URL` (no trailing slash) |
 | `PublicSite__BaseUrl` | `SPA_URL` (no trailing slash). Sitemap addresses are built from it; without it the Sitemap endpoints answer 404 |
 
+Every address people open the SPA from must be in that list, or the browser blocks the SPA's calls to
+the API. If you also serve the SPA from a custom domain, add one more setting per address,
+`Cors__AllowedOrigins__1`, `Cors__AllowedOrigins__2` and so on, each an origin with no trailing slash
+and no path (for example `https://catalog.example.com`). Without it, signing in on that domain shows
+**Something went wrong**: Supabase accepts the password, then the browser refuses the API's answer
+because it carries no `Access-Control-Allow-Origin` header. In Supabase (step 1.5), also add the
+custom domain's `/accept-invite` address to **Redirect URLs** (and make it the **Site URL** if
+invitations should use it).
+
 App settings are encrypted at rest and never shown to the browser. The deploy workflow only replaces
 the code, so these settings survive every deploy.
 
@@ -390,7 +399,9 @@ Work through this list in order; each step depends on the previous one.
    If you get in but `SPA_URL/platform` says you have no access, the User UID is not the value of
    `Auth__PlatformAdminUserIds__0`. If sign-in works but the API answers 401, compare `Auth__Issuer` and
    `Auth__JwksUrl` with the project ref. If the browser console shows a CORS error, check
-   `Cors__AllowedOrigins__0` is exactly `SPA_URL`.
+   `Cors__AllowedOrigins__0` is exactly `SPA_URL`. Signing in on one domain but not on another (for
+   example the `pages.dev` address works and a custom domain shows **Something went wrong**) means the
+   second domain is missing from `Cors__AllowedOrigins__<n>` (step 4.4).
 5. **Invitation works.** Create a Tenant with an Admin email you can read (see step 1.6). The invitation
    email arrives, its link opens `SPA_URL/accept-invite`, and the Admin can set a password. If the link
    goes to `localhost`, fix the Site URL and Redirect URLs in Supabase.
