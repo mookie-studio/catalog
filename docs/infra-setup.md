@@ -37,7 +37,7 @@ Pick the names now so they match everywhere. This guide uses:
 | R2 bucket | `catalog-images` |
 | Pages project | `catalog-web` (gives `https://catalog-web.pages.dev`) |
 | Azure resource group | `catalog-rg` |
-| App Service web app | `catalog-api` (gives `https://catalog-api.azurewebsites.net`) |
+| App Service web app | `catalog-api` (gives `https://catalog-api.azurewebsites.net`, or `https://catalog-api-<hash>.<region>-01.azurewebsites.net` when **Secure unique default hostname** is on) |
 | App Service plan | `catalog-plan` (Linux, Free F1) |
 
 The SPA domain (`https://<pages-project>.pages.dev`) and the API URL are needed by other steps, so the
@@ -224,7 +224,7 @@ The API runs on App Service's free plan as code, not as a container (ADR 0011).
    authentication** disabled.
 4. **Monitoring**: **Enable Application Insights**: No (it is not needed and can cost money).
 5. **Review + create** → **Create**. Wait for the deployment, then **Go to resource**.
-6. On **Overview**, copy **Default domain**, for example `catalog-api.azurewebsites.net`, and add
+6. On **Overview**, copy **Default domain**, for example `catalog-api.azurewebsites.net` or `catalog-api-<hash>.westeurope-01.azurewebsites.net` (use exactly what the portal shows), and add
    `https://` in front. **Save as `VITE_API_URL`**. Opening it now shows App Service's placeholder page.
 
 If the portal reports that `Microsoft.Web` is not registered, go to **Subscriptions** → your
