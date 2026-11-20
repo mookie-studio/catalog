@@ -1,6 +1,6 @@
 # Landing page
 
-The landing page presents **Just Looking** (the public name of Catalog) to people who have never seen it, and sends them to the demo. It lives at `/`. Brand and look: [DESIGN.md](../../DESIGN.md) and [ADR 0015](../adr/0015-just-looking-brand-and-design-system.md). The first screen is described below (#183); the sections under it and the footer come with #184.
+The landing page presents **Just Looking** (the public name of Catalog) to people who have never seen it, and sends them to the demo. It lives at `/`. Brand and look: [DESIGN.md](../../DESIGN.md) and [ADR 0015](../adr/0015-just-looking-brand-and-design-system.md). The page has a first screen, four sections under it and a footer, all described below.
 
 ## First screen
 
@@ -24,6 +24,33 @@ Rules and limits:
 - On wide screens the text and the tags sit side by side; under 860px wide the tags go below the button. When there is not room for three full-size tags, they shrink and overlap so none is cut off; there is no horizontal scrolling down to 360px wide.
 - The tags sway gently and stop when hovered or focused; with reduced motion turned on in the system, they do not move.
 - The browser tab title and the page description (used by search engines and link previews) come from the texts in the current language.
+
+## Below the first screen
+
+Scrolling down, the visitor finds, in this order (every text in the current language):
+
+1. **One tag, two sides** ("Una etiqueta, dos caras"). One large lilac tag. Its front lists what a visitor of a catalog sees: photos of every product, its attributes side by side, search and filters, and an inquiry form. A **Turn the tag** button ("Dar la vuelta") flips it to the back, which lists what the business edits: products and their images, Categories and attributes, Featured products, import from a CSV file, and its logo and brand color. Pressing the button again turns it back. The button shows whether the tag is turned (`aria-pressed`), and screen readers and the keyboard only reach the side that is showing. The flip takes 0.4 seconds; with reduced motion turned on it changes side at once.
+2. **Any business, its own attributes** ("Cualquier negocio, con sus propios atributos"). The three Demo tenants as tags on a rail, each with one line on what its catalog describes, and a **See its catalog** link ("Ver su catálogo"):
+
+| Tag | Line | Links to |
+| --- | --- | --- |
+| Forja · hardware | Power, voltage and weight for every tool. | `/forja-hardware` |
+| Lino · apparel | Sizes, colors and season for every garment. | `/lino-apparel` |
+| Folio · books | Author, pages and formats for every book. | `/folio-books` |
+
+3. **What it does not do** ("Lo que no hace"). A short block with the "Just looking" stamp: no prices, no cart, no payments, no stock; Just Looking shows the products and passes inquiries on to the business.
+4. **See it with real products.** ("Míralo con productos de verdad."). The closing call, with the **Try the demo** button again (also to `/forja-hardware`).
+
+Only features that exist today are listed. On phones the tags of the rail stack one under another.
+
+## Footer
+
+A darker plum band at the bottom of the page:
+
+- On the left: the Just Looking logo (links to `/`), a **Sign in** link ("Entrar") to `/login`, and the current year.
+- On the right (below the rest on phones): the maker's credit, **A product by** ("Un producto de") above the mookie studio logo. The logo links to mookie studio on GitHub, https://github.com/mookie-studio, in a new tab. Its files are mookie studio's own, unchanged (see [DESIGN.md](../../DESIGN.md), mookie studio credit).
+
+There are no social links and no legal pages.
 
 ## Language
 
