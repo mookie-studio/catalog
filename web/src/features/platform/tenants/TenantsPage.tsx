@@ -1,3 +1,4 @@
+import { EmptyState } from '@/components/EmptyState'
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { type FormEvent, useState } from 'react'
 import { useSearchParams } from 'react-router'
@@ -23,14 +24,14 @@ export function TenantsPage() {
 
   return (
     <main className="flex max-w-4xl flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Tenants</h1>
+      <h1 className="display-m">Tenants</h1>
       <CreateTenantForm />
       {tenants.isPending ? (
         <p role="status" className="text-muted-foreground">Loading…</p>
       ) : tenants.isError ? (
         <p role="alert">The Tenants could not be loaded.</p>
       ) : tenants.data.items.length === 0 ? (
-        <p className="text-muted-foreground">No Tenants yet.</p>
+        <EmptyState title="No Tenants yet.">Tenants will appear here. Create the first one with the form above.</EmptyState>
       ) : (
         <>
           <ul aria-label="Tenants" className="flex flex-col gap-2">
@@ -40,7 +41,7 @@ export function TenantsPage() {
                   <div className="flex flex-wrap items-center gap-3">
                     <span className="font-medium">{tenant.name}</span>
                     <span className="font-mono text-sm text-muted-foreground">/{tenant.slug}</span>
-                    <Badge className={tenant.isActive ? 'border-emerald-600/30 text-emerald-700 dark:text-emerald-300' : 'text-muted-foreground'}>
+                    <Badge className={tenant.isActive ? 'border-success/30 bg-success-soft text-success' : 'text-muted-foreground'}>
                       {tenant.isActive ? 'Active' : 'Deactivated'}
                     </Badge>
                   </div>
@@ -82,7 +83,7 @@ function CreateTenantForm() {
         <Input value={values.name} onChange={(e) => setValues({ ...values, name: e.target.value })} required />
       </Field>
       <Field label="Tenant slug" error={fields.slug}>
-        <Input value={values.slug} onChange={(e) => setValues({ ...values, slug: e.target.value })} placeholder="acme-hardware" required />
+        <Input mono value={values.slug} onChange={(e) => setValues({ ...values, slug: e.target.value })} placeholder="acme-hardware" required />
       </Field>
       <Button type="submit" className="sm:mt-6" disabled={create.isPending}>
         Create tenant

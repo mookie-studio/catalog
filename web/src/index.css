@@ -4,10 +4,16 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: "Archivo", system-ui, sans-serif;
+  --font-display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --font-mono: "Martian Mono", ui-monospace, monospace;
+  --radius-s: 4px;
+  --radius-m: 8px;
+  --radius-l: 12px;
+  --radius-sm: var(--radius-s);
+  --radius-md: var(--radius-m);
+  --radius-lg: var(--radius-l);
+  --radius-xl: calc(var(--radius-l) + 4px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -20,55 +26,184 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
+  --color-accent: var(--surface-sunken);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-plum-900: var(--plum-900);
+  --color-plum-700: var(--plum-700);
+  --color-plum-500: var(--plum-500);
+  --color-mustard-400: var(--mustard-400);
+  --color-lilac-100: var(--lilac-100);
+  --color-lilac-50: var(--lilac-50);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-border-strong: var(--border-strong);
+  --color-on-accent: var(--on-accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-highlight: var(--highlight);
+  --color-on-highlight: var(--on-highlight);
+  --color-link: var(--link);
+  --color-focus-ring: var(--focus-ring);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-neutral-soft: var(--neutral-soft);
+  --color-landing-ground: var(--landing-ground);
+  --color-landing-ink: var(--landing-ink);
+  --color-landing-ink-muted: var(--landing-ink-muted);
+}
+
+/* Shadows are theme variables so the shadow-tag / shadow-raised utilities exist; .dark overrides them. */
+@theme {
+  --shadow-tag: 0 18px 30px -12px rgba(37,18,47,0.45);
+  --shadow-raised: 0 1px 2px rgba(37,18,47,0.08), 0 4px 12px -4px rgba(37,18,47,0.12);
+  /* DESIGN.md Motion: the hang tag sway, the brand's one signature movement. */
+  --animate-tag-sway: tag-sway 5.5s ease-in-out infinite;
+  @keyframes tag-sway {
+    0%, 100% { rotate: -2.5deg; }
+    50% { rotate: 2.5deg; }
+  }
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --plum-900: #25122f;
+  --plum-700: #3b1f4a;
+  --plum-500: #7a3e96;
+  --mustard-400: #f2b134;
+  --lilac-100: #eadcf5;
+  --lilac-50: #f7f0fb;
+  --surface: #fbf8fd;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f2ebf7;
+  --ink: #25122f;
+  --ink-muted: #5f4d6b;
+  --border: #e2d6ea;
+  --border-strong: #8c7a99;
+  --accent: var(--plum-700);
+  --on-accent: #ffffff;
+  --accent-hover: #2e1839;
+  --highlight: var(--mustard-400);
+  --on-highlight: var(--plum-900);
+  --link: var(--plum-500);
+  --focus-ring: var(--plum-500);
+  --success: #1f6b45;
+  --success-soft: #ddf2e6;
+  --warning: #8a5300;
+  --warning-soft: #fbeccc;
+  --danger: #b3261e;
+  --danger-soft: #fbe3e1;
+  --neutral-soft: #ece6f0;
+  --landing-ground: var(--plum-700);
+  --landing-ink: var(--lilac-50);
+  --landing-ink-muted: #d3c2e0;
+
+  /* shadcn/ui variables mapped onto the design system (DESIGN.md) */
+  --background: var(--surface);
+  --foreground: var(--ink);
+  --card: var(--surface-raised);
+  --card-foreground: var(--ink);
+  --popover: var(--surface-raised);
+  --popover-foreground: var(--ink);
+  --primary: var(--accent);
+  --primary-foreground: var(--on-accent);
+  --secondary: var(--surface-sunken);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface-sunken);
+  --muted-foreground: var(--ink-muted);
+  --accent-foreground: var(--ink);
+  --destructive: var(--danger);
+  --input: var(--border-strong);
+  --ring: var(--focus-ring);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --plum-900: #25122f;
+  --plum-700: #3b1f4a;
+  --plum-500: #7a3e96;
+  --mustard-400: #f2b134;
+  --lilac-100: #eadcf5;
+  --lilac-50: #f7f0fb;
+  --surface: #1a0f21;
+  --surface-raised: #24162d;
+  --surface-sunken: #140a1a;
+  --ink: #f7f0fb;
+  --ink-muted: #c2b0cf;
+  --border: #3a2a45;
+  --border-strong: #7d6a8b;
+  --accent: var(--mustard-400);
+  --on-accent: var(--plum-900);
+  --accent-hover: #f5c25e;
+  --highlight: var(--mustard-400);
+  --on-highlight: var(--plum-900);
+  --link: #d9b8ee;
+  --focus-ring: var(--mustard-400);
+  --success: #7fd6a4;
+  --success-soft: #173a28;
+  --warning: #f2b134;
+  --warning-soft: #3d2c0c;
+  --danger: #ff8f85;
+  --danger-soft: #43181a;
+  --neutral-soft: #2e2338;
+  --landing-ground: var(--plum-700);
+  --landing-ink: var(--lilac-50);
+  --landing-ink-muted: #d3c2e0;
+  --shadow-tag: 0 18px 30px -12px rgba(0,0,0,0.6);
+  --shadow-raised: 0 1px 2px rgba(0,0,0,0.4), 0 4px 12px -4px rgba(0,0,0,0.5);
+  color-scheme: dark;
+}
+
+/* DESIGN.md Type: display-m, page titles in the app and the product name on the product page. */
+@utility display-m {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 110%;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  @media (width >= 40rem) {
+    font-size: 36px;
+  }
+}
+
+/* DESIGN.md Type: display-xl, the landing hero headline only (about 44px on phones, 88px on desktop). */
+@utility display-xl {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-stretch: 125%;
+  font-size: clamp(44px, 7vw, 88px);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+/* DESIGN.md Type: display-l, landing section headings (about 34px on phones, 56px on desktop). */
+@utility display-l {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-stretch: 120%;
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+/* DESIGN.md Type: lede, landing intro paragraphs. */
+@utility lede {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 19px;
+  line-height: 1.5;
+  max-width: 46ch;
 }
 
 @layer base {
@@ -76,6 +211,14 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+  ::selection {
+    background: var(--highlight);
+    color: var(--on-highlight);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
   }
 }

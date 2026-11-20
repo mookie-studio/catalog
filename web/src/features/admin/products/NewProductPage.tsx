@@ -29,7 +29,7 @@ export function NewProductPage() {
 
   return (
     <main className="flex max-w-3xl flex-col gap-6">
-      <h1 className="text-2xl font-semibold tracking-tight">New product</h1>
+      <h1 className="display-m">New product</h1>
       <p className="text-sm text-muted-foreground">The product is created as a Draft. You can complete and publish it afterwards.</p>
       <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
         <ProductFields values={values} errors={problem?.fields ?? {}} showSlug={false} onChange={setValues} />

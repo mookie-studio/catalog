@@ -17,7 +17,7 @@ export function DashboardPage() {
 
   return (
     <main className="flex flex-col gap-8">
-      <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+      <h1 className="display-m">Dashboard</h1>
       {dashboard.isPending ? (
         <p role="status" className="text-muted-foreground">Loading…</p>
       ) : dashboard.isError ? (

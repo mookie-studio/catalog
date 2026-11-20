@@ -1,3 +1,4 @@
+import { EmptyState } from '@/components/EmptyState'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
@@ -7,6 +8,7 @@ import { ConfirmPanel } from '@/components/ConfirmPanel'
 import { Pagination } from '@/components/Pagination'
 import { Button } from '@/components/ui/button'
 import { Select } from '@/components/ui/select'
+import { StatusBadge } from '@/components/StatusBadge'
 import { type Inquiry, type InquiryStatus, inquiriesQueryKey, useInquiries } from '@/features/admin/inquiries/inquiries-api'
 
 const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' })
@@ -34,7 +36,7 @@ export function InquiriesPage() {
   return (
     <main className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">Inquiries</h1>
+        <h1 className="display-m">Inquiries</h1>
         <Select
           aria-label="Show"
           className="w-40"
@@ -51,13 +53,13 @@ export function InquiriesPage() {
       ) : inquiries.isError ? (
         <p role="alert">The inquiries could not be loaded.</p>
       ) : inquiries.data.items.length === 0 ? (
-        <p className="text-muted-foreground">
-          No inquiries. Visitors can send them from a product page when Inquiries are enabled in your{' '}
+        <EmptyState title="No inquiries.">
+          Visitors can send them from a product page when Inquiries are enabled in your{' '}
           <Link to="/admin/profile" className="underline">
             profile
           </Link>
           .
-        </p>
+        </EmptyState>
       ) : (
         <>
           <ul aria-label="Inquiries" className="flex flex-col gap-3">
@@ -109,7 +111,7 @@ function InquiryRow({ inquiry }: { inquiry: Inquiry }) {
         <Link to={`/admin/products/${inquiry.product.id}`} className="font-medium underline-offset-4 hover:underline">
           {inquiry.product.name}
         </Link>
-        {handled && <span className="ml-2 rounded bg-muted px-1.5 py-0.5 text-xs">Handled</span>}
+        <StatusBadge status={inquiry.status} className="ml-2" />
       </p>
       <p className="whitespace-pre-line text-sm text-muted-foreground">{inquiry.message}</p>
       {confirming ? (

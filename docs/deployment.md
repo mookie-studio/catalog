@@ -12,6 +12,12 @@ Merging to `main` deploys (ADR 0005, ADR 0011):
 - `web/**` changes run `.github/workflows/deploy-web.yml`: build the SPA with the production `VITE_*`
   variables and deploy it with `wrangler pages deploy`.
 
+The API workflows use the .NET SDK pinned in `api/global.json` (10.0, latest feature band). GitHub
+runners also ship newer SDKs (for example 11.0), and without the pin `dotnet` would pick the newest one.
+Before building the migrations bundle, the `migrate` job runs `dotnet restore -r linux-x64` on the API
+project, because `dotnet ef` reads the project metadata (which needs `obj/project.assets.json`) before it
+builds; without it the job fails with `NETSDK1004`.
+
 Both workflows can also be started by hand (`workflow_dispatch`). They use the GitHub environment
 `production`; add the secrets and variables below to that environment. No secret is stored in the repository.
 Until `AZURE_WEBAPP_NAME` (API) or `CLOUDFLARE_PAGES_PROJECT` (SPA) is set, the workflows are skipped.
@@ -25,7 +31,7 @@ environment variables are only visible to jobs that already run in that environm
 
 | Secret | What it is |
 | --- | --- |
-| `AZURE_CLIENT_ID` | Client id of the Entra ID app (or managed identity) with a federated credential for this repository's `production` environment (OIDC, no password). It needs the Website Contributor role on the web app. |
+| `AZURE_CLIENT_ID` | Client id of the Entra ID app (or managed identity) with a federated credential for this repository's `production` environment (OIDC, no password; subject `repo:mookie-studio/just-looking:environment:production`, which must change if the repository is renamed). It needs the Website Contributor role on the web app. |
 | `AZURE_TENANT_ID` | Entra ID tenant id. |
 | `AZURE_SUBSCRIPTION_ID` | Azure subscription id. |
 | `DATABASE_CONNECTION_STRING` | Npgsql connection string of the Supabase database, used to apply migrations through the session pooler, because GitHub runners have no IPv6 (for example `Host=aws-0-<region>.pooler.supabase.com;Port=5432;Database=postgres;Username=postgres.<project>;Password=...;SSL Mode=Require`). |
@@ -34,7 +40,7 @@ environment variables are only visible to jobs that already run in that environm
 
 | Variable | What it is |
 | --- | --- |
-| `AZURE_WEBAPP_NAME` | Name of the App Service web app (for example `catalog-api`). The API URL is `https://<name>.azurewebsites.net`. |
+| `AZURE_WEBAPP_NAME` | Name of the App Service web app (for example `catalog-api`). The API URL is the web app's **Default domain** (Overview in the portal). Apps created with a unique default hostname get `https://<name>-<hash>.<region>-01.azurewebsites.net`, not `https://<name>.azurewebsites.net`; the workflow checks `/api/health` on the URL that `azure/webapps-deploy` reports, so it works with both. |
 
 ### Web app settings
 
@@ -80,7 +86,7 @@ for Product views.
 | Variable | What it is |
 | --- | --- |
 | `CLOUDFLARE_PAGES_PROJECT` | Name of the Pages project (create it once with "Direct Upload"). |
-| `VITE_API_URL` | Public URL of the API, for example `https://catalog-api.azurewebsites.net`. The build also writes it into `robots.txt` as the address of the sitemap index (`<API>/api/public-sitemap.xml`); submitting that address to Google Search Console is optional. |
+| `VITE_API_URL` | Public URL of the API, for example `https://catalog-api-abc123.westeurope-01.azurewebsites.net` (the web app's **Default domain**). The build also writes it into `robots.txt` as the address of the sitemap index (`<API>/api/public-sitemap.xml`); submitting that address to Google Search Console is optional. |
 | `VITE_SUPABASE_URL` | `https://<project>.supabase.co` |
 | `VITE_SUPABASE_ANON_KEY` | Supabase publishable key (`sb_publishable_...`) or legacy anon key. It is public by design. |
 

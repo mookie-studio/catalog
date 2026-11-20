@@ -23,7 +23,7 @@ You need:
 - A Supabase account (https://supabase.com/dashboard).
 - A Cloudflare account (https://dash.cloudflare.com). R2 asks for a payment method even on the free tier.
 - An Azure subscription (https://portal.azure.com), for example "Azure free account" or "Pay-As-You-Go".
-- Admin rights on the `mookie-studio/catalog` GitHub repository and on the `mookie-studio` organization.
+- Admin rights on the `mookie-studio/just-looking` GitHub repository and on the `mookie-studio` organization.
 
 Keep a private note open (a password manager is best) and copy each value into it as you go. Every
 value you need later is marked like this: **Save as `NAME`**. Never paste these values into an issue,
@@ -37,7 +37,7 @@ Pick the names now so they match everywhere. This guide uses:
 | R2 bucket | `catalog-images` |
 | Pages project | `catalog-web` (gives `https://catalog-web.pages.dev`) |
 | Azure resource group | `catalog-rg` |
-| App Service web app | `catalog-api` (gives `https://catalog-api.azurewebsites.net`) |
+| App Service web app | `catalog-api` (gives `https://catalog-api.azurewebsites.net`, or `https://catalog-api-<hash>.<region>-01.azurewebsites.net` when **Secure unique default hostname** is on) |
 | App Service plan | `catalog-plan` (Linux, Free F1) |
 
 The SPA domain (`https://<pages-project>.pages.dev`) and the API URL are needed by other steps, so the
@@ -127,6 +127,19 @@ The Platform Admin is a Supabase user whose id is listed in the API settings.
 1. Go to **Authentication** → **Users** → **Add user** → **Create new user**.
 2. Enter your email and a password, keep **Auto Confirm User** checked, and click **Create user**.
 3. Click the new user and copy its **User UID**. **Save as `PLATFORM_ADMIN_USER_ID`**.
+4. Keep the password in a password manager. Supabase never shows it again, and the dashboard cannot
+   set a new one on an existing user (its **Send password recovery** only helps if the email can
+   receive mail). If you lose it, reset it in **SQL Editor** without changing the User UID (replace
+   both values, then **Run**):
+
+   ```sql
+   update auth.users
+   set encrypted_password = extensions.crypt('<new password>', extensions.gen_salt('bf'))
+   where email = '<your email>';
+   ```
+
+   Do not delete the user and create it again: the new user gets a new User UID, and
+   `Auth__PlatformAdminUserIds__0` (step 4.4) would have to change too.
 
 Free Supabase projects pause after a week without activity. If the API's health check returns 503
 after a quiet week, open the project in the dashboard and click **Restore project**.
@@ -224,7 +237,7 @@ The API runs on App Service's free plan as code, not as a container (ADR 0011).
    authentication** disabled.
 4. **Monitoring**: **Enable Application Insights**: No (it is not needed and can cost money).
 5. **Review + create** → **Create**. Wait for the deployment, then **Go to resource**.
-6. On **Overview**, copy **Default domain**, for example `catalog-api.azurewebsites.net`, and add
+6. On **Overview**, copy **Default domain**, for example `catalog-api.azurewebsites.net` or `catalog-api-<hash>.westeurope-01.azurewebsites.net` (use exactly what the portal shows), and add
    `https://` in front. **Save as `VITE_API_URL`**. Opening it now shows App Service's placeholder page.
 
 If the portal reports that `Microsoft.Web` is not registered, go to **Subscriptions** → your
@@ -278,9 +291,13 @@ GitHub signs in to Azure with a federated credential, so no Azure password is st
    - **Directory (tenant) ID**: **Save as `AZURE_TENANT_ID`**.
 3. Go to **Certificates & secrets** → **Federated credentials** tab → **Add credential**.
    - **Federated credential scenario**: GitHub Actions deploying Azure resources.
-   - **Organization**: `mookie-studio`. **Repository**: `catalog`.
+   - **Organization**: `mookie-studio`. **Repository**: `just-looking`.
    - **Entity type**: Environment. **GitHub environment name**: `production`.
    - **Name**: `catalog-production`. Click **Add**.
+   - The credential's subject is `repo:mookie-studio/just-looking:environment:production`. GitHub
+     puts the repository name in the token it sends to Azure, so if the repository is ever renamed
+     (it was called `catalog` until 2026-11-19), edit this credential and change **Repository** to
+     the new name, or deployments fail with `AADSTS70021: No matching federated identity record found`.
 4. Give it access to the web app only: go to **App Services** → `catalog-api` → **Access control
    (IAM)** → **Add** → **Add role assignment**.
    - **Role**: search for **Website Contributor**, select it, **Next**.
@@ -299,7 +316,7 @@ GitHub signs in to Azure with a federated credential, so no Azure password is st
 
 ### 5.1 Environment `production` and its secrets
 
-1. Open https://github.com/mookie-studio/catalog → **Settings** → **Environments** → **New
+1. Open https://github.com/mookie-studio/just-looking → **Settings** → **Environments** → **New
    environment** → name `production` → **Configure environment**.
 2. Optional: under **Deployment branches and tags**, choose **Selected branches and tags** and add
    `main`, so only `main` can deploy.
@@ -367,7 +384,11 @@ Work through this list in order; each step depends on the previous one.
 3. **SPA loads.** Open `SPA_URL`. Then open a deep link such as `SPA_URL/login` directly: it must load
    the app, not a 404.
 4. **Platform Admin signs in.** Sign in at `SPA_URL/login` with the user from step 1.7, then open
-   `SPA_URL/platform`. If sign-in works but the API answers 401, compare `Auth__Issuer` and
+   `SPA_URL/platform`. If the sign-in form says **Invalid login credentials**, Supabase rejected the
+   email and password: the user exists but the password is different (or the email is misspelled).
+   Check the user in **Authentication** → **Users**, and reset the password as in step 1.7 step 4.
+   If you get in but `SPA_URL/platform` says you have no access, the User UID is not the value of
+   `Auth__PlatformAdminUserIds__0`. If sign-in works but the API answers 401, compare `Auth__Issuer` and
    `Auth__JwksUrl` with the project ref. If the browser console shows a CORS error, check
    `Cors__AllowedOrigins__0` is exactly `SPA_URL`.
 5. **Invitation works.** Create a Tenant with an Admin email you can read (see step 1.6). The invitation
@@ -390,6 +411,11 @@ Work through this list in order; each step depends on the previous one.
    `Sitemap:` line pointing to the sitemap index; if that line is missing, `VITE_API_URL` was empty
    when the SPA was built (step 5.2). Optionally submit the sitemap index address in Google Search
    Console.
+
+The demo catalogs (`forja-hardware`, `lino-apparel`, `folio-books`) and their demo Admins are not
+created by the deploy. They are loaded by the Demo seeder, run by hand from your computer
+([ADR 0014](adr/0014-demo-data-seeded-through-the-api.md)). Until it has run, those pages show
+the "not found" page and the only account is the Platform Admin of step 1.7.
 
 When all nine pass, the infrastructure is done. Later deploys need no clicks: merge to `main`.
 

@@ -41,7 +41,7 @@ export function ImportProductsPage() {
         <Link to="/admin/products" className="text-sm text-muted-foreground hover:underline">
           ← Products
         </Link>
-        <h1 className="text-2xl font-semibold tracking-tight">Import products</h1>
+        <h1 className="display-m">Import products</h1>
       </div>
       <div className="space-y-2 text-sm text-muted-foreground">
         <p>
@@ -103,7 +103,7 @@ export function ImportTable({ report }: { report: Report }) {
   return (
     <>
       {report.warnings.length > 0 && (
-        <ul aria-label="Warnings" className="list-disc pl-5 text-sm text-amber-700">
+        <ul aria-label="Warnings" className="list-disc pl-5 text-sm text-warning">
           {report.warnings.map((warning) => (
             <li key={warning}>{warning}</li>
           ))}

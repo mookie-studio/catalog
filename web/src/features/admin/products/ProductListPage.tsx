@@ -1,3 +1,4 @@
+import { EmptyState } from '@/components/EmptyState'
 import { type FormEvent, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { Pagination } from '@/components/Pagination'
@@ -17,6 +18,7 @@ import type { BulkResult } from '@/features/admin/products/bulk-api'
 import { useSelection } from '@/features/admin/products/use-selection'
 import { downloadProductsCsv } from '@/features/admin/products/product-csv'
 import { ProductStatusBadge } from '@/features/admin/products/ProductStatusBadge'
+import { StatusBadge } from '@/components/StatusBadge'
 
 const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' })
 
@@ -61,7 +63,7 @@ export function ProductListPage() {
   return (
     <main className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">Products</h1>
+        <h1 className="display-m">Products</h1>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" disabled={exporting} onClick={exportCsv}>
             Export CSV
@@ -142,16 +144,20 @@ export function ProductListPage() {
       ) : products.isError ? (
         <p role="alert">The products could not be loaded.</p>
       ) : products.data.items.length === 0 ? (
-        <div className="rounded-lg border border-dashed p-10 text-center">
-          {filtered ? (
+        filtered ? (
+          <div className="rounded-l border border-dashed p-10 text-center">
             <p className="text-muted-foreground">No products match these filters.</p>
-          ) : (
-            <>
-              <p className="font-medium">No products yet</p>
-              <p className="mt-1 text-sm text-muted-foreground">Create your first product to start your catalog.</p>
-            </>
-          )}
-        </div>
+          </div>
+        ) : (
+          <EmptyState
+            title="No products yet"
+            action={
+              <ButtonLink to="/admin/products/new">New product</ButtonLink>
+            }
+          >
+            Create your first product to start your catalog.
+          </EmptyState>
+        )
       ) : (
         <>
           <div className="overflow-x-auto rounded-lg border">
@@ -193,9 +199,7 @@ export function ProductListPage() {
                         {product.name}
                       </Link>
                       {product.isFeatured && (
-                        <span aria-label="Featured" title="Featured" className="ml-2 text-amber-500">
-                          ★
-                        </span>
+                        <StatusBadge status="Featured" className="ml-2" />
                       )}
                     </td>
                     <td className="px-3 py-2 font-mono text-xs">{product.sku}</td>
