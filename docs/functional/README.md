@@ -9,7 +9,7 @@ What Catalog does, feature by feature, written for the people who use, test, dem
 | [Catalog setup](./catalog-setup.md) | Admins | Attribute Definitions, Categories, Tenant profile (Logo, Brand color) |
 | [Products](./products.md) | Admins | Creating, editing, status, Images, Featured, Duplicate, Bulk actions, CSV import and export |
 | [Dashboard, Inquiries and statistics](./dashboard-inquiries-and-stats.md) | Admins | The Dashboard, the Inquiry inbox, Product views |
-| [Landing page](./landing-page.md) | Visitors, testers | The page at `/` that presents Just Looking, its two languages and the language switcher |
+| [Landing page](./landing-page.md) | Visitors, testers | The page at `/` that presents Just Looking, its first screen with "Try the demo", its two languages and the language switcher |
 | [Public catalog](./public-catalog.md) | Visitors, testers | Browsing, search, filters, sorting, views, product page, Related products, Inquiries, Old slugs, SEO |
 | [Rules and limits](./rules-and-limits.md) | Everyone | Every size, length and count limit in one place |
 | [API reference](./api-reference.md) | Developers | Every endpoint, its parameters and its error codes |

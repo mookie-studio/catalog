@@ -1,10 +1,16 @@
 import type { RouteObject } from 'react-router'
 import { NotFoundPage } from '@/components/NotFoundPage'
+import { LandingPage } from '@/features/landing/LandingPage'
 import { PublicLayout } from '@/features/public/PublicLayout'
 
 // Admin, platform and sign-in pages are lazy-loaded so they end up in their own
 // chunks and public pages never download admin or Supabase code.
 export const routes: RouteObject[] = [
+  {
+    // The landing page is eager, like the public pages (#176).
+    path: '/',
+    Component: LandingPage,
+  },
   {
     path: '/login',
     lazy: async () => ({

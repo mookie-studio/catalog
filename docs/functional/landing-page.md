@@ -1,6 +1,29 @@
 # Landing page
 
-The landing page presents **Just Looking** (the public name of Catalog) to people who have never seen it, and sends them to the demo. It lives at `/`. Brand and look: [DESIGN.md](../../DESIGN.md) and [ADR 0015](../adr/0015-just-looking-brand-and-design-system.md). The first screen, the sections below it and the footer are described here as they are built (#183, #184).
+The landing page presents **Just Looking** (the public name of Catalog) to people who have never seen it, and sends them to the demo. It lives at `/`. Brand and look: [DESIGN.md](../../DESIGN.md) and [ADR 0015](../adr/0015-just-looking-brand-and-design-system.md). The first screen is described below (#183); the sections under it and the footer come with #184.
+
+## First screen
+
+What a visitor sees on opening `/`, without scrolling (checked at 1366×768 and 390×844):
+
+- **Top bar**: the Just Looking logo (plum and mustard wordmark), which links to `/`; the EN/ES [language switcher](#language-switcher); and a **Sign in** pill ("Entrar" in Spanish) that links to `/login`.
+- **Headline**: "Let them look at everything they want." ("Que miren todo lo que quieran."), with one word in mustard, then a short paragraph saying what Just Looking does.
+- **Try the demo** ("Probar la demo"): the main button, shaped like a tag. It opens the demo catalog of the Demo tenant `forja-hardware` (`/forja-hardware`). Under it, a small note: "3 example shops · no sign-up" ("3 tiendas de ejemplo · sin registro").
+- **Three hang tags** hanging from a rail, one Featured product from each Demo tenant, alternating mustard and lilac. Each tag shows the shop and its trade, the product name, three of its attributes and the "Just looking" stamp, and the whole tag is a link to that shop's catalog:
+
+| Tag | Links to |
+| --- | --- |
+| Forja · hardware: Cordless drill driver 18 V | `/forja-hardware` |
+| Lino · apparel: Linen shirt dress | `/lino-apparel` |
+| Folio · books: The Lighthouse Keeper's Daughter | `/folio-books` |
+
+Rules and limits:
+
+- The page is always plum, in the light and the dark theme.
+- The tag contents are fixed texts copied from the Demo dataset into `landing-copy.ts`; the landing page makes **no API calls**, so it works even when the API is down. The links only lead somewhere useful when the Demo tenants have been seeded (see [ADR 0014](../adr/0014-demo-data-seeded-through-the-api.md) and [deployment](../deployment.md)); otherwise the catalog pages show "Page not found".
+- On wide screens the text and the tags sit side by side; under 860px wide the tags go below the button. When there is not room for three full-size tags, they shrink and overlap so none is cut off; there is no horizontal scrolling down to 360px wide.
+- The tags sway gently and stop when hovered or focused; with reduced motion turned on in the system, they do not move.
+- The browser tab title and the page description (used by search engines and link previews) come from the texts in the current language.
 
 ## Language
 
