@@ -14,7 +14,7 @@ const sawName = `Saw ${run}`
 /** Creates a Draft with a description from the admin area. Returns its Product slug. */
 async function createDraft(admin: Page, name: string, sku: string) {
   await admin.getByRole('navigation', { name: 'Admin' }).getByRole('link', { name: 'Products' }).click()
-  await admin.getByRole('link', { name: 'New product' }).click()
+  await admin.getByRole('link', { name: 'New product' }).first().click()
   await admin.getByLabel('Name', { exact: true }).fill(name)
   await admin.getByLabel('SKU', { exact: true }).fill(sku)
   await admin.getByLabel('Description', { exact: true }).fill(`${name} for every job.`)
