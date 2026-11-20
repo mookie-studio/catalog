@@ -94,6 +94,14 @@ docker compose up --build
 - Images: uploaded images are stored in the local S3-compatible store and served from
   http://localhost:9090/catalog-images/...
 
+Image uploads (product Images, Logos) need the `catalog-images` bucket. The compose file asks S3Mock to create it,
+but some S3Mock versions ignore that setting. If an upload answers 500 and the API log says "The specified bucket does
+not exist", create the bucket once (it is kept in the `storage-data` volume):
+
+```sh
+curl -X PUT http://localhost:9090/catalog-images
+```
+
 The SPA calls the API through the Vite dev server proxy (`/api`), so no CORS setup is needed locally.
 
 ## Running the API and the SPA without an orchestrator

@@ -91,6 +91,13 @@ jobs:
             timeout 300 bash -c "until curl -sf $url > /dev/null; do sleep 3; done" || { docker compose logs; exit 1; }
           done
 
+      # S3Mock does not honour COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS in this image version (its log shows the
+      # default root and no bucket), so the bucket is created here. 200 = created, 409 = already there.
+      - name: Create the image bucket
+        run: |
+          status=$(curl -s -o /dev/null -w "%{http_code}" -X PUT http://localhost:9090/catalog-images)
+          case "$status" in 200|409) ;; *) echo "Creating the image bucket answered $status."; exit 1 ;; esac
+
       - name: Run the end-to-end flow
         working-directory: web
         run: npm run e2e
@@ -106,6 +113,7 @@ jobs:
           Demo__PlatformAdminPassword: ${{ env.E2E_PLATFORM_ADMIN_PASSWORD }}
           Demo__AdminPassword: e2e-demo-admin-password
         run: |
+          set -o pipefail
           export Demo__SupabaseAnonKey="$ANON_KEY" Demo__SupabaseServiceRoleKey="$SERVICE_ROLE_KEY"
           dotnet run --project api/tools/Catalog.DemoSeeder -- seed | tee demo-first.log
           dotnet run --project api/tools/Catalog.DemoSeeder -- seed | tee demo-second.log
